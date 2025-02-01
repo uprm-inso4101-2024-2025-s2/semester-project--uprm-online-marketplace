@@ -1,6 +1,6 @@
 ---
 name: New Project Task
-about:
+about: Development tasks (including documentation)
 title: "[TASK_TYPE] TASK_TITLE"
 labels:
 assignees:
