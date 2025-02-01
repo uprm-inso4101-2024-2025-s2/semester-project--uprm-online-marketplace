@@ -11,13 +11,13 @@ jobs:
       - name: Move issue to "To-Do" when opened
         if: github.event.action == 'opened'
         run: |
-          gh project issue move --project <PROJECT_ID> --issue ${{ github.event.issue.number }} --column "To-Do"
+          gh project issue move --project 3 --issue ${{ github.event.issue.number }} --column "To-Do"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Move issue to "Done" when closed
         if: github.event.action == 'closed'
         run: |
-          gh project issue move --project <PROJECT_ID> --issue ${{ github.event.issue.number }} --column "Done"
+          gh project issue move --project 3 --issue ${{ github.event.issue.number }} --column "Done"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
