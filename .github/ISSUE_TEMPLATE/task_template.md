@@ -1,8 +1,8 @@
 ---
-Name: New Project Task
-About: Development tasks (including documentation)
-Title: "[TASK_TYPE] TASK_TITLE"
-Labels:
+name: New Project Task
+about: Development tasks (including documentation)
+title: "[TASK_TYPE] TASK_TITLE"
+labels:
 Assignees:
 ---
 ### Task Title:
