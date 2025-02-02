@@ -1,9 +1,9 @@
 ---
-name: New Project Task
-about: Development tasks (including documentation)
-title: "[TASK_TYPE] TASK_TITLE"
-labels:
-assignees:
+Name: New Project Task
+Aboutt: Development tasks (including documentation)
+Title: "[TASK_TYPE] TASK_TITLE"
+Labels:
+Assignees:
 ---
 ### Task Title:
 [GIVE A DESCRIPTION OF THE TASK]
@@ -19,8 +19,8 @@ assignees:
 - [ ] Dependencies (if any).
 
 ### Urgency & Difficulty:
-- **Urgency:** (1 - Low, 5 - Critical)
-- **Difficulty:** (1 - Easy, 5 - Complex)
+- **Urgency:** (1 - Low, 10 - Critical)
+- **Difficulty:** (1 - Easy, 10 - Complex)
 
 ### Assigned Developer(s):
 @username1 @username2
