@@ -1,6 +1,6 @@
 ---
 Name: New Project Task
-Aboutt: Development tasks (including documentation)
+About: Development tasks (including documentation)
 Title: "[TASK_TYPE] TASK_TITLE"
 Labels:
 Assignees:
