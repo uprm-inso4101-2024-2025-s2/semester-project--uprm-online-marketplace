@@ -1,28 +1,15 @@
-(delete this before pressing enter) Categories for Commits
-Use one of the following categories at the start of each commit message:
-
-[Setup] → For initial configurations, environment setup, folder structure.
-[UI] → For changes related to the frontend (HTML, CSS, UI components).
-[Backend] → For changes to the backend (APIs, database models, logic).
-[Bugfix] → For fixing errors, broken features, or unexpected behaviors.
-[Docs] → For updates to documentation (README, API docs, comments).
-[Refactor] → For code improvements without changing functionality.
-[Testing] → For adding or updating test cases and debugging tools.
-
----
-
 [Category] Brief commit message
 
-📝 Summary:
+Summary:
 - Explain what was changed or added in 1-2 sentences.
 
-✅ Changes:
+Changes:
 - List the specific files or features that were modified.
 - Use bullet points for clarity.
 
-🎯 Why:
+Why:
 - Describe the reason for the change.
 - Explain how this commit improves the project.
 
-🔗 Related Issues:
+Related Issues:
 - Reference the GitHub issue number (if applicable) using `#issue-number`.
