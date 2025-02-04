@@ -1,26 +1,26 @@
 {
   "version": "2.0",
-  "projectName": "College Toolbox",
-  "managers": ["Poggecci", "Schutz"],
+  "projectName": "UPRM Online Marketplace",
+  "managers": ["anthonyharriel", "Gerardoruiz1"],
   "milestones": {
     "Milestone #1": {
-      "startDate": "2024-01-15",
-      "endDate": "2024-02-09",
+      "startDate": "2025-01-27",
+      "endDate": "2025-02-21",
       "projectedGroupGrade": 100.0
     },
     "Milestone #2": {
-      "startDate": "2024-02-12",
-      "endDate": "2024-03-08",
+      "startDate": "2025-02-25",
+      "endDate": "2025-03-21",
       "projectedGroupGrade": 100.0
     },
     "Milestone #3": {
-      "startDate": "2024-03-11",
-      "endDate": "2024-04-05",
+      "startDate": "2025-03-25",
+      "endDate": "2025-04-30",
       "projectedGroupGrade": 100.0
     }
   },
   "lectureTopicTaskQuota": 4,
-  "countOpenIssues": false,
+  "countOpenIssues": true,
   "sprints": 2,
   "minTasksPerSprint": 1,
 }
