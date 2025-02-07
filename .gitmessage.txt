@@ -1,15 +1,18 @@
-[Category] Brief commit message
+[Backend] Created Firebase database schema for user authentication
 
-Summary:
-- Explain what was changed or added in 1-2 sentences.
+📝 Summary:
+- Designed a scalable database schema for Firebase authentication.
+- Implemented role-based access control for user management.
 
-Changes:
-- List the specific files or features that were modified.
-- Use bullet points for clarity.
+✅ Changes:
+- Added Firebase schema for storing user data securely.
+- Ensured unique email and phone number enforcement.
+- Implemented password hashing and storage validation.
 
-Why:
-- Describe the reason for the change.
-- Explain how this commit improves the project.
+🎯 Why:
+- Enables user registration and login functionality.
+- Ensures secure authentication and role-based access control.
+- Aligns with project milestones and security best practices.
 
-Related Issues:
-- Reference the GitHub issue number (if applicable) using `#issue-number`.
+🔗 Related Issues:
+- #38
