@@ -1,15 +1,12 @@
 const {Product} = require( './ProductClass');
 class Lodging extends Product{
 
-    constructor(owner, availability, price= 1000){
-        super(owner, availability);
-        this.price= price;
-        this.location= "UNKOWN";    
-        this.condition= 'UNKOWN';
-        this.bedrooms= 0;
-        this.restrooms= 0;
-        this.parking= 0;
-        this.description= "";
+    constructor(owner, availability, price= 1000, location= "UNKOWN", condition= "UNKOWN", bedrooms= 0, restrooms= 0, parking= 0, description= ""){
+        super(owner, availability, price, condition, description);
+        this.location= location;    
+        this.bedrooms= bedrooms;
+        this.restrooms= restrooms;
+        this.parking= parking;
     }
     
     //Getters

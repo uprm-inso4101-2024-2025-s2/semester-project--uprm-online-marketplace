@@ -1,11 +1,11 @@
 class Product{
 
-    constructor(owner, availability, price= 1000){
+    constructor(owner, availability, price= 1000, condition= "UNKOWN", description=""){
         this.owner= owner;
         this.price= price;
         this.availability= availability;
-        this.condition= "";
-        this.description= "";
+        this.condition= condition;
+        this.description= description;
     }
     
 
