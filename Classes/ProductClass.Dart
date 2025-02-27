@@ -4,14 +4,17 @@ class Product{
   String availability;
   String condition;
   String description;
+  String title;
+
 
   //Constructor
   Product({
     required this.owner,
     required this.availability,
-    this.price = 1000,
+    required this.price,
     this.condition = "UNKNOWN",
-    this.description = ""
+    this.description = "",
+    required this.title,
   });
 
   //Getters
@@ -20,6 +23,7 @@ class Product{
   String getAvailability() => availability;
   String getCondition() => condition;
   String getDescription() => description;
+  String getTitle() => title;
 
   //Setters
   void setOwner(String owner) => this.owner = owner;
@@ -27,5 +31,6 @@ class Product{
   void setAvailability(String availability) => this.availability = availability;
   void setCondition(String condition) => this.condition = condition;
   void setDescription(String description) => this.description = description;
+  void setTitle(String title) => this.title = title;
   
 }
