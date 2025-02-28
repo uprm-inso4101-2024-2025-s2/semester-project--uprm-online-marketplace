@@ -19,7 +19,7 @@ class Lodging extends Product{
     this.bedrooms = 0,
     this.restrooms = 0,
     this.parking = 0,
-    String description = ""
+    String description = "", String
   }): id = Random().nextInt(999999999), //we will  locate listings using a random numberID. This will make us be able to locate listings more efficiently rather than by title. Titles could be the same
         super(owner:owner, availability:availability, price:price, condition:condition, description:description, title:title);
 
@@ -72,7 +72,7 @@ class LodgingManagement{
   }
 
   //the question marks allow each parameter to be optional
-  void editLodging(int id, {String? newTitle, String? newCondition, String? newDescription,int? newPrice, String? newLocation, int? newBedrooms, int? newRestrooms, int? newParking}){
+  Lodging? editLodging(int id, {String? newTitle, String? newCondition, String? newDescription,int? newPrice, String? newLocation, int? newBedrooms, int? newRestrooms, int? newParking}){
     Lodging? lodging = findLodgingWithId(id);
 
     if(lodging != null){
@@ -93,9 +93,17 @@ class LodgingManagement{
       if(newParking != null && newParking >= 0) lodging.parking = newParking;
 
       print("Lodging with ID $id has been updated");
+      return lodging;
     }
     else{
       print("ID $id was not found");
+    }
+  }
+
+  //Must be put on observation due to it being O(n) might affect the running time.
+  void clearLodgings(){
+    for(int i= 0; i<lodgings.length; i++){
+      lodgings.removeAt(i);
     }
   }
 
