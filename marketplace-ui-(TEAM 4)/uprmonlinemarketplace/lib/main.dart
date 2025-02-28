@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'router.dart'; // Import router.dart instead
 
 void main() {
   runApp(const MyApp());
@@ -17,24 +18,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-// Define the router
-final GoRouter router = GoRouter(
-  routes: [
-    GoRoute(path: '/', builder: (context, state) => const HomePage()),
-    GoRoute(
-      path: '/details/:title/:description',
-      builder: (context, state) {
-        final title = state.pathParameters['title']!;
-        final description = state.pathParameters['description']!;
-        return LodgingDetailsPage(title: title, description: description);
-      },
-    ),
-  ],
-  errorBuilder:
-      (context, state) =>
-          Scaffold(body: Center(child: Text('404 Page Not Found'))),
-);
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

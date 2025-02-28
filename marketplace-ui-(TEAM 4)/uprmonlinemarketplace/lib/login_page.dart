@@ -20,6 +20,8 @@ class _LoginPageState extends State<LoginPage> {
 
     // Simulate authentication delay
     Future.delayed(const Duration(seconds: 2), () {
+      if (!mounted) return; // Prevents using context if widget is unmounted
+
       setState(() {
         _isLoading = false;
       });
