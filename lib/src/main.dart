@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:semesterprojectuprmonlinemarketplace/housing/pages/house_listing.dart';
+import 'package:semesterprojectuprmonlinemarketplace/src/housing/pages/house_listing.dart';
 
 void main() {
   runApp(const MyApp());
