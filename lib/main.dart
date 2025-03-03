@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:semesterprojectuprmonlinemarketplace/housing/pages/house_listing.dart';
+import 'package:semesterprojectuprmonlinemarketplace/housing/pages/map_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       home: HouseList(),
+      // home: MapScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
