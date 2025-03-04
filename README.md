@@ -9,35 +9,26 @@ The following tree shows how files and directories are organized in the project 
 
 ```
 semester-project--uprm-online-marketplace/	# [project root]
-├── .github/		# [GitHub-related files]
-├── assets/		 # [project assets directory]
+├── .github/                  # [GitHub-related files]
+├── assets/                   # [project assets directory]
 │   └── images/
 ├── Documentation/
-├── images/
-├── lib/		    # [flutter app source code]
-│   └── src/		# [developer source code]
+├── lib/                      # [flutter app source code]
+│   └── src/                  # [developer source code]
 │       ├── Classes/
 │       ├── housing/
 │       └── main.dart
-├── test/		   # [flutter test directory]
-├── web/		    # [flutter web directory]
-├── .gitignore	      # [files to ignore]
-├── .gitmessage.txt	 # [commit template file]
-├── .metadata 	      # [flutter project file]
-├── LICENSE.metrics 	# [metric files license]
-├── README.md	       # [project readme file]
-├── analysis_options.yaml   # [flutter project file]
-├── gh_metrics_config.json  # [metric configuration file]
-├── pubspec.lock 	   # [flutter project file]
-└── pubspec.yaml 	   # [flutter project file]
+├── test/                     # [flutter test directory]
+├── web/                      # [flutter web directory]
+├── README.md                 # [project readme file] 
+├── ...
+└── CONFIGURATION-FILES 
 ```
 
 Here are the most important directories of this project:
 - 'lib' - core of the Flutter application. All Dart code goes here.
 - 'test' - Dart tests goes here.
 - 'web' - contains necessary files to run the Flutter application in web browsers. **Developers must not touch anything in this directory.**
-
-*Read more about Flutter project structure [here](https://medium.com/@logeshgcp/understanding-the-flutter-project-structure-84de4ec3ce5f).*
 
 ### Source Code Main Directory
 
@@ -57,7 +48,7 @@ From the previous tree:
 - 'main.dart' is the starting point of the application.
 - 'Classes/' and 'housing/' are directories created by developers. These will have code related to their names. Developers may create as many as needed, these directories will keep the source code organized.
 
-*[This article](https://codewithandrea.com/articles/flutter-project-structure/) had influence in choosing 'lib/src' as the directory for source code.*
+_You can read about various CONFIGURATION-FILES and a more complete description of the project structure [here](https://github.com/uprm-inso4101-2024-2025-s2/semester-project--uprm-online-marketplace/wiki/Project-Structure)._
 
 ## Flutter: Getting Started
 
