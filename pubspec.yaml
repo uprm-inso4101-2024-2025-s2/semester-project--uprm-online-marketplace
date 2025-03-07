@@ -30,6 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_screenutil: ^5.9.0 # Use the latest version
   google_maps_flutter: ^2.10.1
 
   # The following adds the Cupertino Icons font to your application.
