@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -29,6 +30,7 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(color: Colors.white, fontSize: 24),
               ),
             ),
+
             ListTile(
               leading: const Icon(Icons.home),
               title: const Text('Home'),
@@ -36,45 +38,98 @@ class _HomePageState extends State<HomePage> {
                 Navigator.pop(context);
               },
             ),
-            ListTile(
+
+            ExpansionTile(
               leading: const Icon(Icons.favorite),
               title: const Text('My Favorites'),
-              onTap: () {
-                // Aquí puedes agregar la acción para navegar a la página de favoritos
-              },
+              children: <Widget>[
+                ListTile(
+                  leading: const Icon(Icons.list),
+                  title: const Text('Suggested Listings'),
+                  onTap: () {
+                    context.go('/favorites/suggestions');
+                  },
+                ),
+
+                ListTile(
+                  leading: const Icon(Icons.trending_up),
+                  title: const Text('Trending Favorites'),
+                  onTap: () {
+                    context.go('/favorites/trending');
+                  },
+                ),
+
+                ListTile(
+                  leading: const Icon(Icons.star),
+                  title: const Text('Recently Added'),
+                  onTap: () {
+                    context.go('/favorites/recently-added');
+                  },
+                ),
+              ],
             ),
-            ListTile(
-              leading: const Icon(Icons.login),
-              title: const Text('Login'),
-              onTap: () {
-                // Aquí puedes agregar la acción para navegar a la página de Login
-              },
+
+            ExpansionTile(
+              leading: const Icon(Icons.account_circle),
+              title: const Text('Login / Sign Up'),
+              children: <Widget>[
+                ListTile(
+                  leading: const Icon(Icons.login),
+                  title: const Text('Login'),
+                  onTap: () {
+                    context.go('/login');
+                  },
+                ),
+
+                ListTile(
+                  leading: const Icon(Icons.app_registration),
+                  title: const Text('Sign Up'),
+                  onTap: () {
+                    context.go('/sign-up');
+                  },
+                ),
+              ],
             ),
-            ListTile(
-              leading: const Icon(Icons.contact_mail),
-              title: const Text('Contact Us'),
-              onTap: () {
-                // Aquí puedes agregar la acción para el Contact Us
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: const Text('Contact Us'),
-                      content: const Text(
-                        'Aquí puedes agregar la información de contacto.',
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Text('Cerrar'),
-                        ),
-                      ],
+
+            ExpansionTile(
+              leading: const Icon(Icons.help_outline),
+              title: const Text('Support'),
+              children: <Widget>[
+                ListTile(
+                  leading: const Icon(Icons.contact_mail),
+                  title: const Text('Contact Us'),
+                  onTap: () {
+                    // Aquí puedes agregar la acción para el Contact Us
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text('Contact Us'),
+                          content: const Text(
+                            'Aquí puedes agregar la información de contacto.',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Cerrar'),
+                            ),
+                          ],
+                        );
+                      },
                     );
                   },
-                );
-              },
+                ),
+
+                ListTile(
+                  leading: const Icon(Icons.question_answer),
+                  title: const Text('FAQ'),
+                  onTap: () {
+                    context.go('/faq');
+                  },
+                ),
+              ],
             ),
           ],
         ),
