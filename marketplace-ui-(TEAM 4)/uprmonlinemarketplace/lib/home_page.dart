@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  // Lista para gestionar los favoritos
+  List<bool> _favorites = [false, false, false];
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +40,40 @@ class HomePage extends StatelessWidget {
               leading: const Icon(Icons.favorite),
               title: const Text('My Favorites'),
               onTap: () {
-                // Navigate to Favorites Page
+                // Aquí puedes agregar la acción para navegar a la página de favoritos
               },
             ),
             ListTile(
               leading: const Icon(Icons.login),
               title: const Text('Login'),
               onTap: () {
-                // Navigate to Login Page
+                // Aquí puedes agregar la acción para navegar a la página de Login
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.contact_mail),
+              title: const Text('Contact Us'),
+              onTap: () {
+                // Aquí puedes agregar la acción para el Contact Us
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text('Contact Us'),
+                      content: const Text(
+                        'Aquí puedes agregar la información de contacto.',
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Cerrar'),
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
             ),
           ],
@@ -57,22 +91,40 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 16),
             Expanded(
               child: ListView(
-                children: const [
+                children: [
                   LodgingItem(
                     imagePath: 'assets/images/image1.jpg',
                     title: 'Hospedaje Calle Bosque',
                     description: 'Acogedor apartamento compartido.',
+                    isFavorite: _favorites[0],
+                    onFavoritePressed: () {
+                      setState(() {
+                        _favorites[0] = !_favorites[0];
+                      });
+                    },
                   ),
                   LodgingItem(
                     imagePath: 'assets/images/image2.jpg',
                     title: 'Hospedaje Miradero',
                     description:
                         'Se busca roomate para apartamento en miradero.',
+                    isFavorite: _favorites[1],
+                    onFavoritePressed: () {
+                      setState(() {
+                        _favorites[1] = !_favorites[1];
+                      });
+                    },
                   ),
                   LodgingItem(
                     imagePath: 'assets/images/image3.jpg',
                     title: 'Hospedaje Terrace',
                     description: 'Cuarto compartido con todo incluido.',
+                    isFavorite: _favorites[2],
+                    onFavoritePressed: () {
+                      setState(() {
+                        _favorites[2] = !_favorites[2];
+                      });
+                    },
                   ),
                 ],
               ),
@@ -88,12 +140,16 @@ class LodgingItem extends StatelessWidget {
   final String imagePath;
   final String title;
   final String description;
+  final bool isFavorite;
+  final VoidCallback onFavoritePressed;
 
   const LodgingItem({
     super.key,
     required this.imagePath,
     required this.title,
     required this.description,
+    required this.isFavorite,
+    required this.onFavoritePressed,
   });
 
   @override
@@ -116,10 +172,24 @@ class LodgingItem extends StatelessWidget {
             const SizedBox(height: 4),
             Text(description),
             const SizedBox(height: 8),
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-              child: const Text('More Info'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                  ),
+                  child: const Text('More Info'),
+                ),
+                IconButton(
+                  icon: Icon(
+                    isFavorite ? Icons.favorite : Icons.favorite_border,
+                    color: isFavorite ? Colors.red : null,
+                  ),
+                  onPressed: onFavoritePressed,
+                ),
+              ],
             ),
           ],
         ),
