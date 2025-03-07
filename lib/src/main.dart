@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:semesterprojectuprmonlinemarketplace/firebase_options.dart';
 import 'package:semesterprojectuprmonlinemarketplace/src/housing/pages/house_listing.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+
+void main() { 
+  WidgetsFlutterBinding.ensureInitialized();
+initializeFirebase();
   runApp(const MyApp());
 }
-
+void initializeFirebase() async{
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+}
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
