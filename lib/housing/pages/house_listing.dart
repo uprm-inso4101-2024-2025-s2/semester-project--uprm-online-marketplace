@@ -1,82 +1,174 @@
+import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../widgets/house_tile.dart';
 
 class HouseList extends StatefulWidget {
-  HouseList({super.key});
+  const HouseList({super.key});
 
   @override
   HouseListState createState() => HouseListState();
 }
 
 class HouseListState extends State<HouseList> {
+  String searchQuery = "";
+  String selectedLocation = "All";
+  Timer? debounceTimer;
+
+  // Dummy data for house listings with an added location field for filtering.
+  final List<Map<String, dynamic>> allHouses = [
+    {
+      "imagePath": [
+        'assets/images/house1.jpg',
+        'assets/images/house2.jpg',
+        'assets/images/house3.jpg'
+      ],
+      "title": "San Juan Villa",
+      "price": "\$100.00",
+      "details": "3 bed, 2 bath",
+      "isFavorite": true,
+      "location": "San Juan"
+    },
+    {
+      "imagePath": [
+        'assets/images/house1.jpg',
+        'assets/images/house2.jpg',
+        'assets/images/house3.jpg'
+      ],
+      "title": "Carolina Estate",
+      "price": "\$150.00",
+      "details": "4 bed, 3 bath",
+      "isFavorite": false,
+      "location": "Carolina"
+    },
+    {
+      "imagePath": [
+        'assets/images/house1.jpg',
+        'assets/images/house2.jpg',
+        'assets/images/house3.jpg'
+      ],
+      "title": "Downtown Apartment",
+      "price": "\$120.00",
+      "details": "2 bed, 1 bath",
+      "isFavorite": false,
+      "location": "Downtown"
+    },
+  ];
+
+  List<Map<String, dynamic>> filteredHouses = [];
+
   @override
-  build(BuildContext context) {
+  void initState() {
+    super.initState();
+    // Initially, all houses are shown.
+    filteredHouses = List.from(allHouses);
+  }
+
+  // Debounced search: update filters 300ms after the user stops typing.
+  void onSearchChanged(String query) {
+    if (debounceTimer?.isActive ?? false) debounceTimer!.cancel();
+    debounceTimer = Timer(const Duration(milliseconds: 300), () {
+      setState(() {
+        searchQuery = query;
+        applyFilters();
+      });
+    });
+  }
+
+  // Filter the house list based on the search query and selected location.
+  void applyFilters() {
+    filteredHouses = allHouses.where((house) {
+      final titleMatch =
+      house["title"].toString().toLowerCase().contains(searchQuery.toLowerCase());
+      final locationMatch =
+          selectedLocation == "All" || house["location"] == selectedLocation;
+      return titleMatch && locationMatch;
+    }).toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Color(0xFF47804B),
-        title: Text(
+        backgroundColor: const Color(0xFF47804B),
+        title: const Text(
           'House Market',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         leading: CupertinoButton(
-          child: Icon(
+          child: const Icon(
             CupertinoIcons.line_horizontal_3,
             color: Colors.white,
             size: 20,
           ),
           onPressed: () {},
         ),
-        actions: [
-          CupertinoButton(
-              child: Icon(
-                CupertinoIcons.search,
-                size: 20,
-                color: Colors.white,
-              ),
-              onPressed: (){
-                //Aquí hacen que aparezca el search bar ;)
-              }
-          )
-        ],
       ),
-
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 10),
-        child: ListView(
-          // shrinkWrap: true,
-          // scrollDirection: Axis.vertical,
-          children: [
-            //Aquí inluí los house tiles como dummy data con fotos aleatorias
-            //Pueden seguir añadiendo rows con house tiles hacia abajo para hacer la página scrollable y jugar un poco 👍🏾
-
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: Column(
+        children: [
+          // Search bar with a TextField that captures user input.
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              onChanged: onSearchChanged,
+              decoration: InputDecoration(
+                hintText: "Search houses...",
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+            ),
+          ),
+          // Filtering options: Dropdown for selecting location.
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Row(
               children: [
-                HouseTile(imagePath: [
-                  'assets/images/house1.jpg',
-                  'assets/images/house2.jpg',
-                  'assets/images/house3.jpg'
-                ],
-                    title: 'San Juan Villa', price: '\$100.00', details: 'Dummy Data', isFavorite: true),
-                HouseTile(imagePath: [
-                  'assets/images/house1.jpg',
-                  'assets/images/house2.jpg',
-                  'assets/images/house3.jpg'
-                ],
-                    title: 'San Juan Villa', price: '\$100.00', details: 'Dummy Data', isFavorite: false),
-                HouseTile(imagePath: [
-                  'assets/images/house1.jpg',
-                  'assets/images/house2.jpg',
-                  'assets/images/house3.jpg'
-                ],
-                    title: 'San Juan Villa', price: '\$100.00', details: 'Dummy Data', isFavorite: true)
+                const Text("Location: "),
+                DropdownButton<String>(
+                  value: selectedLocation,
+                  items: <String>["All", "San Juan", "Carolina", "Downtown"]
+                      .map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedLocation = newValue!;
+                      applyFilters();
+                    });
+                  },
+                ),
               ],
-            )
-          ],
-        ),
+            ),
+          ),
+          // Display filtered house listings in a horizontal ListView.
+          Expanded(
+            child: filteredHouses.isEmpty
+                ? const Center(child: Text("No houses found"))
+                : ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: filteredHouses.length,
+              itemBuilder: (context, index) {
+                var house = filteredHouses[index];
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: HouseTile(
+                    imagePath: List<String>.from(house["imagePath"]),
+                    title: house["title"],
+                    price: house["price"],
+                    details: house["details"],
+                    isFavorite: house["isFavorite"],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
