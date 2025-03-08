@@ -91,6 +91,14 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
 
+            ListTile(
+              leading: const Icon(Icons.person),
+              title: const Text('My Profile'),
+              onTap: () {
+                context.go('/profile');
+              },
+            ),
+
             ExpansionTile(
               leading: const Icon(Icons.help_outline),
               title: const Text('Support'),
