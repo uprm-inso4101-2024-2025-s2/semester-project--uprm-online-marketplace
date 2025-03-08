@@ -43,3 +43,11 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# 2025-03-04
+# Flutter platforms directories - the Flutter project is for a web application, as such there is no need to track files for other platforms
+/android/
+/ios/
+/linux/
+/macos/
+/windows/
