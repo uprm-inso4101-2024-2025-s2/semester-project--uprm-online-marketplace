@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:semesterprojectuprmonlinemarketplace/housing/pages/house_listing.dart';
+import 'src/housing/pages/house_listing.dart';
 
 void main() {
   runApp(const MyApp());
