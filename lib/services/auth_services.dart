@@ -16,23 +16,41 @@ class AuthService {
   }
 
   Future<String?> signUp(String email, String password, String username) async {
-    try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+  try {
+    // Check if username already exists in Firestore
+    var querySnapshot = await _firestore.collection('users')
+        .where('username', isEqualTo: username)
+        .get();
 
-      User? user = userCredential.user;
+    if (querySnapshot.docs.isNotEmpty) {
+      return 'Username is already taken. Please choose another.';
+    }
 
-      if (user != null) {
-        await saveUserProfile(user.uid, email, username); // Save to Firestore
-      }
+    // Firebase handles duplicate emails automatically
+    UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
 
-      return null; // Sign-up successful
-    } on FirebaseAuthException catch (e) {
-      return e.message; // Return Firebase's error message
+    User? user = userCredential.user;
+
+    if (user != null) {
+      await saveUserProfile(user.uid, email, username);
+    }
+
+    return null; // Success
+  } on FirebaseAuthException catch (e) {
+    switch (e.code) {
+      case 'email-already-in-use':
+        return 'This email is already registered. Try logging in instead.';
+      case 'weak-password':
+        return 'Your password is too weak. Please use a stronger password.';
+      default:
+        return e.message; // Return Firebase’s default error message
     }
   }
+}
+
 
   // Save User Profile to Firestore
   Future<String?> saveUserProfile(String uid, String email, String username) async {

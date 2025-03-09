@@ -2,6 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:semesterprojectuprmonlinemarketplace/firebase_options.dart';
 import 'package:semesterprojectuprmonlinemarketplace/src/housing/pages/house_listing.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+
+//Used to verify that the connection with firestore works well.
+//import 'package:semesterprojectuprmonlinemarketplace/services/auth_services.dart';
+//
+//void testSignUp() async {
+//  var result = await AuthService().signUp("test@example.com", "SecurePassword123", "testuser");
+//  print(result ?? "User successfully created!");
+//}
 
 
 void main() { 
@@ -11,6 +22,12 @@ initializeFirebase();
 }
 void initializeFirebase() async{
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+
+  FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+  //Un-comment if you want to see the ports.
+  //print("Firebase Emulators Connected: Firestore (8081), Auth (9099)");
 }
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
