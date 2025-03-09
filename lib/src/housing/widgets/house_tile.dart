@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../pages/house_page.dart';
 
 class HouseTile extends StatefulWidget {
   final List<String> imagePath;
@@ -58,110 +61,164 @@ class HouseTileState extends State<HouseTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: SizedBox(
-        width: 400,
-        height: 350,
-        child: Card(
-          color: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HousePage(
+              title: widget.title,
+              price: widget.price,
+              location: "Mayagüez, PR",
+              images: widget.imagePath,
+              description: "Spacious 3-bedroom house with modern amenities...",
+            ),
           ),
-          elevation: 5,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-
-              Stack(
-                children: [
-                  ClipRRect(
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                    child: SizedBox(
-                      width: 400,
-                      height: 250,
-                      child: PageView(
-                        controller: _pageController,
-                        children: widget.imagePath.map((imagePath) {
-                          return Image.asset(
-                            imagePath,
-                            fit: BoxFit.cover,
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ),
-                  if (_currentPage > 0)
-                    Positioned(
-                      left: 10,
-                      top: 110,
-                      child: GestureDetector(
-                        onTap: _previousImage,
-                        child: const CircleAvatar(
-                          backgroundColor: Colors.white,
-                          child: Icon(Icons.chevron_left, color: Colors.black),
-                        ),
-                      ),
-                    ),
-                  if (_currentPage < widget.imagePath.length - 1)
-                    Positioned(
-                      right: 10,
-                      top: 110,
-                      child: GestureDetector(
-                        onTap: _nextImage,
-                        child: const CircleAvatar(
-                          backgroundColor: Colors.white,
-                          child: Icon(Icons.chevron_right, color: Colors.black),
-                        ),
-                      ),
-                    ),
-
-                  Positioned(
-                    top: 10,
-                    right: 10,
-                    child: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      child: Icon(
-                        widget.isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: widget.isFavorite ? Colors.red : Colors.black,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        );
+      },
+      child: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: 140.w, // ✅ Adjusted for compact design
+            minHeight: 180.h, // ✅ Proper height
+            maxHeight: 220.h, // ✅ Keeps structure intact
+          ),
+          child: Card(
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.r),
+            ),
+            elevation: 4,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Stack(
                   children: [
-                    Text(
-                      widget.title,
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ClipRRect(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(10.r),
+                      ),
+                      child: SizedBox(
+                        height: 140.h, // ✅ Maintains proper image height
+                        width: double.infinity,
+                        child: PageView(
+                          controller: _pageController,
+                          children: widget.imagePath.map((imagePath) {
+                            return Image.asset(
+                              imagePath,
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                            );
+                          }).toList(),
+                        ),
+                      ),
                     ),
-                    const SizedBox(height: 5),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          widget.price,
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        Row(
-                          children: [
-                            const Icon(Icons.star, color: Colors.black, size: 18),
-                            Text(
-                              widget.details,
-                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    if (_currentPage > 0)
+                      Positioned(
+                        left: 5.w,
+                        top: 50.h,
+                        child: GestureDetector(
+                          onTap: _previousImage,
+                          child: CircleAvatar(
+                            backgroundColor: Colors.white,
+                            radius: 12.r,
+                            child: Icon(
+                              Icons.chevron_left,
+                              color: Colors.black,
+                              size: 14.sp,
                             ),
-                          ],
+                          ),
                         ),
-                      ],
+                      ),
+                    if (_currentPage < widget.imagePath.length - 1)
+                      Positioned(
+                        right: 5.w,
+                        top: 50.h,
+                        child: GestureDetector(
+                          onTap: _nextImage,
+                          child: CircleAvatar(
+                            backgroundColor: Colors.white,
+                            radius: 12.r,
+                            child: Icon(
+                              Icons.chevron_right,
+                              color: Colors.black,
+                              size: 14.sp,
+                            ),
+                          ),
+                        ),
+                      ),
+                    Positioned(
+                      top: 5.h,
+                      right: 5.w,
+                      child: GestureDetector(
+                        onTap: () {
+                          // Handle favorite toggle
+                        },
+                        child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          radius: 12.r,
+                          child: Icon(
+                            widget.isFavorite ? Icons.favorite : Icons.favorite_border,
+                            color: widget.isFavorite ? Colors.red : Colors.black,
+                            size: 8.sp,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
-              ),
-            ],
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 10.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        widget.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 7.sp, // ✅ Readable font size
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 2.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            widget.price,
+                            style: TextStyle(
+                              fontSize: 6.sp, // ✅ Slightly larger price
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.star,
+                                color: Colors.black,
+                                size: 6.sp, // ✅ Compact star icon
+                              ),
+                              SizedBox(width: 2.w),
+                              Text(
+                                widget.details,
+                                style: TextStyle(
+                                  fontSize: 6.sp, // ✅ Proper size
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
