@@ -106,6 +106,52 @@ class LodgingManagement{
       lodgings.removeAt(i);
     }
   }
+}
+
+extension LodgingFirestore on Lodging {
+  static Lodging fromFirestore(Map<String, dynamic> data) {
+    return Lodging(
+      owner: data['owner'],
+      availability: data['availability'],
+      title: data['title'],
+      price: data['price'] ?? 1000,
+      location: data['location'] ?? 'UNKNOWN',
+      condition: data['condition'] ?? 'UNKNOWN',
+      bedrooms: data['bedrooms'] ?? 0,
+      restrooms: data['restrooms'] ?? 0,
+      parking: data['parking'] ?? 0,
+      description: data['description'] ?? "",
+    );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'owner': owner,
+      'availability': availability,
+      'title': title,
+      'price': price,
+      'location': location,
+      'condition': condition,
+      'bedrooms': bedrooms,
+      'restrooms': restrooms,
+      'parking': parking,
+      'description': description,
+    };
+  }
+
+  //firestore stuff still working on it
+  // final ref = db.collection('listings').doc('xpSKRbAix3tSULrCioAP').withConverter(
+  //   fromFirestore: Lodging.fromFirestore,
+  //   toFirestore: (Lodging lodging, _) => lodging.toFirestore(),
+  // );
+  // final docSnap = await ref.get();
+  // final lodgings = docSnap.data();
+  // if(lodging != null){
+  //   print(lodging);
+  // }
+  // else{
+  //   print("doesnt exist");
+  // }
 
 
 }
