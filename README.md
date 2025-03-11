@@ -41,7 +41,7 @@ Here are the most important directories of this project:
 
 ### Source Code Main Directory
 
-Code created by develpers goes inside the directory 'lib/src'.
+Code created by developers goes inside the directory 'lib/src'.
 
 ```
 ├── lib/
@@ -57,15 +57,49 @@ From the previous tree:
 - 'main.dart' is the starting point of the application.
 - 'Classes/' and 'housing/' are directories created by developers. These will have code related to their names. Developers may create as many as needed, these directories will keep the source code organized.
 
-*[This article](https://codewithandrea.com/articles/flutter-project-structure/) had influence in choosing 'lib/src' as the directory for source code.*
+## Overview
+The **RUMHousing Marketplace** is a centralized platform designed to help students at the University of Puerto Rico at Mayagüez (UPRM) find housing more efficiently. It aims to streamline the rental process by offering clear listings, direct communication with landlords, and verified profiles to reduce fraudulent listings.
 
-## Flutter: Getting Started
+## Features
+- **User Authentication**: Secure login and user role management (students, landlords, and administrators).
+- **Property Listings**: Landlords can list available properties with images, pricing, and amenities.
+- **Search & Filtering**: Advanced filtering options based on price, location, and housing type.
+- **Messaging System**: Secure in-app communication between landlords and tenants.
+- **Verification System**: Ensures legitimacy of landlords and property listings.
+- **Interactive Map**: Displays available properties using Google Maps API.
+- **Reviews & Ratings**: Tenants can rate landlords and provide feedback.
 
-A few resources to get you started if this is your first Flutter project:
+## Technology Stack
+- **Frontend**: Flutter (Dart) for cross-platform development (Web, iOS, Android)
+- **Backend & Database**: Firebase Firestore (NoSQL) for real-time data storage
+- **Authentication & Security**: Firebase Authentication for user verification
+- **Messaging System**: Firebase Realtime Database for live chat functionality
+- **Location Services**: Google Maps API for property mapping
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Installation
+To run the project locally, follow these steps:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/uprm-inso4101-2024-2025-s2/semester-project--uprm-online-marketplace.git
+   cd marketplace
+   ```
+2. Install dependencies:
+   ```sh
+   flutter pub get
+   ```
+3. Run the project:
+   ```sh
+   flutter run
+   ```
+
+## Usage
+1. **Sign Up/Login**: Create an account as a student or landlord.
+2. **Browse Listings**: Use filters to find suitable housing.
+3. **Contact Landlords**: Use the built-in chat feature.
+4. **Post a Listing** (Landlords only): Upload housing details and manage availability.
+5. **Review & Rate**: Provide feedback on landlords or properties.
+
+## License
+This project is licensed under the Apache License - see the [LICENSE](LICENSE) file for details.
+
