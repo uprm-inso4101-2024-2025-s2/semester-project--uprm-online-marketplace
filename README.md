@@ -81,7 +81,7 @@ To run the project locally, follow these steps:
 
 1. Clone the repository:
    ```sh
-   git clone [https://github.com/your-repo-name/marketplace.git](https://github.com/uprm-inso4101-2024-2025-s2/semester-project--uprm-online-marketplace.git)
+   git clone https://github.com/uprm-inso4101-2024-2025-s2/semester-project--uprm-online-marketplace.git
    cd marketplace
    ```
 2. Install dependencies:
