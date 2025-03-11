@@ -56,17 +56,19 @@ import 'ListingService.dart';
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//ListingService Tester (uncomment to use)
+// ListingService Tester (uncomment to use)
+
+import 'LodgingClass.dart';
+import 'ListingService.dart';
 
 void main(){
   ListingService listingService;
   Lodging lodging1;
   Lodging lodging2;
 
-
-  listingService= ListingService();
-  lodging1= Lodging(
-    owner:'Owner1',
+  listingService = ListingService();
+  lodging1 = Lodging(
+    owner: 'Owner1',
     availability: 'Available',
     title: 'Lodging 1',
     price: 1000,
@@ -75,9 +77,10 @@ void main(){
     bedrooms: 2,
     restrooms: 1,
     parking: 1,
+    isActive: true, // NEW parameter added
   );
 
-  lodging2= Lodging(
+  lodging2 = Lodging(
     owner: "Owner2",
     availability: 'Not Available',
     title: 'Lodging 2',
@@ -87,12 +90,13 @@ void main(){
     bedrooms: 3,
     restrooms: 2,
     parking: 2,
+    isActive: true, // NEW parameter added
   );
 
-  //Test should create a listing successfully.
+  // Test should create a listing successfully.
   listingService.createListing(lodging1);
   print(listingService.fetchListings().length); //expects 1
-  print(listingService.fetchListings().first.title); //expects 'Lodging 1');
+  print(listingService.fetchListings().first.title); //expects 'Lodging 1'
 
   listingService.clearListing();
 
@@ -101,8 +105,8 @@ void main(){
   listingService.createListing(lodging2);
   List<Lodging> listings = listingService.fetchListings();
   print(listings.length); //expects 2
-  print(listings[0].title); //expects 'Lodging1'
-  print(listings[1].title); //expects 'Lodging2'
+  print(listings[0].title); //expects 'Lodging 1'
+  print(listings[1].title); //expects 'Lodging 2'
   listingService.clearListing();
 
   //Test should update an existing listing correctly.
@@ -131,17 +135,38 @@ void main(){
 
   //**Comment after use or the rest of the test will not work.
   //Test should throw ArgumentError when the given ID does not exist.
-  listingService.fetchLodging(99999999);
+  //listingService.fetchLodging(99999999);
   listingService.clearListing();
 
   //**Comment this after use or the rest of the tests will not work.**
   //Test should throw an error for trying to add duplicates
-  // listingService.createListing(lodging1);
-  // listingService.createListing(lodging1);
-  // listingService.clearListing();
+  //listingService.createListing(lodging1);
+  //listingService.createListing(lodging1);
+  //listingService.clearListing();
 
   //**Comment this after use or the rest of the tests will not work. **
   //Test should throw an error for updating with invalid values
-  // listingService.createListing(lodging1);
-  // listingService.updateListing(lodging1.getID(), price: -1);
+  //listingService.createListing(lodging1);
+  //listingService.updateListing(lodging1.getID(), price: -1);
+
+  // NEW TEST CASES ADDED BELOW 👇
+  print("\n---- New Active/Inactive Listings Tests ----");
+
+  // Initially active listing should appear
+  listingService.createListing(lodging1);
+  print("Initially active listings count: ${listingService.fetchListings().length}"); // Expects: 1
+
+  // Test: Mark listing as inactive
+  listingService.toggleListingStatus(lodging1.getID(), false);
+  print("Listings after deactivation: ${listingService.fetchListings().length}"); // Expects: 0 (hidden)
+
+  // Owner should still see inactive listings
+  List<Lodging> ownerListings = listingService.fetchOwnerListings("Owner1");
+  print("Owner listings (including inactive): ${ownerListings.length}"); // Expects: 1
+
+  // Reactivate listing and verify visibility
+  listingService.toggleListingStatus(lodging1.getID(), true);
+  print("Listings after reactivation: ${listingService.fetchListings().length}"); // Expects: 1 (visible again)
+
+  listingService.clearListing();
 }

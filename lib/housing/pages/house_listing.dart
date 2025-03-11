@@ -82,7 +82,8 @@ class HouseListState extends State<HouseList> {
       house["title"].toString().toLowerCase().contains(searchQuery.toLowerCase());
       final locationMatch =
           selectedLocation == "All" || house["location"] == selectedLocation;
-      return titleMatch && locationMatch;
+      final isActive = house["isActive"] ?? true;
+      return titleMatch && locationMatch && isActive;
     }).toList();
   }
 
@@ -163,6 +164,13 @@ class HouseListState extends State<HouseList> {
                     price: house["price"],
                     details: house["details"],
                     isFavorite: house["isFavorite"],
+                    isActive: house["isActive"] ?? true,
+                    onToggleStatus: () {
+                      setState(() {
+                        house["isActive"] = !(house["isActive"] ?? true);
+                        applyFilters(); // refresh the UI after status change
+                      });
+                    },
                   ),
                 );
               },
