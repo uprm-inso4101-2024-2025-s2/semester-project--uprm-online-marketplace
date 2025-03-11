@@ -6,6 +6,8 @@ class HouseTile extends StatefulWidget {
   final String price;
   final String details;
   final bool isFavorite;
+  final bool isActive;
+  final VoidCallback onToggleStatus;
 
   const HouseTile({
     super.key,
@@ -14,6 +16,8 @@ class HouseTile extends StatefulWidget {
     required this.price,
     required this.details,
     required this.isFavorite,
+    required this.isActive,
+    required this.onToggleStatus,
   });
 
   @override
@@ -61,7 +65,7 @@ class HouseTileState extends State<HouseTile> {
     return Center(
       child: SizedBox(
         width: 400,
-        height: 350,
+        height: 380, // Increased height to prevent overflow
         child: Card(
           color: Colors.white,
           shape: RoundedRectangleBorder(
@@ -155,6 +159,24 @@ class HouseTileState extends State<HouseTile> {
                               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                             ),
                           ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      widget.isActive ? "Active" : "Inactive",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: widget.isActive ? Colors.green : Colors.red,
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: widget.onToggleStatus, // Toggle listing status callback
+                      child: Text(widget.isActive ? "Deactivate" : "Activate"),
                         ),
                       ],
                     ),
