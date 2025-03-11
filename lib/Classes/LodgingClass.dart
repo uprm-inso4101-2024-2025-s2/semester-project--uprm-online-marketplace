@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'ProductClass.dart';
 import 'dart:math';
 
@@ -111,9 +113,9 @@ class LodgingManagement{
 extension LodgingFirestore on Lodging {
   static Lodging fromFirestore(Map<String, dynamic> data) {
     return Lodging(
-      owner: data['owner'],
-      availability: data['availability'],
-      title: data['title'],
+      owner: data['owner'] ?? "UNKNOWN",
+      availability: data['availability'] ?? "UNKNOWN",
+      title: data['title'] ?? "NO TITLE",
       price: data['price'] ?? 1000,
       location: data['location'] ?? 'UNKNOWN',
       condition: data['condition'] ?? 'UNKNOWN',
@@ -138,20 +140,5 @@ extension LodgingFirestore on Lodging {
       'description': description,
     };
   }
-
-  //firestore stuff still working on it
-  // final ref = db.collection('listings').doc('xpSKRbAix3tSULrCioAP').withConverter(
-  //   fromFirestore: Lodging.fromFirestore,
-  //   toFirestore: (Lodging lodging, _) => lodging.toFirestore(),
-  // );
-  // final docSnap = await ref.get();
-  // final lodgings = docSnap.data();
-  // if(lodging != null){
-  //   print(lodging);
-  // }
-  // else{
-  //   print("doesnt exist");
-  // }
-
 
 }
