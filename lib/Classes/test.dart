@@ -70,9 +70,10 @@ const firebaseConfig = FirebaseOptions(
 
 
 //ListingService Tester (uncomment to use)
+
 void main() async{
 
-  //intialize firebase for testing
+  //initialize firebase for testing
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: firebaseConfig);
 
@@ -103,22 +104,22 @@ void main() async{
   );
 
   // Test creating a listing
-  // print("🔵 Creating listing...");
-  // await listingService.createListing(lodging1);
-  // print(await listingService.fetchListings().length); // Expects 1
-  // print(await listingService.fetchListings().first.title); // Expects 'Lodging 1'
+  print("🔵 Creating listing...");
+  await listingService.createListing(lodging1);
+  print(await listingService.fetchListings().length); // Expects 1
+  print(await listingService.fetchListings().first.title); // Expects 'Lodging 1'
 
-  // await listingService.clearListing();
+  await listingService.clearListing();
 
   // Test fetching listings
-  // print("🔵 Fetching listings...");
-  // await listingService.createListing(lodging1);
-  // await listingService.createListing(lodging2);
-  // List<Lodging> listings = await listingService.fetchListings();
-  // print(listings.length); // Expects 2
-  // print(listings[0].title); // Expects 'Lodging 1'
-  // print(listings[1].title); // Expects 'Lodging 2'
-  // await listingService.clearListing();
+  print("🔵 Fetching listings...");
+  await listingService.createListing(lodging1);
+  await listingService.createListing(lodging2);
+  List<Lodging> listings = await listingService.fetchListings();
+  print(listings.length); // Expects 2
+  print(listings[0].title); // Expects 'Lodging 1'
+  print(listings[1].title); // Expects 'Lodging 2'
+  await listingService.clearListing();
 
   // Test updating a listing
   print("🔵 Updating a listing...");
