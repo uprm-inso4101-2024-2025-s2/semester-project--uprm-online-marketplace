@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class FavoritesSuggestionsPage extends StatefulWidget {
   const FavoritesSuggestionsPage({super.key});

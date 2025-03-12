@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class FavoritesTrendingPage extends StatefulWidget {
   const FavoritesTrendingPage({super.key});
