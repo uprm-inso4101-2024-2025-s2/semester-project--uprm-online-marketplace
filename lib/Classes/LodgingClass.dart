@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'ProductClass.dart';
 import 'dart:math';
 
@@ -10,6 +9,7 @@ class Lodging extends Product{
   int bedrooms;
   int restrooms;
   int parking;
+  bool isActive;
 
   Lodging({
     required String owner,
@@ -21,7 +21,8 @@ class Lodging extends Product{
     this.bedrooms = 0,
     this.restrooms = 0,
     this.parking = 0,
-    String description = "", String
+    String description = "",
+    this.isActive = true, // Correctly initialized as bool
   }): id = Random().nextInt(999999999), //we will  locate listings using a random numberID. This will make us be able to locate listings more efficiently rather than by title. Titles could be the same
         super(owner:owner, availability:availability, price:price, condition:condition, description:description, title:title);
 
@@ -31,12 +32,14 @@ class Lodging extends Product{
   int getBedrooms() => bedrooms;
   int getRestrooms() => restrooms;
   int getParking() => parking;
+  bool getStatus() => isActive;
 
   //Setters
   void setLocation(String location) => this.location = location;
   void setBedrooms(int bedrooms) => this.bedrooms = bedrooms;
   void setRestrooms(int restrooms) => this.restrooms = restrooms;
   void setParking(int parking) => this.parking = parking;
+  void setStatus(bool status) => isActive = status;
 
 }
 

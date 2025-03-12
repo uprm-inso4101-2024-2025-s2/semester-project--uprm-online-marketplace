@@ -47,6 +47,11 @@ class ListingService extends LodgingManagement{
     }
   }
 
+  // Fetch all listings (active and inactive) by owner
+  List<Lodging> fetchOwnerListings(String owner) {
+    return super.getLodgings().where((lodging) => lodging.getOwner() == owner).toList();
+  }
+
   @override
   Future<void> updateListing(int id, {String? title, String? condition, String? description, int? price, String? location, int? bedrooms, int? restrooms, int? parking}) async{
     if(!listings.containsKey(id)){
@@ -114,6 +119,16 @@ class ListingService extends LodgingManagement{
     }
     listings.clear();
     clearLodgings();
+  }
+
+  // Toggle active/inactive status of a listing
+  void toggleListingStatus(int id, bool isActive) {
+    if (listings.containsKey(id)) {
+      listings[id]?.setStatus(isActive);
+      print("Listing with ID $id is now ${isActive ? 'Active' : 'Inactive'}");
+    } else {
+      throw ArgumentError("Listing not found.");
+    }
   }
 
 }

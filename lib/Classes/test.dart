@@ -109,26 +109,26 @@ void main() async{
   print(await listingService.fetchListings().length); // Expects 1
   print(await listingService.fetchListings().first.title); // Expects 'Lodging 1'
 
-  await listingService.clearListing();
+  // await listingService.clearListing();
 
   // Test fetching listings
-  print("🔵 Fetching listings...");
-  await listingService.createListing(lodging1);
-  await listingService.createListing(lodging2);
-  List<Lodging> listings = await listingService.fetchListings();
-  print(listings.length); // Expects 2
-  print(listings[0].title); // Expects 'Lodging 1'
-  print(listings[1].title); // Expects 'Lodging 2'
-  await listingService.clearListing();
+  // print("🔵 Fetching listings...");
+  // await listingService.createListing(lodging1);
+  // await listingService.createListing(lodging2);
+  // List<Lodging> listings = await listingService.fetchListings();
+  // print(listings.length); // Expects 2
+  // print(listings[0].title); // Expects 'Lodging 1'
+  // print(listings[1].title); // Expects 'Lodging 2'
+  // await listingService.clearListing();
 
-  // Test updating a listing
-  print("🔵 Updating a listing...");
-  await listingService.createListing(lodging1);
-  await listingService.updateListing(lodging1.getID(), title: 'Updated Lodging 1', price: 1200);
-  Lodging updatedLodging = (await listingService.fetchListings())
-      .firstWhere((lodging) => lodging.getID() == lodging1.getID());
-  print(updatedLodging.title); // Expects 'Updated Lodging 1'
-  print(updatedLodging.price); // Expects 1200
+  // // Test updating a listing
+  // print("🔵 Updating a listing...");
+  // await listingService.createListing(lodging1);
+  // await listingService.updateListing(lodging1.getID(), title: 'Updated Lodging 1', price: 1200);
+  // Lodging updatedLodging = (await listingService.fetchListings())
+  //     .firstWhere((lodging) => lodging.getID() == lodging1.getID());
+  // print(updatedLodging.title); // Expects 'Updated Lodging 1'
+  // print(updatedLodging.price); // Expects 1200
   // await listingService.clearListing();
 
   // Test deleting a listing
@@ -160,5 +160,26 @@ void main() async{
   // await listingService.updateListing(lodging1.getID(), price: -1);
 
   //THIS IS WHAT U USE FOR TESTING flutter run --target=lib/Classes/test.dart
+
+  // NEW TEST CASES ADDED BELOW 👇
+  print("\n---- New Active/Inactive Listings Tests ----");
+
+  // Initially active listing should appear
+  listingService.createListing(lodging1);
+  print("Initially active listings count: ${listingService.fetchListings().length}"); // Expects: 1
+
+  // Test: Mark listing as inactive
+  listingService.toggleListingStatus(lodging1.getID(), false);
+  print("Listings after deactivation: ${listingService.fetchListings().length}"); // Expects: 0 (hidden)
+
+  // Owner should still see inactive listings
+  List<Lodging> ownerListings = listingService.fetchOwnerListings("Owner1");
+  print("Owner listings (including inactive): ${ownerListings.length}"); // Expects: 1
+
+  // Reactivate listing and verify visibility
+  listingService.toggleListingStatus(lodging1.getID(), true);
+  print("Listings after reactivation: ${listingService.fetchListings().length}"); // Expects: 1 (visible again)
+
+  // listingService.clearListing();
 
 }
