@@ -1,6 +1,6 @@
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import '../Classes/LodgingClass.dart';
-//
+//USELESS CURRENTLY
 // const String LISTINGS_COLLECTION_REF = "listings";
 //
 // class DatabaseService {
@@ -15,3 +15,4 @@
 //     );
 //   }
 // }
+// USELESS CURRENTLY

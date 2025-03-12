@@ -22,17 +22,21 @@ void main() async {
   FirebaseFirestore.instance.settings = const Settings(
     persistenceEnabled: true,
   );
-  FirebaseFirestore.instance.collection("listings").get().then((QuerySnapshot querySnapshot){
-    List<Lodging> lodgings = querySnapshot.docs.map((doc) {
-      return LodgingFirestore.fromFirestore(doc.data() as Map<String, dynamic>);
-    }).toList();
-    for (var doc in querySnapshot.docs) {
-      print(doc.data());
-    }
-    for(var lodging in lodgings){
-      print("CONVERTED LODGING: ${lodging.title}, PRICE: ${lodging.price}, OWNER: ${lodging.owner}");
-    }
-  });
+
+  //TO TEST FIREBASEFIRESTORE
+  // FirebaseFirestore.instance.collection("listings").get().then((QuerySnapshot querySnapshot){
+  //   List<Lodging> lodgings = querySnapshot.docs.map((doc) {
+  //     return LodgingFirestore.fromFirestore(doc.data() as Map<String, dynamic>);
+  //   }).toList();
+  //   for (var doc in querySnapshot.docs) {
+  //     print(doc.data());
+  //   }
+  //   for(var lodging in lodgings){
+  //     print("CONVERTED LODGING: ${lodging.title}, PRICE: ${lodging.price}, OWNER: ${lodging.owner}");
+  //   }
+  // });
+
+
   runApp(const MyApp());
 
 }

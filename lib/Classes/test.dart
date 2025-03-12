@@ -1,11 +1,14 @@
 import 'LodgingClass.dart';
 import 'ListingService.dart';
+import 'package:firebase_core/firebase_core.dart'; // Import Firebase Core
+// import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 //LodgingClass Tester (uncomment to use)
 //////////////////////////////////////////////////////////////////
 // void main(){
 //   LodgingManagement lodgingManager = LodgingManagement();
-//   Lodging testLodging = Lodging(
+//   Lodging testLodging = Lodging(g
 //     owner: "Michael",
 //     availability: "true",
 //     price: 1200,
@@ -55,18 +58,28 @@ import 'ListingService.dart';
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+const firebaseConfig = FirebaseOptions(
+    apiKey: "AIzaSyCMjGDzcOQI1b9i8KVz87Z0qCBb9NX93_0",
+    authDomain: "online-marketplace-posting.firebaseapp.com",
+    projectId: "online-marketplace-posting",
+    storageBucket: "online-marketplace-posting.firebasestorage.app",
+    messagingSenderId: "436131107360",
+    appId: "1:436131107360:web:d65c474f32ce843c55a245",
+    measurementId: "G-13TKBZ7EG8"
+);
+
 
 //ListingService Tester (uncomment to use)
+void main() async{
 
-void main(){
-  ListingService listingService;
-  Lodging lodging1;
-  Lodging lodging2;
+  //intialize firebase for testing
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: firebaseConfig);
 
+  ListingService listingService = ListingService();
 
-  listingService= ListingService();
-  lodging1= Lodging(
-    owner:'Owner1',
+  Lodging lodging1 = Lodging(
+    owner: 'Owner1',
     availability: 'Available',
     title: 'Lodging 1',
     price: 1000,
@@ -77,7 +90,7 @@ void main(){
     parking: 1,
   );
 
-  lodging2= Lodging(
+  Lodging lodging2 = Lodging(
     owner: "Owner2",
     availability: 'Not Available',
     title: 'Lodging 2',
@@ -89,59 +102,62 @@ void main(){
     parking: 2,
   );
 
-  //Test should create a listing successfully.
-  listingService.createListing(lodging1);
-  print(listingService.fetchListings().length); //expects 1
-  print(listingService.fetchListings().first.title); //expects 'Lodging 1');
+  // Test creating a listing
+  // print("🔵 Creating listing...");
+  // await listingService.createListing(lodging1);
+  // print(await listingService.fetchListings().length); // Expects 1
+  // print(await listingService.fetchListings().first.title); // Expects 'Lodging 1'
 
-  listingService.clearListing();
+  // await listingService.clearListing();
 
-  //Test should fetch listings correctly.
-  listingService.createListing(lodging1);
-  listingService.createListing(lodging2);
-  List<Lodging> listings = listingService.fetchListings();
-  print(listings.length); //expects 2
-  print(listings[0].title); //expects 'Lodging1'
-  print(listings[1].title); //expects 'Lodging2'
-  listingService.clearListing();
+  // Test fetching listings
+  // print("🔵 Fetching listings...");
+  // await listingService.createListing(lodging1);
+  // await listingService.createListing(lodging2);
+  // List<Lodging> listings = await listingService.fetchListings();
+  // print(listings.length); // Expects 2
+  // print(listings[0].title); // Expects 'Lodging 1'
+  // print(listings[1].title); // Expects 'Lodging 2'
+  // await listingService.clearListing();
 
-  //Test should update an existing listing correctly.
-  listingService.createListing(lodging1);
-  listingService.updateListing(lodging1.getID(), title:'Updated Lodging 1', price: 1200);
-  Lodging updatedLodging= listingService.fetchListings().firstWhere((lodging) => lodging.getID()==lodging1.getID());
-  print(updatedLodging.title); //expects 'Updated Lodging 1'
-  print(updatedLodging.price); // expects 1200
-  listingService.clearListing();
+  // Test updating a listing
+  print("🔵 Updating a listing...");
+  await listingService.createListing(lodging1);
+  await listingService.updateListing(lodging1.getID(), title: 'Updated Lodging 1', price: 1200);
+  Lodging updatedLodging = (await listingService.fetchListings())
+      .firstWhere((lodging) => lodging.getID() == lodging1.getID());
+  print(updatedLodging.title); // Expects 'Updated Lodging 1'
+  print(updatedLodging.price); // Expects 1200
+  // await listingService.clearListing();
 
-  //Test should delete a listing correctly.
-  listingService.createListing(lodging1);
-  listingService.createListing(lodging2);
-  listingService.deleteListing(lodging1.getID());
-  print(listingService.fetchListings().length); //expects 1
-  print(listingService.fetchListings().first.title); //expects 'Lodging 2'
-  listingService.clearListing();
+  // Test deleting a listing
+  // print("🔵 Deleting a listing...");
+  // await listingService.createListing(lodging1);
+  // await listingService.createListing(lodging2);
+  // await listingService.deleteListing(lodging1.getID());
+  // print(await listingService.fetchListings().length); // Expects 1
+  // print(await listingService.fetchListings().first.title); // Expects 'Lodging 2'
+  // await listingService.clearListing();
 
-  //Test should return the correct lodging when given ID exists.
-  listingService.createListing(lodging1);
-  final fetchedLodging = listingService.fetchLodging(lodging1.getID());
-  print(fetchedLodging); //Is not null
-  print(fetchedLodging?.title); //expects 'Lodging 1'
-  print(fetchedLodging?.price); //expects 1000
-  print(fetchedLodging?.location); //expects 'Location 1'
+  // Test fetching a lodging by ID
+  // print("🔵 Fetching a lodging by ID...");
+  // await listingService.createListing(lodging1);
+  // final fetchedLodging = await listingService.fetchLodging(lodging1.getID());
+  // print(fetchedLodging?.title); // Expects 'Lodging 1'
+  // print(fetchedLodging?.price); // Expects 1000
+  // print(fetchedLodging?.location); // Expects 'Location 1'
 
-  //**Comment after use or the rest of the test will not work.
-  //Test should throw ArgumentError when the given ID does not exist.
-  listingService.fetchLodging(99999999);
-  listingService.clearListing();
+  // Uncomment these lines for additional tests
+  // Test fetching a non-existent lodging (should throw an error)
+  // await listingService.fetchLodging(99999999);
 
-  //**Comment this after use or the rest of the tests will not work.**
-  //Test should throw an error for trying to add duplicates
-  // listingService.createListing(lodging1);
-  // listingService.createListing(lodging1);
-  // listingService.clearListing();
+  // Test duplicate listings (should throw an error)
+  // await listingService.createListing(lodging1);
+  // await listingService.createListing(lodging1);
 
-  //**Comment this after use or the rest of the tests will not work. **
-  //Test should throw an error for updating with invalid values
-  // listingService.createListing(lodging1);
-  // listingService.updateListing(lodging1.getID(), price: -1);
+  // Test updating with invalid values (should throw an error)
+  // await listingService.updateListing(lodging1.getID(), price: -1);
+
+  //THIS IS WHAT U USE FOR TESTING flutter run --target=lib/Classes/test.dart
+
 }
