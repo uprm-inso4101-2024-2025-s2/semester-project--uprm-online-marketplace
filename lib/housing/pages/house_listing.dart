@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../widgets/house_tile.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class HouseList extends StatefulWidget {
   const HouseList({super.key});
@@ -101,10 +102,21 @@ class HouseListState extends State<HouseList> {
           child: const Icon(
             CupertinoIcons.line_horizontal_3,
             color: Colors.white,
-            size: 20,
+            size: 20, //8.sp
           ),
           onPressed: () {},
         ),
+        actions:[
+          CupertinoButton(
+            child:Icon(
+              CupertinoIcons.search,
+              size: 8.sp,
+              color: Colors.white,
+            ),
+            onPressed:(){
+            }
+          )
+        ]
       ),
       body: Column(
         children: [

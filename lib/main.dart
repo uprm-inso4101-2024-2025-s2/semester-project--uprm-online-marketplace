@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
 import 'housing/pages/house_listing.dart'; // Your custom page imports (assuming these exist)
 import 'housing/pages/map_screen.dart'; // Your custom page imports (assuming these exist)
 import 'Classes/LodgingClass.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // Firebase Configuration
 const firebaseConfig = FirebaseOptions(
@@ -44,16 +45,34 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  @override
+  // @override
+  // Widget build(BuildContext context) {
+  //   return MaterialApp(
+  //     title: 'Flutter Demo',
+  //     theme: ThemeData(
+  //       colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+  //     ),
+  //     // home: MapScreen(),  // Your home page widget
+  //     home: HouseList(),
+  //     debugShowCheckedModeBanner: false,
+  //
+  //   );
+  // }
+
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      // home: MapScreen(),  // Your home page widget
-      home: HouseList(),
-      debugShowCheckedModeBanner: false,
+    return ScreenUtilInit(
+      designSize: const Size(500, 500), /// Base design size
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'House Marketplace',
+          theme: ThemeData(primarySwatch: Colors.green),
+          home: HouseList(),
+          //home: MapScreen(),
+        );
+      },
     );
   }
 }
