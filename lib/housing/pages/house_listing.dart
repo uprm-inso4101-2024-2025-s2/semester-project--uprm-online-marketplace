@@ -1,9 +1,151 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../widgets/house_tile.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../widgets/house_tile.dart';
+import 'MyListings.dart'; // Provides MyListingsPage, InactiveListingsPage, and FavoritesPage
 
+/// ------------------------------------------
+/// Shared global houses data.
+/// ------------------------------------------
+List<Map<String, dynamic>> globalHouses = [
+  {
+    "imagePath": [
+      'assets/images/house1.jpg',
+      'assets/images/house2.jpg',
+      'assets/images/house3.jpg'
+    ],
+    "title": "San Juan Villa",
+    "price": "\$100.00",
+    "priceValue": 100.0,
+    "details": "3 bed, 2 bath",
+    "isFavorite": true,
+    "location": "San Juan",
+    "beds": 3,
+    "baths": 2,
+    "isActive": true,
+  },
+  {
+    "imagePath": [
+      'assets/images/house1.jpg',
+      'assets/images/house2.jpg',
+      'assets/images/house3.jpg'
+    ],
+    "title": "Carolina Estate",
+    "price": "\$150.00",
+    "priceValue": 150.0,
+    "details": "4 bed, 3 bath",
+    "isFavorite": false,
+    "location": "Carolina",
+    "beds": 4,
+    "baths": 3,
+    "isActive": true,
+  },
+  {
+    "imagePath": [
+      'assets/images/house1.jpg',
+      'assets/images/house2.jpg',
+      'assets/images/house3.jpg'
+    ],
+    "title": "Downtown Apartment",
+    "price": "\$120.00",
+    "priceValue": 120.0,
+    "details": "2 bed, 1 bath",
+    "isFavorite": false,
+    "location": "Downtown",
+    "beds": 2,
+    "baths": 1,
+    "isActive": true,
+  },
+];
+
+/// Reusable Drawer widget with Admin Options.
+Widget buildAppDrawer(BuildContext context) {
+  return Drawer(
+    child: ListView(
+      padding: EdgeInsets.zero,
+      children: [
+        // Drawer header with a centered house icon.
+        DrawerHeader(
+          decoration: const BoxDecoration(
+            color: Color(0xFF47804B),
+          ),
+          child: Center(
+            child: Icon(
+              Icons.house,
+              size: 48.sp,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        // Home Page: Navigates back to the main listings page.
+        ListTile(
+          leading: const Icon(Icons.home),
+          title: const Text('Home Page'),
+          onTap: () {
+            Navigator.pop(context); // Close the drawer.
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const HouseList()),
+                  (Route<dynamic> route) => false,
+            );
+          },
+        ),
+        // My Listings
+        ListTile(
+          leading: const Icon(Icons.list),
+          title: const Text('My Listings'),
+          onTap: () {
+            Navigator.pop(context);
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const MyListingsPage()),
+            );
+          },
+        ),
+        // Favorites
+        ListTile(
+          leading: const Icon(Icons.favorite),
+          title: const Text('Favorites'),
+          onTap: () {
+            Navigator.pop(context);
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const FavoritesPage()),
+            );
+          },
+        ),
+        const Divider(),
+        // Admin Options sub-section.
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Text(
+            "Admin Options",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[700],
+            ),
+          ),
+        ),
+        // Inactive Listings under Admin Options.
+        ListTile(
+          leading: const Icon(Icons.visibility_off),
+          title: const Text('Inactive Listings'),
+          onTap: () {
+            Navigator.pop(context);
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const InactiveListingsPage()),
+            );
+          },
+        ),
+      ],
+    ),
+  );
+}
+
+/// Main Listings Page (HouseList) with advanced filters.
+/// Only active listings (isActive == true) are shown here.
 class HouseList extends StatefulWidget {
   const HouseList({super.key});
 
@@ -12,76 +154,27 @@ class HouseList extends StatefulWidget {
 }
 
 class HouseListState extends State<HouseList> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   String searchQuery = "";
   String selectedLocation = "All";
-  String bedsInput = "";      // Input field for number of beds.
-  String bathsInput = "";     // Input field for number of bathrooms.
-  String minPriceInput = "";  // Input field for minimum price.
-  String maxPriceInput = "";  // Input field for maximum price.
+  String bedsInput = "";
+  String bathsInput = "";
+  String minPriceInput = "";
+  String maxPriceInput = "";
   Timer? debounceTimer;
 
-  // Dummy data for house listings with fields for beds and baths.
-  final List<Map<String, dynamic>> allHouses = [
-    {
-      "imagePath": [
-        'assets/images/house1.jpg',
-        'assets/images/house2.jpg',
-        'assets/images/house3.jpg'
-      ],
-      "title": "San Juan Villa",
-      "price": "\$100.00",
-      "priceValue": 100.0,
-      "details": "3 bed, 2 bath",
-      "isFavorite": true,
-      "location": "San Juan",
-      "beds": 3,
-      "baths": 2,
-      "isActive": true,
-    },
-    {
-      "imagePath": [
-        'assets/images/house1.jpg',
-        'assets/images/house2.jpg',
-        'assets/images/house3.jpg'
-      ],
-      "title": "Carolina Estate",
-      "price": "\$150.00",
-      "priceValue": 150.0,
-      "details": "4 bed, 3 bath",
-      "isFavorite": false,
-      "location": "Carolina",
-      "beds": 4,
-      "baths": 3,
-      "isActive": true,
-    },
-    {
-      "imagePath": [
-        'assets/images/house1.jpg',
-        'assets/images/house2.jpg',
-        'assets/images/house3.jpg'
-      ],
-      "title": "Downtown Apartment",
-      "price": "\$120.00",
-      "priceValue": 120.0,
-      "details": "2 bed, 1 bath",
-      "isFavorite": false,
-      "location": "Downtown",
-      "beds": 2,
-      "baths": 1,
-      "isActive": true,
-    },
-  ];
-
+  /// Filtered houses (only active listings).
   List<Map<String, dynamic>> filteredHouses = [];
 
   @override
   void initState() {
     super.initState();
-    // Initially, all houses are shown.
-    filteredHouses = List.from(allHouses);
+    // Initially, show only active houses.
+    filteredHouses =
+        globalHouses.where((house) => house["isActive"] == true).toList();
   }
 
-  // Debounced search: update filters 300ms after the user stops typing.
   void onSearchChanged(String query) {
     if (debounceTimer?.isActive ?? false) debounceTimer!.cancel();
     debounceTimer = Timer(const Duration(milliseconds: 300), () {
@@ -92,20 +185,20 @@ class HouseListState extends State<HouseList> {
     });
   }
 
-  // Apply all filters including search query, location, price range, beds, and bathrooms.
+  /// Filtering now requires each house to be active.
   void applyFilters() {
     setState(() {
-      // Parse the price range inputs.
       double? minPrice = double.tryParse(minPriceInput);
       double? maxPrice = double.tryParse(maxPriceInput);
 
-      filteredHouses = allHouses.where((house) {
+      filteredHouses = globalHouses.where((house) {
         final titleMatch = house["title"]
             .toString()
             .toLowerCase()
             .contains(searchQuery.toLowerCase());
-        final locationMatch =
-            selectedLocation == "All" || house["location"] == selectedLocation;
+        final locationMatch = (selectedLocation == "All" ||
+            house["location"] == selectedLocation);
+        // Only show active houses on the main listing.
         final isActive = house["isActive"] ?? true;
         final double housePrice = house["priceValue"];
         final priceMatch = (minPrice == null || housePrice >= minPrice) &&
@@ -114,40 +207,33 @@ class HouseListState extends State<HouseList> {
         bool bedsMatch = true;
         if (bedsInput.isNotEmpty) {
           int? desiredBeds = int.tryParse(bedsInput);
-          bedsMatch = desiredBeds != null && house["beds"] == desiredBeds;
+          bedsMatch = (desiredBeds != null && house["beds"] == desiredBeds);
         }
 
         bool bathsMatch = true;
         if (bathsInput.isNotEmpty) {
           int? desiredBaths = int.tryParse(bathsInput);
-          bathsMatch = desiredBaths != null && house["baths"] == desiredBaths;
+          bathsMatch = (desiredBaths != null && house["baths"] == desiredBaths);
         }
 
-        return titleMatch &&
-            locationMatch &&
-            isActive &&
-            priceMatch &&
-            bedsMatch &&
-            bathsMatch;
+        return titleMatch && locationMatch && isActive && priceMatch && bedsMatch && bathsMatch;
       }).toList();
     });
   }
 
-  // Builds the advanced filters UI.
   Widget buildAdvancedFilters() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Price Range UI using two input fields.
+        // Price Range UI with two text fields.
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.h),
+          padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text("Price Range (\$)"),
               Row(
                 children: [
-                  // Minimum Price input.
                   Expanded(
                     child: TextField(
                       keyboardType: TextInputType.number,
@@ -164,7 +250,6 @@ class HouseListState extends State<HouseList> {
                     ),
                   ),
                   SizedBox(width: 10.w),
-                  // Maximum Price input.
                   Expanded(
                     child: TextField(
                       keyboardType: TextInputType.number,
@@ -185,7 +270,7 @@ class HouseListState extends State<HouseList> {
             ],
           ),
         ),
-        // Beds Filter as an input field.
+        // Beds Filter
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
           child: Column(
@@ -207,7 +292,7 @@ class HouseListState extends State<HouseList> {
             ],
           ),
         ),
-        // Bathrooms Filter as an input field.
+        // Bathrooms Filter
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
           child: Column(
@@ -236,6 +321,7 @@ class HouseListState extends State<HouseList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: const Color(0xFF47804B),
@@ -249,7 +335,9 @@ class HouseListState extends State<HouseList> {
             color: Colors.white,
             size: 20,
           ),
-          onPressed: () {},
+          onPressed: () {
+            _scaffoldKey.currentState?.openDrawer();
+          },
         ),
         actions: [
           CupertinoButton(
@@ -262,9 +350,10 @@ class HouseListState extends State<HouseList> {
           )
         ],
       ),
+      drawer: buildAppDrawer(context),
       body: Column(
         children: [
-          // Search Bar.
+          // Search Bar
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 10.h),
             child: TextField(
@@ -278,9 +367,9 @@ class HouseListState extends State<HouseList> {
               ),
             ),
           ),
-          // Advanced Filters: Price, Beds, and Bathrooms.
+          // Advanced Filters
           buildAdvancedFilters(),
-          // Location Filter.
+          // Location Filter
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Row(
@@ -305,7 +394,7 @@ class HouseListState extends State<HouseList> {
               ],
             ),
           ),
-          // Display Filtered Listings in a horizontal ListView.
+          // Horizontal List of Filtered Houses.
           Expanded(
             child: filteredHouses.isEmpty
                 ? const Center(child: Text("No houses found"))
@@ -325,9 +414,9 @@ class HouseListState extends State<HouseList> {
                     isActive: house["isActive"] ?? true,
                     onToggleStatus: () {
                       setState(() {
-                        house["isActive"] =
-                        !(house["isActive"] ?? true);
-                        applyFilters(); // Refresh UI after status change.
+                        // Toggle active status in the shared globalHouses.
+                        house["isActive"] = !(house["isActive"] ?? true);
+                        applyFilters();
                       });
                     },
                   ),
@@ -340,3 +429,33 @@ class HouseListState extends State<HouseList> {
     );
   }
 }
+
+/// Placeholder Favorites Page.
+class FavoritesPage extends StatelessWidget {
+  const FavoritesPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      drawer: buildAppDrawer(context),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF47804B),
+        title: const Text("Favorites"),
+        automaticallyImplyLeading: false,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(
+              CupertinoIcons.line_horizontal_3,
+              color: Colors.white,
+            ),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
+      ),
+      body: const Center(child: Text("Favorites Content")),
+    );
+  }
+}
+
+
+
