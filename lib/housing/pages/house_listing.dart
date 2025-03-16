@@ -14,9 +14,13 @@ class HouseList extends StatefulWidget {
 class HouseListState extends State<HouseList> {
   String searchQuery = "";
   String selectedLocation = "All";
+  String bedsInput = "";      // Input field for number of beds.
+  String bathsInput = "";     // Input field for number of bathrooms.
+  String minPriceInput = "";  // Input field for minimum price.
+  String maxPriceInput = "";  // Input field for maximum price.
   Timer? debounceTimer;
 
-  // Dummy data for house listings with an added location field for filtering.
+  // Dummy data for house listings with fields for beds and baths.
   final List<Map<String, dynamic>> allHouses = [
     {
       "imagePath": [
@@ -26,9 +30,13 @@ class HouseListState extends State<HouseList> {
       ],
       "title": "San Juan Villa",
       "price": "\$100.00",
+      "priceValue": 100.0,
       "details": "3 bed, 2 bath",
       "isFavorite": true,
-      "location": "San Juan"
+      "location": "San Juan",
+      "beds": 3,
+      "baths": 2,
+      "isActive": true,
     },
     {
       "imagePath": [
@@ -38,9 +46,13 @@ class HouseListState extends State<HouseList> {
       ],
       "title": "Carolina Estate",
       "price": "\$150.00",
+      "priceValue": 150.0,
       "details": "4 bed, 3 bath",
       "isFavorite": false,
-      "location": "Carolina"
+      "location": "Carolina",
+      "beds": 4,
+      "baths": 3,
+      "isActive": true,
     },
     {
       "imagePath": [
@@ -50,9 +62,13 @@ class HouseListState extends State<HouseList> {
       ],
       "title": "Downtown Apartment",
       "price": "\$120.00",
+      "priceValue": 120.0,
       "details": "2 bed, 1 bath",
       "isFavorite": false,
-      "location": "Downtown"
+      "location": "Downtown",
+      "beds": 2,
+      "baths": 1,
+      "isActive": true,
     },
   ];
 
@@ -76,16 +92,145 @@ class HouseListState extends State<HouseList> {
     });
   }
 
-  // Filter the house list based on the search query and selected location.
+  // Apply all filters including search query, location, price range, beds, and bathrooms.
   void applyFilters() {
-    filteredHouses = allHouses.where((house) {
-      final titleMatch =
-      house["title"].toString().toLowerCase().contains(searchQuery.toLowerCase());
-      final locationMatch =
-          selectedLocation == "All" || house["location"] == selectedLocation;
-      final isActive = house["isActive"] ?? true;
-      return titleMatch && locationMatch && isActive;
-    }).toList();
+    setState(() {
+      // Parse the price range inputs.
+      double? minPrice = double.tryParse(minPriceInput);
+      double? maxPrice = double.tryParse(maxPriceInput);
+
+      filteredHouses = allHouses.where((house) {
+        final titleMatch = house["title"]
+            .toString()
+            .toLowerCase()
+            .contains(searchQuery.toLowerCase());
+        final locationMatch =
+            selectedLocation == "All" || house["location"] == selectedLocation;
+        final isActive = house["isActive"] ?? true;
+        final double housePrice = house["priceValue"];
+        final priceMatch = (minPrice == null || housePrice >= minPrice) &&
+            (maxPrice == null || housePrice <= maxPrice);
+
+        bool bedsMatch = true;
+        if (bedsInput.isNotEmpty) {
+          int? desiredBeds = int.tryParse(bedsInput);
+          bedsMatch = desiredBeds != null && house["beds"] == desiredBeds;
+        }
+
+        bool bathsMatch = true;
+        if (bathsInput.isNotEmpty) {
+          int? desiredBaths = int.tryParse(bathsInput);
+          bathsMatch = desiredBaths != null && house["baths"] == desiredBaths;
+        }
+
+        return titleMatch &&
+            locationMatch &&
+            isActive &&
+            priceMatch &&
+            bedsMatch &&
+            bathsMatch;
+      }).toList();
+    });
+  }
+
+  // Builds the advanced filters UI.
+  Widget buildAdvancedFilters() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Price Range UI using two input fields.
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Price Range (\$)"),
+              Row(
+                children: [
+                  // Minimum Price input.
+                  Expanded(
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: "Min Price",
+                        hintText: "e.g. 50",
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          minPriceInput = value;
+                          applyFilters();
+                        });
+                      },
+                    ),
+                  ),
+                  SizedBox(width: 10.w),
+                  // Maximum Price input.
+                  Expanded(
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: "Max Price",
+                        hintText: "e.g. 200",
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          maxPriceInput = value;
+                          applyFilters();
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        // Beds Filter as an input field.
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Beds:"),
+              TextField(
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  hintText: "Enter number of beds",
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    bedsInput = value;
+                    applyFilters();
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+        // Bathrooms Filter as an input field.
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Bathrooms:"),
+              TextField(
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  hintText: "Enter number of bathrooms",
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    bathsInput = value;
+                    applyFilters();
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -106,23 +251,21 @@ class HouseListState extends State<HouseList> {
           ),
           onPressed: () {},
         ),
-        actions:[
+        actions: [
           CupertinoButton(
-            child:Icon(
+            child: Icon(
               CupertinoIcons.search,
               size: 8.sp,
               color: Colors.white,
             ),
-            onPressed:(){
-            }
+            onPressed: () {},
           )
-        ]
+        ],
       ),
       body: Column(
         children: [
-          // Search bar with a TextField that captures user input.
+          // Search Bar.
           Padding(
-            // padding: const EdgeInsets.all(8.0),
             padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 10.h),
             child: TextField(
               onChanged: onSearchChanged,
@@ -135,7 +278,9 @@ class HouseListState extends State<HouseList> {
               ),
             ),
           ),
-          // Filtering options: Dropdown for selecting location.
+          // Advanced Filters: Price, Beds, and Bathrooms.
+          buildAdvancedFilters(),
+          // Location Filter.
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Row(
@@ -160,7 +305,7 @@ class HouseListState extends State<HouseList> {
               ],
             ),
           ),
-          // Display filtered house listings in a horizontal ListView.
+          // Display Filtered Listings in a horizontal ListView.
           Expanded(
             child: filteredHouses.isEmpty
                 ? const Center(child: Text("No houses found"))
@@ -180,8 +325,9 @@ class HouseListState extends State<HouseList> {
                     isActive: house["isActive"] ?? true,
                     onToggleStatus: () {
                       setState(() {
-                        house["isActive"] = !(house["isActive"] ?? true);
-                        applyFilters(); // refresh the UI after status change
+                        house["isActive"] =
+                        !(house["isActive"] ?? true);
+                        applyFilters(); // Refresh UI after status change.
                       });
                     },
                   ),
