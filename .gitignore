@@ -44,14 +44,15 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# 2025-03-04
-# Flutter platforms directories - the Flutter project is for a web application, as such there is no need to track files for other platforms
+# 2025-03-04: Flutter platforms directories - the Flutter project is for a web application, as such there is no need to track files for other platforms
 /android/
 /ios/
 /linux/
 /macos/
 /windows/
 
-# 2025-03-13
-# Exclude all .env files from source control
+# 2025-03-13: Exclude all .env files from source control
 *.env
+
+# 2025-03-16: Personal configuration file
+.vimrc
