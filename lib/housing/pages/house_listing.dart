@@ -102,7 +102,7 @@ class HouseListState extends State<HouseList> {
           child: const Icon(
             CupertinoIcons.line_horizontal_3,
             color: Colors.white,
-            size: 20, //8.sp
+            size: 20,
           ),
           onPressed: () {},
         ),
@@ -122,7 +122,8 @@ class HouseListState extends State<HouseList> {
         children: [
           // Search bar with a TextField that captures user input.
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            // padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 10.h),
             child: TextField(
               onChanged: onSearchChanged,
               decoration: InputDecoration(
