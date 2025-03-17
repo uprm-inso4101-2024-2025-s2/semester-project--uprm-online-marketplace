@@ -1,9 +1,20 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:js_interop';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  bool useMock = true; // Toggle this for testing without Firebase
+
+
+  Map<String, String> mockUser = {
+    'uid': '123456',
+    'email': 'email@example.com',
+    'username': 'Nelson',
+    'password': '*****',
+    'number': '787-000-0000',
+  };
 
   // Sign In with Email & Password
   Future<String?> signIn(String email, String password) async {
@@ -49,7 +60,18 @@ class AuthService {
         return e.message; // Return Firebase’s default error message
     }
   }
-}
+  }
+
+  Future<bool> checkIfEmailExists(String email) async {
+    if (useMock) return email == mockUser['email'];
+    try {
+      final auth = FirebaseAuth.instance;
+      List<String> signInMethods = await auth.fetchSignInMethodsForEmail(email);
+      return signInMethods.isNotEmpty; // email exist
+    } catch (e) {
+      return false; // the email is invalid
+    }
+  }
 
 
   // Save User Profile to Firestore
@@ -70,6 +92,71 @@ class AuthService {
   Future<void> signOut() async {
     await _auth.signOut();
   }
+
+  Future<String?> updateUsername(String newUsername) async {
+    if (useMock) {
+      mockUser['username'] = newUsername;
+      return null;
+    }
+    try {
+      User? user = _auth.currentUser;
+      if (user == null) return 'User not found. Please log in again.';
+      await _firestore.collection('users').doc(user.uid).update({'username': newUsername});
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  Future<String?> updateNumber(String newNumber) async{
+    if (useMock) {
+      mockUser['number'] = newNumber;
+      return null;
+    }
+    try {
+      User? user = _auth.currentUser;
+      if (user != null) {
+        await _firestore.collection('users').doc(user.uid).update({'number': newNumber});
+      }
+      return null;
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  Future<String?> updatePassword(String newPassword) async { //to continue working on authentication add String currentPassword to class
+    if (useMock) {
+      mockUser['password'] = newPassword;
+      return null;
+    }
+    try {
+      User? user = _auth.currentUser;
+      if (user == null) return 'User not found. Please log in again.';
+      await user.updatePassword(newPassword);
+      return null;
+    } on FirebaseAuthException catch (e) {
+      return e.message;
+    }
+  }
+
+  Future<String?> updateEmail(String newEmail) async { //to continue working on authentication add String currentPassword to class
+    if (useMock) {
+      mockUser['email'] = newEmail;
+      return null;
+    }
+    try {
+      User? user = _auth.currentUser;
+      if (user == null) return 'User not found. Please log in again.';
+      await user.updateEmail(newEmail);
+      await _firestore.collection('users').doc(user.uid).update({'email': newEmail});
+      return null;
+    } on FirebaseAuthException catch (e) {
+      return e.message;
+    }
+  }
+  Map<String, String> getMockUser() {
+    return useMock ? mockUser: {};
+  }
+
 
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 }

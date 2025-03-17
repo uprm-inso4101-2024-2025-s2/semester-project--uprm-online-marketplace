@@ -4,6 +4,8 @@ import 'package:semesterprojectuprmonlinemarketplace/src/housing/pages/house_lis
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'housing/pages/profile_edit_userdetails.dart';
+import 'housing/pages/profile.dart';
 
 
 //Used to verify that the connection with firestore works well.
@@ -55,7 +57,9 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: HouseList(),
+      // home: HouseList(),
+      home: ProfileScreen(), //this has a button on top left that takes u to Profile() page
+      // home: Profile(),
       debugShowCheckedModeBanner: false,
     );
   }
