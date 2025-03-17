@@ -93,7 +93,7 @@ class AuthService {
     await _auth.signOut();
   }
 
-  Future<String?> updateUsername(String newUsername) async {
+  Future<String?> updateUsername(String newUsername) async { ///still needs slight work
     if (useMock) {
       mockUser['username'] = newUsername;
       return null;
@@ -137,7 +137,7 @@ class AuthService {
       return e.message;
     }
   }
-
+  //still needs slight work
   Future<String?> updateEmail(String newEmail) async { //to continue working on authentication add String currentPassword to class
     if (useMock) {
       mockUser['email'] = newEmail;
