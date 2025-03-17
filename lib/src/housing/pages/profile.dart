@@ -43,14 +43,14 @@ class ProfileState extends State<Profile> {
             ),
 
             SizedBox(height: 18),
-            Text('Nelson J. Caban Rodriguez', style: TextStyle(fontSize: 20)),
+            Text('Justin Rivera Colon Maldonado', style: TextStyle(fontSize: 20)),
             SizedBox(height: 8),
             const Divider(thickness: 1, height: 16, endIndent: 700),
             SizedBox(height: 8),
-            Text('Email: carti.iammusic@gmail.com', style: TextStyle(fontSize: 20)),
+            Text('Email: xd7jjjlove@gmail.com', style: TextStyle(fontSize: 20)),
             const Divider(thickness: 1, height: 16, endIndent: 700),
             SizedBox(height: 8),
-            Text('Phone Number: 939-375-3301', style: TextStyle(fontSize: 20)),
+            Text('Phone Number: 939-878-3451', style: TextStyle(fontSize: 20)),
             const Divider(thickness: 1, height: 16, endIndent: 700),
             SizedBox(height: 8),
             ElevatedButton(
