@@ -164,6 +164,10 @@ class HouseListState extends State<HouseList> {
   String maxPriceInput = "";
   Timer? debounceTimer;
 
+  // Add a loading state
+  bool isLoading = true;
+  bool hasError = false;
+
   /// Filtered houses (only active listings).
   List<Map<String, dynamic>> filteredHouses = [];
 
@@ -171,8 +175,31 @@ class HouseListState extends State<HouseList> {
   void initState() {
     super.initState();
     // Initially, show only active houses.
-    filteredHouses =
-        globalHouses.where((house) => house["isActive"] == true).toList();
+    _fetchListings();
+  }
+
+  // Simulate fetching listings from Firestore
+  Future<void> _fetchListings() async {
+    try {
+      // Simulate a network call delay
+      await Future.delayed(Duration(seconds: 2)); // Remove this in production
+
+      // Fetch listings from Firestore or any other source
+      // Example:
+      // QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('listings').get();
+      // List<Map<String, dynamic>> listings = querySnapshot.docs.map((doc) => doc.data()).toList();
+
+      // For now, use the globalHouses as a placeholder
+      setState(() {
+        filteredHouses = globalHouses.where((house) => house["isActive"] == true).toList();
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        hasError = true;
+        isLoading = false;
+      });
+    }
   }
 
   void onSearchChanged(String query) {
@@ -396,8 +423,12 @@ class HouseListState extends State<HouseList> {
           ),
           // Horizontal List of Filtered Houses.
           Expanded(
-            child: filteredHouses.isEmpty
-                ? const Center(child: Text("No houses found"))
+            child: isLoading
+                ? Center(child: CircularProgressIndicator()) // Show loading indicator
+                : hasError
+                ? Center(child: Text("Failed to load listings")) // Show error message
+                : filteredHouses.isEmpty
+                ? Center(child: Text("No houses found")) // Show no listings message
                 : ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: filteredHouses.length,
@@ -414,7 +445,6 @@ class HouseListState extends State<HouseList> {
                     isActive: house["isActive"] ?? true,
                     onToggleStatus: () {
                       setState(() {
-                        // Toggle active status in the shared globalHouses.
                         house["isActive"] = !(house["isActive"] ?? true);
                         applyFilters();
                       });
