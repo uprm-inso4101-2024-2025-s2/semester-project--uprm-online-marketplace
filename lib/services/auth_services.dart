@@ -11,7 +11,7 @@ class AuthService {
   Map<String, String> mockUser = {
     'uid': '123456',
     'email': 'email@example.com',
-    'username': 'Nelson',
+    'username': 'Justin',
     'password': '*****',
     'number': '787-000-0000',
   };
