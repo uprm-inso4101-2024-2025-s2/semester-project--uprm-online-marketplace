@@ -5,6 +5,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'housing/pages/signup_page.dart';
+//import 'package:semesterprojectuprmonlinemarketplace/services/auth_services.dart';
+
+
 
 //Used to verify that the connection with firestore works well.
 //import 'package:semesterprojectuprmonlinemarketplace/services/auth_services.dart';
@@ -15,10 +19,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 //}
 
 
-void main() { 
+void main() async{ 
   WidgetsFlutterBinding.ensureInitialized();
 initializeFirebase();
-  runApp(const MyApp());
+  runApp(MaterialApp(
+    home: SignUpPage(), // Set SignUpPage as the first screen
+  ));
 }
 void initializeFirebase() async{
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
