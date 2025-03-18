@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppLayout extends StatelessWidget {
   final Widget body;
@@ -8,6 +9,8 @@ class AppLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String currentRoute = GoRouterState.of(context).uri.toString();
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text('RUMHousing'),
@@ -24,104 +27,75 @@ class AppLayout extends StatelessWidget {
                 style: TextStyle(color: Colors.white, fontSize: 24),
               ),
             ),
-            _buildHoverableTile(
-              context, 
-              icon: Icons.home, 
-              title: 'Home', 
-              route: '/',
-            ),
+            _buildNavItem(context, Icons.home, 'Home', '/', currentRoute),
             ExpansionTile(
               leading: const Icon(Icons.favorite),
               title: const Text('My Favorites'),
               children: <Widget>[
-                _buildHoverableTile(
-                  context, 
-                  icon: Icons.list, 
-                  title: 'Suggested Listings', 
-                  route: '/favorites/suggestions',
-                ),
-                _buildHoverableTile(
-                  context, 
-                  icon: Icons.trending_up, 
-                  title: 'Trending Favorites', 
-                  route: '/favorites/trending',
-                ),
-                _buildHoverableTile(
-                  context, 
-                  icon: Icons.star, 
-                  title: 'Recently Added', 
-                  route: '/favorites/recently-added',
-                ),
+                _buildNavItem(context, Icons.list, 'Suggested Listings', '/favorites/suggestions', currentRoute),
+                _buildNavItem(context, Icons.trending_up, 'Trending Favorites', '/favorites/trending', currentRoute),
+                _buildNavItem(context, Icons.star, 'Recently Added', '/favorites/recently-added', currentRoute),
               ],
             ),
             ExpansionTile(
               leading: const Icon(Icons.account_circle),
               title: const Text('Login / Sign Up'),
               children: <Widget>[
-                _buildHoverableTile(
-                  context, 
-                  icon: Icons.login, 
-                  title: 'Login', 
-                  route: '/login',
-                ),
-                _buildHoverableTile(
-                  context, 
-                  icon: Icons.app_registration, 
-                  title: 'Sign Up', 
-                  route: '/sign-up',
-                ),
+                _buildNavItem(context, Icons.login, 'Login', '/login', currentRoute),
+                _buildNavItem(context, Icons.app_registration, 'Sign Up', '/sign-up', currentRoute),
               ],
             ),
             ExpansionTile(
               leading: const Icon(Icons.help_outline),
               title: const Text('Support'),
               children: <Widget>[
-                _buildHoverableTile(
-                  context, 
-                  icon: Icons.contact_mail, 
-                  title: 'Contact Us', 
-                  route: '/contact',
+                ListTile(
+                  leading: const Icon(Icons.contact_mail),
+                  title: const Text('Contact Us'),
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text('Contact Us'),
+                          content: const Text('Aquí puedes agregar la información de contacto.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Cerrar'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
                 ),
-                _buildHoverableTile(
-                  context, 
-                  icon: Icons.question_answer, 
-                  title: 'FAQ', 
-                  route: '/faq',
-                ),
+                _buildNavItem(context, Icons.question_answer, 'FAQ', '/faq', currentRoute),
               ],
             ),
-            _buildHoverableTile(
-              context, 
-              icon: Icons.chat, 
-              title: 'Chat', 
-              route: '/chat',
-            ),
-            _buildHoverableTile(
-              context, 
-              icon: Icons.map, 
-              title: 'Map', 
-              route: '/map',
-            ),
+            _buildNavItem(context, Icons.chat, 'Chat', '/chat', currentRoute),
+            _buildNavItem(context, Icons.map, 'Map', '/map', currentRoute),
           ],
         ),
       ),
       body: body,
     );
   }
-}
 
-Widget _buildHoverableTile(BuildContext context, {required IconData icon, required String title, required String route}) {
-  return MouseRegion(
-    onEnter: (event) {},
-    onExit: (event) {},
-    child: ListTile(
-      leading: Icon(icon),
-      title: Text(title),
-      hoverColor: Colors.green.shade100,
+  Widget _buildNavItem(BuildContext context, IconData icon, String title, String route, String currentRoute) {
+    bool isActive = currentRoute == route;
+    return ListTile(
+      leading: Icon(icon, color: isActive ? Colors.green.shade700 : Colors.black),
+      title: Text(
+        title,
+        style: TextStyle(color: isActive ? Colors.green.shade700 : Colors.black),
+      ),
+      tileColor: isActive ? Colors.green.shade100 : null,
       onTap: () {
-        Navigator.pop(context);
-        context.go(route);
+        GoRouter.of(context).go(route);
       },
-    ),
-  );
+    );
+  }
 }
