@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppLayout extends StatelessWidget {
   final Widget body;
@@ -25,37 +24,33 @@ class AppLayout extends StatelessWidget {
                 style: TextStyle(color: Colors.white, fontSize: 24),
               ),
             ),
-            ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text('Home'),
-              onTap: () {
-                Navigator.pop(context);
-              },
+            _buildHoverableTile(
+              context, 
+              icon: Icons.home, 
+              title: 'Home', 
+              route: '/',
             ),
             ExpansionTile(
               leading: const Icon(Icons.favorite),
               title: const Text('My Favorites'),
               children: <Widget>[
-                ListTile(
-                  leading: const Icon(Icons.list),
-                  title: const Text('Suggested Listings'),
-                  onTap: () {
-                    context.go('/favorites/suggestions');
-                  },
+                _buildHoverableTile(
+                  context, 
+                  icon: Icons.list, 
+                  title: 'Suggested Listings', 
+                  route: '/favorites/suggestions',
                 ),
-                ListTile(
-                  leading: const Icon(Icons.trending_up),
-                  title: const Text('Trending Favorites'),
-                  onTap: () {
-                    context.go('/favorites/trending');
-                  },
+                _buildHoverableTile(
+                  context, 
+                  icon: Icons.trending_up, 
+                  title: 'Trending Favorites', 
+                  route: '/favorites/trending',
                 ),
-                ListTile(
-                  leading: const Icon(Icons.star),
-                  title: const Text('Recently Added'),
-                  onTap: () {
-                    context.go('/favorites/recently-added');
-                  },
+                _buildHoverableTile(
+                  context, 
+                  icon: Icons.star, 
+                  title: 'Recently Added', 
+                  route: '/favorites/recently-added',
                 ),
               ],
             ),
@@ -63,19 +58,17 @@ class AppLayout extends StatelessWidget {
               leading: const Icon(Icons.account_circle),
               title: const Text('Login / Sign Up'),
               children: <Widget>[
-                ListTile(
-                  leading: const Icon(Icons.login),
-                  title: const Text('Login'),
-                  onTap: () {
-                    context.go('/login');
-                  },
+                _buildHoverableTile(
+                  context, 
+                  icon: Icons.login, 
+                  title: 'Login', 
+                  route: '/login',
                 ),
-                ListTile(
-                  leading: const Icon(Icons.app_registration),
-                  title: const Text('Sign Up'),
-                  onTap: () {
-                    context.go('/sign-up');
-                  },
+                _buildHoverableTile(
+                  context, 
+                  icon: Icons.app_registration, 
+                  title: 'Sign Up', 
+                  route: '/sign-up',
                 ),
               ],
             ),
@@ -83,60 +76,52 @@ class AppLayout extends StatelessWidget {
               leading: const Icon(Icons.help_outline),
               title: const Text('Support'),
               children: <Widget>[
-                ListTile(
-                  leading: const Icon(Icons.contact_mail),
-                  title: const Text('Contact Us'),
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: const Text('Contact Us'),
-                          content: const Text(
-                            'Aquí puedes agregar la información de contacto.',
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text('Cerrar'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
+                _buildHoverableTile(
+                  context, 
+                  icon: Icons.contact_mail, 
+                  title: 'Contact Us', 
+                  route: '/contact',
                 ),
-                ListTile(
-                  leading: const Icon(Icons.question_answer),
-                  title: const Text('FAQ'),
-                  onTap: () {
-                    context.go('/faq');
-                  },
+                _buildHoverableTile(
+                  context, 
+                  icon: Icons.question_answer, 
+                  title: 'FAQ', 
+                  route: '/faq',
                 ),
               ],
             ),
-            ListTile(
-              leading: const Icon(Icons.chat),
-              title: const Text('Chat'),
-              onTap: () {
-                context.go('/chat');
-              },
+            _buildHoverableTile(
+              context, 
+              icon: Icons.chat, 
+              title: 'Chat', 
+              route: '/chat',
             ),
-            ListTile(
-              leading: const Icon(Icons.map),
-              title: const Text('Map'),
-              onTap: () {
-              Navigator.pop(context);  
-              context.go('/map');  
-  },
-),
-
+            _buildHoverableTile(
+              context, 
+              icon: Icons.map, 
+              title: 'Map', 
+              route: '/map',
+            ),
           ],
         ),
       ),
-      body: body, // Injecting the body content here (HomePage or any other page)
+      body: body,
     );
   }
+}
+
+Widget _buildHoverableTile(BuildContext context, {required IconData icon, required String title, required String route}) {
+  return MouseRegion(
+    onEnter: (event) {},
+    onExit: (event) {},
+    child: ListTile(
+      leading: Icon(icon),
+      title: Text(title),
+      hoverColor: Colors.green.shade100,
+      onTap: () {
+        Navigator.pop(context);
+        context.go(route);
+      },
+    ),
+  );
 }
