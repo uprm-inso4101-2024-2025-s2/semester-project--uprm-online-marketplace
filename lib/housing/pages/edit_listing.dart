@@ -1,9 +1,8 @@
-import 'listings_creation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../Classes/ListingService.dart';
-import '../../Classes/LodgingClass.dart';
+
 
 //This file will identify the user and extract the ID of the current Listing
 //Being edited. Once the ID has been found, the controller variables will
@@ -102,182 +101,202 @@ class _EditListingPageState extends State<EditListingPage>{
               padding: EdgeInsets.all(16.0),
               child: Form(
                 key: _formKey,
-                  child: Stack(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(width: 8.5.w),
-                                Column(
-                                  children:[
-                                    SizedBox(height: 30.h),
-                                    _createImageDisplay(),
-                                    SizedBox(height: 5.5.h),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children:[
-                                        Container(height: 18.h, width: 47.w,
-                                          child: ElevatedButton(
-                                            onPressed: removeCurrentImage,
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                              const Color(0xFF47804B),
-                                            ),
-                                            child: const Text(
-                                              "Remove Image",
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              )
-                                            )
-                                          )
-                                        ),
-                                        SizedBox(width:40.w),
-                                        Container(height: 18.h, width: 45.w,
-                                          child: ElevatedButton(
-                                            onPressed: _pickImages,
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: const Color(0xFF47804B),
-                                            ),
-                                              child: const Text(
-                                                "Add Images",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                )
-                                              )
-                                          )
-                                        ),
-                                      ]
-                                    ),
-                                    Container(
-                                      child: ElevatedButton(
-                                        onPressed: (){
-                                          updateControllers();
-                                          setState(() {});
-                                        },
-                                        child: Text("Load Information",
-                                        style : TextStyle(color: Color(0xFF47804B))),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(width: 8.5.w),
+                          Column( //First Column
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children:[
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+
+                                  ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color(0xFF47804B),
+                                      ),
+                                      onPressed: (){
+                                        cancelConfirmation();;
+                                        setState(() {});
+                                      },
+                                      child: Text("Cancel",
+                                        style : TextStyle(color: Colors.white),
+                                      )
+                                  ),
+                                  SizedBox(width:5.w),
+
+                                  ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color(0xFF47804B),
+                                      ),
+                                      onPressed: (){
+                                        updateControllers();
+                                        setState(() {});
+                                      },
+                                      child: Text("Load Information",
+                                        style : TextStyle(color: Colors.white),
+                                      )
+                                  ),
+                                  SizedBox(width: 57.w),
+                                ]
+                               ),
+                              SizedBox(height: 10.h),
+                              _createImageDisplay(),
+                              SizedBox(height: 8.h),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children:[
+                                  Container(height: 18.h, width: 47.w,
+                                    child: ElevatedButton(
+                                      onPressed: (){
+                                        removeCurrentImage();
+                                        setState(() {});
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                        const Color(0xFF47804B),
+                                      ),
+                                      child: const Text(
+                                        "Remove Image",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        )
                                       )
                                     )
-                                  ]
-                                ),
-                                SizedBox(width: 1.5.w),
-                                Column(
-                                  children: [
-                                    //Decription Textbox creation
-                                    SizedBox(height: 30.h),
-                                    _createTextField("Description", maxLines: 3,
-                                      width: 200.w,
-                                      controller: descriptionController),
-                                    Row(
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            //Title, Price & Restrooms Textboxes Creation.
-                                            SizedBox(height: 12.5.h),
-                                            _createTextField("Title", width: 100.w,
-                                              controller: titleController),
-                                            SizedBox(height: 12.5.h),
-                                            _createTextField("Price", width: 100.w,
-                                              controller: priceController),
-                                            SizedBox(height: 12.5.h),
-                                            _createTextField("Restrooms", width: 100.w,
-                                              controller: restroomsController),
-                                          ],
-                                        ),
-                                        SizedBox(width: 1.5.w),
-                                        //Location, Bedrooms, Parking TextBoxes Creation
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(height: 12.5.h),
-                                              _createTextField("Location", width: 100.w,
-                                                controller: locationController),
-                                              SizedBox(height: 12.5.h),
-                                              _createTextField("Bedrooms", width: 100.w,
-                                                controller: bedroomsController),
-                                              SizedBox(height: 12.5.h),
-                                              _createTextField("Parking", width: 100.w,
-                                                controller: parkingController),
-                                            ]
+                                  ),
+                                  SizedBox(width:40.w),
+                                  Container(height: 18.h, width: 45.w,
+                                    child: ElevatedButton(
+                                      onPressed: _pickImages,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color(0xFF47804B),
+                                      ),
+                                        child: const Text(
+                                          "Add Images",
+                                          style: TextStyle(
+                                            color: Colors.white,
                                           )
-                                      ],
+                                        )
                                     )
-                                  ]
-                                ),
-                                      SizedBox(width: 5.w),
-                              ]
-                            ),
-                          ]
+                                  ),
+                                ]
+                              ),
+                              SizedBox(height: 28.h),
+                            ]
+                          ),
+                          SizedBox(width: 1.5.w),
+                          Column( //Second Column
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  //Create a Sized box that pushes the button to the ideal spot.
+                                  SizedBox(width: 158.w),
+                                  ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.red,
+                                      ),
+                                      onPressed: (){
+                                        listingRemovalConfirmation();
+                                        setState(() {});
+                                      },
+                                      child: Text("Delete",
+                                        style : TextStyle(color: Colors.white),
+                                      )
+                                  ),
+                                ]
+                              ),
+                              SizedBox(height: 10.h),
+                              _createTextField("Description", maxLines: 3,
+                                width: 200.w,
+                                controller: descriptionController),
+                              Row( //This Row creates two columns for text boxes.
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      //Title, Price & Restrooms Textboxes Creation.
+                                      SizedBox(height: 12.5.h),
+                                      _createTextField("Title", width: 100.w,
+                                        controller: titleController),
+                                      SizedBox(height: 12.5.h),
+                                      _createTextField("Price", width: 100.w,
+                                        controller: priceController),
+                                      SizedBox(height: 12.5.h),
+                                      _createTextField("Restrooms", width: 100.w,
+                                        controller: restroomsController),
+                                    ],
+                                  ),
+                                  SizedBox(width: 1.5.w),
+                                  //Location, Bedrooms, Parking TextBoxes Creation
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(height: 12.5.h),
+                                        _createTextField("Location", width: 100.w,
+                                          controller: locationController),
+                                        SizedBox(height: 12.5.h),
+                                        _createTextField("Bedrooms", width: 100.w,
+                                          controller: bedroomsController),
+                                        SizedBox(height: 12.5.h),
+                                        _createTextField("Parking Amount", width: 100.w,
+                                          controller: parkingController),
+                                      ]
+                                    )
+                                ],
+                              ),
+                              SizedBox(height: 52.h),
+                              Row( //Creates the Save button on the bottom right corner.
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children:[
+                                  SizedBox(width: 150.w),
+                                  Container(
+                                    width: 40.w,
+                                    height: 35.h,
+                                    child: FloatingActionButton(
+                                      heroTag: "save_button",
+                                      backgroundColor: const Color(0xFF47804B),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10.r),
+                                      ),
+                                      child: Text("SAVE",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        )
+                                      ),
+                                      onPressed: (){
+                                        if(_imageUrls.isEmpty){
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              duration: Duration(seconds: 5),
+                                              backgroundColor: Color(0xFF47804B),
+                                              content: Text(
+                                                "Make sure you insert at least one Image.",
+                                                style: TextStyle(color: Colors.white,))
+                                            )
+                                          );
+                                        }if(_formKey.currentState!.validate()) {
+                                          modifyOwnListing();
+                                        }
+                                      },
+                                    )
+                                  )
+                                ]
+                              ),
+                            ]
+                          ),
+                        ]
                       ),
-                        Positioned(
-                          bottom: 10.h,
-                          right: 10.w,
-                          child: Container(
-                            width: 40.w,
-                            height: 35.h,
-                            child: FloatingActionButton(
-                              heroTag: "save_button",
-                              backgroundColor: const Color(0xFF47804B),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.r),
-                              ),
-                              child: Text("SAVE",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                )
-                              ),
-                              onPressed: (){
-                                if(_imageUrls.isEmpty){
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      duration: Duration(seconds: 5),
-                                      backgroundColor: Color(0xFF47804B),
-                                      content: Text(
-                                        "Make sure you insert at least one Image.",
-                                      style: TextStyle(color: Colors.white,))
-                                    )
-                                  );
-                                }if(_formKey.currentState!.validate()) {
-                                    modifyOwnListing();
-                                }
-                              },
-                            )
-                          )
-                        ),
-                        Positioned(
-                          bottom: 10.h,
-                          left: 10.w,
-                          child: Container(
-                            width: 40.w,
-                            height: 35.h,
-                            child: FloatingActionButton(
-                              heroTag:"delete_button",
-                              backgroundColor: const Color(0xFF47804B),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.r),
-                              ),
-                              child: Text("DELETE",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                )
-                              ),
-                              onPressed: (){
-                                listingRemovalConfirmation();
-                                setState(() {});
-                              },
-                            )
-                          )
-                        )
                     ]
-                  )
-              )
+                ),
+              ),
             )
           )
         )
@@ -296,79 +315,79 @@ class _EditListingPageState extends State<EditListingPage>{
           builder: (context, setState){
             focusNode.addListener( (){ setState((){});} );
             return TextFormField(
-              controller: controller,
-              maxLines: maxLines,
-              focusNode: focusNode,
+                controller: controller,
+                maxLines: maxLines,
+                focusNode: focusNode,
 
-              //Most of Data Validation is Implemented Here
-              validator: (value){
-                String? input= controller?.text;
-                if(label=="Title"){
-                  if(input!=null){
-                    if(input.trim().isNotEmpty){
-                      return null;
-                    }return "Insert valid title.";
-                  }return "Insert valid title";
+                //Most of Data Validation is Implemented Here
+                validator: (value){
+                  String? input= controller?.text;
+                  if(label=="Title"){
+                    if(input!=null){
+                      if(input.trim().isNotEmpty){
+                        return null;
+                      }return "Insert valid title.";
+                    }return "Insert valid title";
 
-                }
-                else if(label=="Price"){
-                  if(input!=null) {
-                    double? price= double.tryParse(input);
-                    if (price!= null && price>0) {
-                      return null;
+                  }
+                  else if(label=="Price"){
+                    if(input!=null) {
+                      double? price= double.tryParse(input);
+                      if (price!= null && price>0) {
+                        return null;
+                      }return "Insert valid price.";
                     }return "Insert valid price.";
-                  }return "Insert valid price.";
-                }else if(label=="Location"){
-                  if(input!=null){
-                    if(input.trim().isNotEmpty){
-                      return null;
+                  }else if(label=="Location"){
+                    if(input!=null){
+                      if(input.trim().isNotEmpty){
+                        return null;
+                      }return "Insert valid Location.";
                     }return "Insert valid Location.";
-                  }return "Insert valid Location.";
-                }
-                else if(label=="Restrooms"){
-                  if(input!=null){
-                    int? restroomAmount= int.tryParse(input);
-                    if(restroomAmount!=null && restroomAmount>0){
-                      return null;
+                  }
+                  else if(label=="Restrooms"){
+                    if(input!=null){
+                      int? restroomAmount= int.tryParse(input);
+                      if(restroomAmount!=null && restroomAmount>0){
+                        return null;
+                      }return "Insert valid amount.";
                     }return "Insert valid amount.";
-                  }return "Insert valid amount.";
-                }
-                else if(label=="Bedrooms"){
-                  if(input!=null){
-                    int? bedroomAmount= int.tryParse(input);
-                    if(bedroomAmount!=null && bedroomAmount>0){
-                      return null;
+                  }
+                  else if(label=="Bedrooms"){
+                    if(input!=null){
+                      int? bedroomAmount= int.tryParse(input);
+                      if(bedroomAmount!=null && bedroomAmount>0){
+                        return null;
+                      }return "Insert valid amount.";
                     }return "Insert valid amount.";
-                  }return "Insert valid amount.";
-                }
-                else if(label=="Parking"){
-                  if(input!=null){
-                    int? parkingAmount= int.tryParse(input);
-                    if(parkingAmount!=null && parkingAmount>=0){
-                      return null;
+                  }
+                  else if(label=="Parking Amount"){
+                    if(input!=null){
+                      int? parkingAmount= int.tryParse(input);
+                      if(parkingAmount!=null && parkingAmount>=0){
+                        return null;
+                      }return "Insert valid amount.";
                     }return "Insert valid amount.";
-                  }return "Insert valid amount.";
-                }
-                else if(label=="Description"){
-                  return null;
-                }
-              },
-              //Checks the value of the validator to then conclude if the Listing can be created.
-              //Insert If statement
-              decoration: InputDecoration(
-                labelText: label,
-                labelStyle: TextStyle(
-                  color: focusNode.hasFocus ?  Color(0xFF47804B) : Colors.black,
+                  }
+                  else if(label=="Description"){
+                    return null;
+                  }
+                },
+                //Checks the value of the validator to then conclude if the Listing can be created.
+                //Insert If statement
+                decoration: InputDecoration(
+                  labelText: label,
+                  labelStyle: TextStyle(
+                    color: focusNode.hasFocus ?  Color(0xFF47804B) : Colors.black,
+                  ),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFF47804B), width: 2.0)
+                  ),
+                  errorBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.red, width: 2.0)
+                  ),
                 ),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
-                focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF47804B), width: 2.0)
-                ),
-                errorBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.red, width: 2.0)
-                ),
-              ),
-            );
+              );
           },
         )
     );
@@ -467,7 +486,7 @@ class _EditListingPageState extends State<EditListingPage>{
           duration: Duration(seconds: 5),
           backgroundColor: Color(0xFF47804B),
           content: Text(
-            "No images were found. ",
+            "No images were found.",
             style: TextStyle(color: Colors.white,)
           )
         )
@@ -482,7 +501,7 @@ class _EditListingPageState extends State<EditListingPage>{
       context: context,
       builder: (context){
         return AlertDialog(
-          title: Text("Are you sure you want to delete this image?",
+          title: Text("Are you sure you want to delete this Listing?",
             style: TextStyle(fontWeight: FontWeight.bold)),
           actions:[
             Row(
@@ -528,6 +547,60 @@ class _EditListingPageState extends State<EditListingPage>{
     );
   }
 
+  //Will ask for confirmation if cancel button is hit.
+  @override
+  Future<void> cancelConfirmation() async{
+    showDialog(
+      context: context,
+      builder: (context){
+        return AlertDialog(
+          title: Text("Are you sure you want to cancel?",
+            style: TextStyle(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+          ),
+          actions:[
+            Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:[
+                  TextButton(
+                    onPressed: () =>Navigator.pop(context),
+                    style: ButtonStyle(
+                        overlayColor: WidgetStateProperty.resolveWith((states){
+                          if(states.contains(WidgetState.hovered)){
+                            return Color.fromRGBO(255, 0, 0, 0.2);
+                          }
+                          return null;
+                        })
+                    ),
+                    child: Text("Cancel",
+                      style: TextStyle(color: Colors.red,),),
+                  ),
+                  SizedBox(width:100.w),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {});
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    },
+                    style: ButtonStyle(
+                        overlayColor: WidgetStateProperty.resolveWith((states){
+                          if(states.contains(WidgetState.hovered)){
+                            return  Color.fromRGBO(71, 128, 75, 0.2);
+                          }
+                          return null;
+                        })
+                    ),
+                    child: Text("Confirm",
+                        style: TextStyle(color: Color(0xFF47804B))),
+                  ),
+                ]
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   //Will ask for comfirmation before removing an already added image.
   @override
   Future<void> imageRemoveConfirmation() async{
@@ -558,7 +631,11 @@ class _EditListingPageState extends State<EditListingPage>{
                   TextButton(
                     onPressed: () {
                       _imageUrls.removeAt(_currentPage);
-                      _currentPage = 0;
+                      if(_currentPage>0) {
+                        _currentPage--;
+                      }else{
+                        _currentPage=0;
+                      }
                       setState(() {});
                       Navigator.pop(context);
                     },
