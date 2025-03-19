@@ -8,34 +8,34 @@ class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
 
   @override
-  _SignUpPageState createState() => _SignUpPageState();
+  SignUpPageState createState() => SignUpPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
-  final AuthService _authService = AuthService();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _usernameController = TextEditingController();
-  String? _errorMessage;
-  bool _isLoading = false;
+class SignUpPageState extends State<SignUpPage> {
+  final AuthService authService = AuthService();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
+  String? errorMessage;
+  bool isLoading = false;
 
   void _signUp() async {
-    setState(() => _isLoading = true);
+    setState(() => isLoading = true);
 
-    String email = _emailController.text.trim();
-    String password = _passwordController.text.trim();
-    String username = _usernameController.text.trim();
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+    String username = usernameController.text.trim();
 
     if (email.isEmpty || password.isEmpty || username.isEmpty) {
       setState(() {
-        _errorMessage = "All fields are required!";
-        _isLoading = false;
+        errorMessage = "All fields are required!";
+        isLoading = false;
       });
       return;
     }
 
     try {
-      User? user = (await _authService.signUp(email, password, username)) as User?;
+      String? user = (await authService.signUp(email, password, username));
 
       if (user != null) {
         // Navigate to home page after successful sign-up
@@ -45,15 +45,15 @@ class _SignUpPageState extends State<SignUpPage> {
                                                                       // should be profile page.
       } else {
         setState(() {
-          _errorMessage = "Sign-Up Failed. Try again.";
+          errorMessage = "Sign-Up Failed. Try again.";
         });
       }
     } catch (e) {
       setState(() {
-        _errorMessage = e.toString();
+        errorMessage = e.toString();
       });
     } finally {
-      setState(() => _isLoading = false);
+      setState(() => isLoading = false);
     }
   }
 
@@ -67,33 +67,33 @@ class _SignUpPageState extends State<SignUpPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
-              controller: _emailController,
+              controller: emailController,
               decoration: const InputDecoration(labelText: "Email"),
               keyboardType: TextInputType.emailAddress,
             ),
             TextField(
-              controller: _passwordController,
+              controller: passwordController,
               decoration: const InputDecoration(labelText: "Password"),
               obscureText: true,
             ),
             TextField(
-              controller: _usernameController,
+              controller: usernameController,
               decoration: const InputDecoration(labelText: "Username"),
             ),
             const SizedBox(height: 20),
             
-            _isLoading
+            isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : ElevatedButton(
                     onPressed: _signUp,
                     child: const Text("Sign Up"),
                   ),
 
-            if (_errorMessage != null)
+            if (errorMessage != null)
               Padding(
                 padding: const EdgeInsets.only(top: 10),
                 child: Text(
-                  _errorMessage!,
+                  errorMessage!,
                   style: const TextStyle(color: Colors.red),
                   textAlign: TextAlign.center,
                 ),
