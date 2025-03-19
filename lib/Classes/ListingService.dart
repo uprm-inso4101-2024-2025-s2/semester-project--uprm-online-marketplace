@@ -14,6 +14,16 @@ class ListingService extends LodgingManagement{
 //to expand and utilize other products, this value type might change.
   final Map<int, Lodging> listings= {};
 
+  //Creates a singular instance of ListingService.
+  static final ListingService _instance= ListingService._internal();
+  //Private constructor to avoid instantiation from outside the class.
+  ListingService._internal();
+  //It works as a public constructor that provides the singular instance
+  //to outer classes.
+  factory ListingService(){
+    return _instance;
+  }
+
   @override
   Future<void> createListing(Lodging lodging) async{
     if(listings.containsKey(lodging.getID())){
@@ -35,7 +45,7 @@ class ListingService extends LodgingManagement{
     return super.getLodgings();
   }
 
-  Lodging? fetchLodging(int ID){
+  Lodging? fetchListing(int ID){
     if(listings.containsKey(ID)){
       if(findLodgingWithId(ID)!=null){
         return listings[ID];
@@ -53,7 +63,9 @@ class ListingService extends LodgingManagement{
   }
 
   @override
-  Future<void> updateListing(int id, {String? title, String? condition, String? description, int? price, String? location, int? bedrooms, int? restrooms, int? parking}) async{
+  Future<void> updateListing(int id, {String? title, String? condition,
+    String? description, double? price, String? location,
+    int? bedrooms, int? restrooms, int? parking, bool? isActive,List<String>? imageUrls}) async{
     if(!listings.containsKey(id)){
       throw ArgumentError("Item not Found.");
     }
@@ -68,7 +80,8 @@ class ListingService extends LodgingManagement{
           newLocation: location,
           newBedrooms: bedrooms,
           newRestrooms: restrooms,
-          newParking:parking
+          newParking: parking,
+          newImageUrls: imageUrls,
       );
       if(newLodging!=null){
         listings[id]= newLodging;
@@ -83,6 +96,7 @@ class ListingService extends LodgingManagement{
           if(bedrooms != null) "bedrooms" : bedrooms,
           if(restrooms != null) "restrooms" : restrooms,
           if(parking != null) "parking" : parking,
+          if(imageUrls != null) "imageUrls" : imageUrls,
         });
       }
     }

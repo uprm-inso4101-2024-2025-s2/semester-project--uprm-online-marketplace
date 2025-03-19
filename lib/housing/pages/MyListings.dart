@@ -4,6 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widgets/house_tile.dart';
 // Import the shared data and HouseList from house_listing.dart
 import 'house_listing.dart';
+// Import the Listing Creation button and data.
+import '../widgets/buttons.dart';
+import  'listings_creation.dart';
 
 /// Reusable Drawer widget for navigation
 Widget buildAppDrawer(BuildContext context) {
@@ -110,7 +113,12 @@ class _MyListingsPageState extends State<MyListingsPage> {
       drawer: buildAppDrawer(context),
       appBar: AppBar(
         backgroundColor: const Color(0xFF47804B),
-        title: const Text("My Listings"),
+        title: const Text(
+            "My Listings",
+            style: TextStyle(
+              color: Colors.white,
+            )
+        ),
         automaticallyImplyLeading: false,
         leading: Builder(
           builder: (context) => IconButton(
@@ -120,33 +128,52 @@ class _MyListingsPageState extends State<MyListingsPage> {
         ),
       ),
       // Change the ListView to horizontal.
-      body: userListings.isEmpty
-          ? const Center(child: Text("No listings found"))
-          : ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.all(8.0),
-        itemCount: userListings.length,
-        itemBuilder: (context, index) {
-          final house = userListings[index];
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: HouseTile(
-              imagePath: List<String>.from(house["imagePath"]),
-              title: house["title"],
-              price: house["price"],
-              details: house["details"],
-              isFavorite: house["isFavorite"],
-              isActive: house["isActive"] ?? true,
-              onToggleStatus: () {
-                setState(() {
-                  // Toggling modifies the shared globalHouses.
-                  house["isActive"] = !(house["isActive"] ?? true);
-                });
+      body: Column(
+          children:[
+            SizedBox(height: 15.h),
+            SizedBox(
+              height: 35.h,
+              width: 50.w,
+              child: CreateButton(
+                  pressed:() {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context)=>const CreateListingPage()),
+                    );
+                  },
+              ),
+            ),
+            userListings.isEmpty
+              ? const Center(child: Text("No listings found"))
+              : Expanded(
+              child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.all(8.0),
+              itemCount: userListings.length,
+              itemBuilder: (context, index) {
+                final house = userListings[index];
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: HouseTile(
+                    imagePath: List<String>.from(house["imagePath"]),
+                    title: house["title"],
+                    price: house["price"],
+                    details: house["details"],
+                    isFavorite: house["isFavorite"],
+                    isActive: house["isActive"] ?? true,
+                    onToggleStatus: () {
+                      setState(() {
+                        // Toggling modifies the shared globalHouses.
+                        house["isActive"] = !(house["isActive"] ?? true);
+                      });
+                    },
+                  ),
+                );
               },
             ),
-          );
-        },
-      ),
+          )
+        ] // children
+      )
     );
   }
 }
@@ -230,3 +257,4 @@ class FavoritesPage extends StatelessWidget {
     );
   }
 }
+

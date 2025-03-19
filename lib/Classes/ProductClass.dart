@@ -1,6 +1,6 @@
 class Product{
   String owner;
-  int price;
+  double price;
   String availability;
   String condition;
   String description;
@@ -19,7 +19,7 @@ class Product{
 
   //Getters
   String getOwner() => owner;
-  int getPrice() => price;
+  double getPrice() => price;
   String getAvailability() => availability;
   String getCondition() => condition;
   String getDescription() => description;
@@ -27,7 +27,7 @@ class Product{
 
   //Setters
   void setOwner(String owner) => this.owner = owner;
-  void setPrice(int price) => this.price = price;
+  void setPrice(double price) => this.price = price;
   void setAvailability(String availability) => this.availability = availability;
   void setCondition(String condition) => this.condition = condition;
   void setDescription(String description) => this.description = description;

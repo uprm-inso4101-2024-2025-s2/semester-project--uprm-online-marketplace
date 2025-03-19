@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../pages/house_page.dart';
+import 'buttons.dart';
+import '../pages/edit_listing.dart';
 
 class HouseTile extends StatefulWidget {
   final List<String> imagePath;
@@ -291,20 +293,32 @@ class HouseTileState extends State<HouseTile> {
                           ),
                         ),
                         SizedBox(width: 4.w), // Minimal spacing
-                        Flexible( // Ensures button adapts to available space
-                          child: ElevatedButton(
+                        Flexible(// Ensures button adapts to available space
+                          child:ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
-                              minimumSize: Size(45.w, 15.h), //50 20
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap, // Tightens button size
-                            ),
-                            onPressed: widget.onToggleStatus,
-                            child: FittedBox(
-                              child: Text(
-                                widget.isActive ? "Deactivate" : "Activate",
-                                style: TextStyle(fontSize: 5.sp),
+                          padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+                          minimumSize: Size(45.w, 15.h), //50 20
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap, // Tightens button size
+                        ),
+                        onPressed: widget.onToggleStatus,
+                        child: FittedBox(
+                          child: Text(
+                            widget.isActive ? "Deactivate" : "Activate",
+                            style: TextStyle(fontSize: 5.sp),
+                          ),
+                        ),
+                       ),
+                        ),
+                        Flexible(
+                          child: EditButton(
+                            pressed:() {
+                              Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (
+                                  context) => const EditListingPage()
                               ),
-                            ),
+                              );
+                            }
                           ),
                         ),
                       ],

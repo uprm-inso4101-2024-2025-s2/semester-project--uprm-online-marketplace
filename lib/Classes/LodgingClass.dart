@@ -10,12 +10,13 @@ class Lodging extends Product{
   int restrooms;
   int parking;
   bool isActive;
+  List<String> imageUrls;
 
   Lodging({
     required String owner,
     required String availability,
     required String title,
-    int price = 1000,
+    double price = 1000.0,
     this.location = 'UNKNOWN',
     String condition = "UNKNOWN",
     this.bedrooms = 0,
@@ -23,7 +24,9 @@ class Lodging extends Product{
     this.parking = 0,
     String description = "",
     this.isActive = true, // Correctly initialized as bool
+    List<String>? imageUrls,
   }): id = Random().nextInt(999999999), //we will  locate listings using a random numberID. This will make us be able to locate listings more efficiently rather than by title. Titles could be the same
+        this.imageUrls= imageUrls ?? [],
         super(owner:owner, availability:availability, price:price, condition:condition, description:description, title:title);
 
   //Getters
@@ -33,6 +36,7 @@ class Lodging extends Product{
   int getRestrooms() => restrooms;
   int getParking() => parking;
   bool getStatus() => isActive;
+  List<String> getImageUrls() => imageUrls;
 
   //Setters
   void setLocation(String location) => this.location = location;
@@ -40,6 +44,11 @@ class Lodging extends Product{
   void setRestrooms(int restrooms) => this.restrooms = restrooms;
   void setParking(int parking) => this.parking = parking;
   void setStatus(bool status) => isActive = status;
+  void setImageUrls(List<String> imageUrls) => this.imageUrls= imageUrls;
+
+  //ImageUrls Handling
+  void removeImageUrl(String imageUrl) => imageUrls.remove(imageUrl);
+  void addImageUrl(String imageUrl) => imageUrls.add(imageUrl);
 
 }
 
@@ -77,7 +86,7 @@ class LodgingManagement{
   }
 
   //the question marks allow each parameter to be optional
-  Lodging? editLodging(int id, {String? newTitle, String? newCondition, String? newDescription,int? newPrice, String? newLocation, int? newBedrooms, int? newRestrooms, int? newParking}){
+  Lodging? editLodging(int id, {String? newTitle, String? newCondition, String? newDescription,double? newPrice, String? newLocation, int? newBedrooms, int? newRestrooms, int? newParking, List<String>? newImageUrls}){
     Lodging? lodging = findLodgingWithId(id);
 
     if(lodging != null){
@@ -96,6 +105,7 @@ class LodgingManagement{
       if(newBedrooms != null && newBedrooms >= 0) lodging.bedrooms = newBedrooms;
       if(newRestrooms != null && newRestrooms >= 0) lodging.restrooms = newRestrooms;
       if(newParking != null && newParking >= 0) lodging.parking = newParking;
+      if(newImageUrls != null) lodging.imageUrls= newImageUrls;
 
       print("Lodging with ID $id has been updated");
       return lodging;
@@ -126,6 +136,7 @@ extension LodgingFirestore on Lodging {
       restrooms: data['restrooms'] ?? 0,
       parking: data['parking'] ?? 0,
       description: data['description'] ?? "",
+      imageUrls: data['imageUrls'] ?? [],
     );
   }
 
@@ -141,6 +152,7 @@ extension LodgingFirestore on Lodging {
       'restrooms': restrooms,
       'parking': parking,
       'description': description,
+      'imageUrls' : imageUrls,
     };
   }
 
