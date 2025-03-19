@@ -15,7 +15,7 @@ class AuthService {
     }
   }
 
-  Future<String?> signUp(String email, String password, String username) async {
+  Future<String?> signUp(String email, String password, String username, String role) async {
   try {
     // Check if username already exists in Firestore
     var querySnapshot = await _firestore.collection('users')
@@ -35,7 +35,7 @@ class AuthService {
     User? user = userCredential.user;
 
     if (user != null) {
-      await saveUserProfile(user.uid, email, username);
+      await saveUserProfile(user.uid, email, username, role);
     }
 
     return null; // Success
@@ -53,12 +53,13 @@ class AuthService {
 
 
   // Save User Profile to Firestore
-  Future<String?> saveUserProfile(String uid, String email, String username) async {
+  Future<String?> saveUserProfile(String uid, String email, String username, String role) async {
     try {
       await _firestore.collection('users').doc(uid).set({
         'uid': uid,
         'email': email,
         'username': username,
+        'role' : role,
         'createdAt': FieldValue.serverTimestamp(),
       });
       return null;
