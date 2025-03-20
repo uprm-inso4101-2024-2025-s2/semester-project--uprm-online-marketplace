@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 import '../../../services/auth_services.dart';
 //import '../../home_page.dart'; // Once succesfull sigh-up where the user should be sent
 class SignUpPage extends StatefulWidget {
@@ -39,6 +39,8 @@ class SignUpPageState extends State<SignUpPage> {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
     String username = usernameController.text.trim();
+    String role = "Student";//auth_service added a role parameter. Signup process has yet to incorporate this adition into the code
+                            //Made role Student by default until code can be updated. Comment made by Jayson D. Perez Ramirez
 
     if (email.isEmpty || password.isEmpty || username.isEmpty) {
       setState(() {
@@ -70,7 +72,7 @@ class SignUpPageState extends State<SignUpPage> {
     }
 
     try {
-      String? user = (await authService.signUp(email, password, username));
+      String? user = (await authService.signUp(email, password, username, role));
 
       if (user != null) {
         // Navigate to home/profile page after successful sign-up
