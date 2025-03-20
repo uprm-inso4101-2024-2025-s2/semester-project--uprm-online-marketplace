@@ -73,4 +73,4 @@ class AuthService {
   }
 
   Stream<User?> get authStateChanges => _auth.authStateChanges();
-}
+}//Testing is pushing works on newly named branch T1-Clean, previously named M2-T1
