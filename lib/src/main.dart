@@ -1,9 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:semesterprojectuprmonlinemarketplace/firebase_options.dart';
 import 'package:semesterprojectuprmonlinemarketplace/src/housing/pages/house_listing.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import 'housing/pages/signup_page.dart';
+
 
 
 //Used to verify that the connection with firestore works well.
@@ -15,17 +19,32 @@ import 'package:firebase_auth/firebase_auth.dart';
 //}
 
 
-void main() { 
+/*void main() async{ 
   WidgetsFlutterBinding.ensureInitialized();
 initializeFirebase();
-  runApp(const MyApp());
+  runApp(MaterialApp(
+    home: SignUpPage(), // Set SignUpPage as the first screen
+  ));
+}*/
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeFirebase(); // Ensure Firebase initializes before runApp
+  runApp(MaterialApp(
+    home: SignUpPage(), // Set SignUpPage as the first screen
+  ));
 }
-void initializeFirebase() async{
+Future<void> initializeFirebase() async{
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
-
-  FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+  if (kDebugMode) {
+    // Only use emulators in debug mode
+    try {
+      FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+      FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+    } catch (e) {
+      print("Firebase Emulator Error: $e");
+    }
+  }
   //Un-comment if you want to see the ports.
   //print("Firebase Emulators Connected: Firestore (8081), Auth (9099)");
 }
