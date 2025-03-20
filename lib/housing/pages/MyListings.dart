@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widgets/house_tile.dart';
+import 'package:semesterprojectuprmonlinemarketplace/housing/pages/favorite_listings.dart';
 // Import the shared data and HouseList from house_listing.dart
 import 'house_listing.dart';
 // Import the Listing Creation button and data.
@@ -233,28 +234,3 @@ class _InactiveListingsPageState extends State<InactiveListingsPage> {
     );
   }
 }
-
-/// Placeholder Favorites Page.
-class FavoritesPage extends StatelessWidget {
-  const FavoritesPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: buildAppDrawer(context),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF47804B),
-        title: const Text("Favorites"),
-        automaticallyImplyLeading: false,
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(CupertinoIcons.line_horizontal_3, color: Colors.white),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          ),
-        ),
-      ),
-      body: const Center(child: Text("Favorites Content")),
-    );
-  }
-}
-
