@@ -184,14 +184,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  http_parser:
-    dependency: transitive
-    description:
-      name: http_parser
-      sha256: "178d74305e7866013777bab2c3d8726205dc5a4dd935297175b19a23a2e66571"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.1.2"
   google_maps:
     dependency: transitive
     description:
@@ -248,6 +240,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.15.5"
+  http_parser:
+    dependency: transitive
+    description:
+      name: http_parser
+      sha256: "178d74305e7866013777bab2c3d8726205dc5a4dd935297175b19a23a2e66571"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.2"
   leak_tracker:
     dependency: transitive
     description:
@@ -423,4 +423,4 @@ packages:
     version: "1.1.1"
 sdks:
   dart: ">=3.7.0 <4.0.0"
-  flutter: ">=3.22.0"
+  flutter: ">=3.27.0"
