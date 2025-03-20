@@ -31,11 +31,13 @@ class HouseTile extends StatefulWidget {
 class HouseTileState extends State<HouseTile> {
   late PageController _pageController;
   int _currentPage = 0;
+  late bool _isFavorite;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
+    _isFavorite = widget.isFavorite;
   }
 
   void _nextImage() {
@@ -225,20 +227,17 @@ class HouseTileState extends State<HouseTile> {
                     Positioned(
                       top: 5.h,
                       right: 5.w,
-                      child: GestureDetector(
-                        onTap: () {
-                          // Handle favorite toggle
-                        },
-                        child: CircleAvatar(
-                          backgroundColor: Colors.white,
-                          radius: 12.r,
-                          child: Icon(
-                            widget.isFavorite ? Icons.favorite : Icons.favorite_border,
-                            color: widget.isFavorite ? Colors.red : Colors.black,
-                            size: 8.sp,
-                          ),
-                        ),
+                      child: IconButton.filled(
+                      icon: Icon(
+                        _isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: _isFavorite ? Colors.red : Colors.black,
                       ),
+                      style: IconButton.styleFrom(backgroundColor: Colors.white),
+                      onPressed: () {
+                        setState(() {
+                          _isFavorite = !_isFavorite;
+                        });
+                      }),
                     ),
                   ],
                 ),
