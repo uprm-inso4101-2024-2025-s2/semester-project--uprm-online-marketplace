@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:semesterprojectuprmonlinemarketplace/housing/pages/house_listing.dart';
 import '../pages/house_page.dart';
 import 'buttons.dart';
 import '../pages/edit_listing.dart';
+import '../../Classes/ListingService.dart';
 
 class HouseTile extends StatefulWidget {
   final List<String> imagePath;
@@ -235,7 +237,14 @@ class HouseTileState extends State<HouseTile> {
                       style: IconButton.styleFrom(backgroundColor: Colors.white),
                       onPressed: () {
                         setState(() {
+                          // This uses the globalHouses dummy data.
+                          // Backend implementation to be added when User backend is refined.
                           _isFavorite = !_isFavorite;
+                          for (int i = 0; i < globalHouses.length; i++) {
+                            if (widget.title == globalHouses[i]["title"]) {
+                              globalHouses[i]["isFavorite"] = _isFavorite;
+                            }
+                          }
                         });
                       }),
                     ),
@@ -333,6 +342,3 @@ class HouseTileState extends State<HouseTile> {
     );
   }
 }
-
-
-

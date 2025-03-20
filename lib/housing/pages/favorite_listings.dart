@@ -1,12 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widgets/house_tile.dart';
 // Import the shared data and HouseList from house_listing.dart
 import 'house_listing.dart';
-// Import the Listing Creation button and data.
-import '../widgets/buttons.dart';
-import  'listings_creation.dart';
 
 
 class FavoritesPage extends StatefulWidget {
