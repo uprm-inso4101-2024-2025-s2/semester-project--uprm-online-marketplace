@@ -19,8 +19,8 @@ class SignUpPageState extends State<SignUpPage> {
   bool isLoading = false;
   bool showEmailCriteria = true;
   bool showPasswordCriteria = true;
-  bool isEmailValid = true;
-  bool isPasswordValid = true;
+  bool isEmailValid = false;
+  bool isPasswordValid = false;
   bool isPasswordVisible = false;
 
   bool isValidEmail(String email) {
