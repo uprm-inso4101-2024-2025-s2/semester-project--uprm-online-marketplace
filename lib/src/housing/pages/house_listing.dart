@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widgets/house_tile.dart';
 
 class HouseList extends StatefulWidget {
@@ -24,7 +25,7 @@ class HouseListState extends State<HouseList> {
           child: Icon(
             CupertinoIcons.line_horizontal_3,
             color: Colors.white,
-            size: 20,
+            size: 8.sp,
           ),
           onPressed: () {},
         ),
@@ -32,7 +33,7 @@ class HouseListState extends State<HouseList> {
           CupertinoButton(
               child: Icon(
                 CupertinoIcons.search,
-                size: 20,
+                size: 8.sp,
                 color: Colors.white,
               ),
               onPressed: (){
@@ -43,7 +44,7 @@ class HouseListState extends State<HouseList> {
       ),
 
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 10),
+        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 10.h),
         child: ListView(
           // shrinkWrap: true,
           // scrollDirection: Axis.vertical,
