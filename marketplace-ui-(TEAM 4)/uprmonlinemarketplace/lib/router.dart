@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,41 +24,75 @@ bool isAuthenticated =
 
 final GoRouter router = GoRouter(
   routes: [
-    GoRoute(path: '/', builder: (context, state) => AppLayout(body:HomePage())),
-
-    GoRoute(path: '/login', builder: (context, state) => AppLayout(body:LoginPage())),
-    GoRoute(path: '/sign-up', builder: (context, state) => AppLayout(body:SignUpPage())),
+    _customPageRoute('/', HomePage()),
+    _customPageRoute('/login', LoginPage()),
+    _customPageRoute('/sign-up', SignUpPage()),
     GoRoute(
       path: '/profile',
-      builder: (context, state) {
-        // bool isAuthenticated = false; // Replace with actual check
-        return isAuthenticated ? ProfilePage() : LoginPage();
-      },
+      pageBuilder:
+          (context, state) => _customTransitionPage(
+            state,
+            isAuthenticated ? ProfilePage() : LoginPage(),
+          ),
     ),
 
-    GoRoute(path: '/support', builder: (context, state) => const SupportPage()),
-    GoRoute(path: '/faq', builder: (context, state) => AppLayout(body:FaqPage())),
-
-    GoRoute(
-      path: '/favorites/suggestions',
-      builder: (context, state) => AppLayout(body:FavoritesSuggestionsPage()),
-      
-    ),
-    GoRoute(
-      path: '/favorites/trending',
-      builder: (context, state) => AppLayout(body:FavoritesTrendingPage()),
-    ),
-    GoRoute(
-      path: '/favorites/recently-added',
-      builder: (context, state) => AppLayout(body:FavoritesRecentlyAddedPage()),
-    ),
-    GoRoute(
-      path: '/chat',builder: (context, state) => AppLayout(body: const ChatPage()),
-    ),
-    GoRoute(path: '/map', builder: (context, state) => AppLayout(body: const MapPage())),
+    _customPageRoute('/support', SupportPage(), useLayout: false),
+    _customPageRoute('/faq', FaqPage()),
+    _customPageRoute('/favorites/suggestions', FavoritesSuggestionsPage()),
+    _customPageRoute('/favorites/trending', FavoritesTrendingPage()),
+    _customPageRoute('/favorites/recently-added', FavoritesRecentlyAddedPage()),
+    _customPageRoute('/chat', ChatPage(), useLayout: false),
+    _customPageRoute('/map', MapPage(), useLayout: false),
   ],
 
   errorBuilder:
       (context, state) =>
           Scaffold(body: Center(child: Text('404 Page Not Found'))),
 );
+
+GoRoute _customPageRoute(String path, Widget page, {bool useLayout = true}) {
+  return GoRoute(
+    path: path,
+    pageBuilder:
+        (context, state) => _customTransitionPage(
+          state,
+          useLayout ? AppLayout(body: page) : page,
+        ),
+  );
+}
+
+List<String> navigationHistory = []; // Track visited routes
+
+CustomTransitionPage _customTransitionPage(GoRouterState state, Widget child) {
+  return CustomTransitionPage(
+    key: state.pageKey,
+    child: child,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      String currentRoute = state.uri.toString();
+
+      bool isGoingBack = false;
+      if (navigationHistory.isNotEmpty) {
+        isGoingBack = navigationHistory.last == currentRoute;
+        if (isGoingBack) {
+          navigationHistory.removeLast(); // Ensure strict back behavior
+        } else {
+          navigationHistory.add(currentRoute);
+        }
+      } else {
+        navigationHistory.add(currentRoute);
+      }
+
+      final beginOffset =
+          isGoingBack ? const Offset(-1.0, 0.0) : const Offset(1.0, 0.0);
+      const endOffset = Offset.zero;
+
+      var tween = Tween<Offset>(
+        begin: beginOffset,
+        end: endOffset,
+      ).chain(CurveTween(curve: Curves.easeInOut));
+
+      return SlideTransition(position: animation.drive(tween), child: child);
+    },
+    transitionDuration: const Duration(milliseconds: 300),
+  );
+}
