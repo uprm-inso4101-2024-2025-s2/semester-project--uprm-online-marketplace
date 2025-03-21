@@ -40,22 +40,47 @@ class ListingService extends LodgingManagement{
     }
   }
 
+  // @override
+  // List <Lodging> fetchListings(){
+  //   return super.getLodgings();
+  // }
   @override
-  List<Lodging> fetchListings() {
-    return super.getLodgings();
+  Future<List<Lodging>> fetchListings() async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('listings').get();
+
+    List<Lodging> fetchedListings = snapshot.docs.map((doc) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      return Lodging.fromFirestore(data);
+    }).toList();
+
+    return fetchedListings;
   }
 
-  Lodging? fetchListing(int ID){
-    if(listings.containsKey(ID)){
-      if(findLodgingWithId(ID)!=null){
-        return listings[ID];
-      }else{
-        throw ArgumentError("Item not Found.");
-      }
-    }else{
-      throw ArgumentError("Item not Found.");
+
+  // Lodging? fetchListing(int ID){
+  //   if(listings.containsKey(ID)){
+  //     if(findLodgingWithId(ID)!=null){
+  //       return listings[ID];
+  //     }else{
+  //       throw ArgumentError("Item not Found.");
+  //     }
+  //   }else{
+  //     throw ArgumentError("Item not Found.");
+  //   }
+  // }
+  Future<Lodging?> fetchListing(int id) async {
+    DocumentSnapshot doc = await FirebaseFirestore.instance.collection('listings').doc(id.toString()).get();
+
+    if (doc.exists) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      return Lodging.fromFirestore(data);
+    } else {
+      return null; // Return null if the listing does not exist
     }
   }
+
+
+
 
   // Fetch all listings (active and inactive) by owner
   List<Lodging> fetchOwnerListings(String owner) {

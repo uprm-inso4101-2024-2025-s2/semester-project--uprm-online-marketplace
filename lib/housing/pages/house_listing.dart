@@ -5,10 +5,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widgets/house_tile.dart';
 import 'MyListings.dart'; // Provides MyListingsPage, InactiveListingsPage, and FavoritesPage
 import 'package:semesterprojectuprmonlinemarketplace/housing/pages/favorite_listings.dart';
+import 'package:firebase_core/firebase_core.dart'; // Import Firebase Core
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// ------------------------------------------
 /// Shared global houses data.
 /// ------------------------------------------
+///
+
+
 List<Map<String, dynamic>> globalHouses = [
   {
     "imagePath": [

@@ -28,6 +28,36 @@ class Lodging extends Product{
   }): id = Random().nextInt(999999999), //we will  locate listings using a random numberID. This will make us be able to locate listings more efficiently rather than by title. Titles could be the same
         this.imageUrls= imageUrls ?? [],
         super(owner:owner, availability:availability, price:price, condition:condition, description:description, title:title);
+  factory Lodging.fromFirestore(Map<String, dynamic> data) {
+    return Lodging(
+      owner: data['owner'] ?? "UNKNOWN",
+      availability: data['availability'] ?? "UNKNOWN",
+      title: data['title'] ?? "NO TITLE",
+      price: (data['price'] as num?)?.toDouble() ?? 1000.0, // Ensure price is double
+      location: data['location'] ?? 'UNKNOWN',
+      condition: data['condition'] ?? 'UNKNOWN',
+      bedrooms: data['bedrooms'] ?? 0,
+      restrooms: data['restrooms'] ?? 0,
+      parking: data['parking'] ?? 0,
+      description: data['description'] ?? "",
+      imageUrls: List<String>.from(data['imageUrls'] ?? []), // Ensure list is properly cast
+    );
+  }
+  Map<String, dynamic> toFirestore() {
+    return {
+      'owner': owner,
+      'availability': availability,
+      'title': title,
+      'price': price,
+      'location': location,
+      'condition': condition,
+      'bedrooms': bedrooms,
+      'restrooms': restrooms,
+      'parking': parking,
+      'description': description,
+      'imageUrls': imageUrls,
+    };
+  }
 
   //Getters
   int getID() => id;
@@ -155,5 +185,4 @@ extension LodgingFirestore on Lodging {
       'imageUrls' : imageUrls,
     };
   }
-
 }

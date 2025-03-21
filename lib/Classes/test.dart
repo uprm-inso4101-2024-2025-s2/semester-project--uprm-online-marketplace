@@ -69,45 +69,46 @@ const firebaseConfig = FirebaseOptions(
 );
 
 
+
 //ListingService Tester (uncomment to use)
 
-void main() async{
-
-  //initialize firebase for testing
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: firebaseConfig);
-
-  ListingService listingService = ListingService();
-
-  Lodging lodging1 = Lodging(
-    owner: 'Owner1',
-    availability: 'Available',
-    title: 'Lodging 1',
-    price: 1000,
-    location: 'Location 1',
-    condition: 'Good',
-    bedrooms: 2,
-    restrooms: 1,
-    parking: 1,
-  );
-
-  Lodging lodging2 = Lodging(
-    owner: "Owner2",
-    availability: 'Not Available',
-    title: 'Lodging 2',
-    price: 1500,
-    location: 'Location2',
-    condition: 'Excellent',
-    bedrooms: 3,
-    restrooms: 2,
-    parking: 2,
-  );
+// void main() async{
+//
+//   //initialize firebase for testing
+//   WidgetsFlutterBinding.ensureInitialized();
+//   await Firebase.initializeApp(options: firebaseConfig);
+//
+//   ListingService listingService = ListingService();
+//
+//   Lodging lodging1 = Lodging(
+//     owner: 'Owner1',
+//     availability: 'Available',
+//     title: 'Lodging 1',
+//     price: 1000,
+//     location: 'Location 1',
+//     condition: 'Good',
+//     bedrooms: 2,
+//     restrooms: 1,
+//     parking: 1,
+//   );
+//
+//   Lodging lodging2 = Lodging(
+//     owner: "Owner2",
+//     availability: 'Not Available',
+//     title: 'Lodging 2',
+//     price: 1500,
+//     location: 'Location2',
+//     condition: 'Excellent',
+//     bedrooms: 3,
+//     restrooms: 2,
+//     parking: 2,
+//   );
 
   // Test creating a listing
-  print("🔵 Creating listing...");
-  await listingService.createListing(lodging1);
-  print(await listingService.fetchListings().length); // Expects 1
-  print(await listingService.fetchListings().first.title); // Expects 'Lodging 1'
+  // print("🔵 Creating listing...");
+  // await listingService.createListing(lodging1);
+  // print(await listingService.fetchListings().length); // Expects 1
+  // print(await listingService.fetchListings().first.title); // Expects 'Lodging 1'
 
   // await listingService.clearListing();
 
@@ -162,24 +163,85 @@ void main() async{
   //THIS IS WHAT U USE FOR TESTING flutter run --target=lib/Classes/test.dart
 
   // NEW TEST CASES ADDED BELOW 👇
-  print("\n---- New Active/Inactive Listings Tests ----");
-
-  // Initially active listing should appear
-  listingService.createListing(lodging1);
-  print("Initially active listings count: ${listingService.fetchListings().length}"); // Expects: 1
-
-  // Test: Mark listing as inactive
-  listingService.toggleListingStatus(lodging1.getID(), false);
-  print("Listings after deactivation: ${listingService.fetchListings().length}"); // Expects: 0 (hidden)
-
-  // Owner should still see inactive listings
-  List<Lodging> ownerListings = listingService.fetchOwnerListings("Owner1");
-  print("Owner listings (including inactive): ${ownerListings.length}"); // Expects: 1
-
-  // Reactivate listing and verify visibility
-  listingService.toggleListingStatus(lodging1.getID(), true);
-  print("Listings after reactivation: ${listingService.fetchListings().length}"); // Expects: 1 (visible again)
+  // print("\n---- New Active/Inactive Listings Tests ----");
+  //
+  // // Initially active listing should appear
+  // listingService.createListing(lodging1);
+  // print("Initially active listings count: ${listingService.fetchListings().length}"); // Expects: 1
+  //
+  // // Test: Mark listing as inactive
+  // listingService.toggleListingStatus(lodging1.getID(), false);
+  // print("Listings after deactivation: ${listingService.fetchListings().length}"); // Expects: 0 (hidden)
+  //
+  // // Owner should still see inactive listings
+  // List<Lodging> ownerListings = listingService.fetchOwnerListings("Owner1");
+  // print("Owner listings (including inactive): ${ownerListings.length}"); // Expects: 1
+  //
+  // // Reactivate listing and verify visibility
+  // listingService.toggleListingStatus(lodging1.getID(), true);
+  // print("Listings after reactivation: ${listingService.fetchListings().length}"); // Expects: 1 (visible again)
 
   // listingService.clearListing();
 
+// }
+
+//new firestore incorporated fetch functions
+//this for testing flutter run --target=lib/Classes/test.dart
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: firebaseConfig);
+
+  ListingService listingService = ListingService();
+
+  Lodging lodging1 = Lodging(
+    owner: 'Owner1',
+    availability: 'Available',
+    title: 'Lodging 1',
+    price: 1000,
+    location: 'Location 1',
+    condition: 'Good',
+    bedrooms: 2,
+    restrooms: 1,
+    parking: 1,
+  );
+
+  Lodging lodging2 = Lodging(
+    owner: "Owner2",
+    availability: 'Not Available',
+    title: 'Lodging 2',
+    price: 1500,
+    location: 'Location2',
+    condition: 'Excellent',
+    bedrooms: 3,
+    restrooms: 2,
+    parking: 2,
+  );
+
+  // 🔵 Clear database before starting
+  await listingService.clearListing();
+
+  // 🔵 Test fetchListings() when database is empty
+  List<Lodging> emptyListings = await listingService.fetchListings();
+  print("Initial listings count: ${emptyListings.length}"); // Expect: 0
+
+  // 🔵 Test fetchListings() after adding two listings
+  await listingService.createListing(lodging1);
+  await listingService.createListing(lodging2);
+
+  List<Lodging> allListings = await listingService.fetchListings();
+  print("Listings count after adding: ${allListings.length}"); // Expect: 2
+  print("First listing title: ${allListings[0].title}"); // Expect: Lodging 1
+  print("Second listing title: ${allListings[1].title}"); // Expect: Lodging 2
+
+  // 🔵 Test fetchListing(id) for a valid listing
+  Lodging? fetchedLodging = await listingService.fetchListing(lodging1.getID());
+  print("Fetched lodging title: ${fetchedLodging?.title}"); // Expect: Lodging 1
+
+  // 🔵 Test fetchListing(id) for a non-existent listing
+  Lodging? nonExistentLodging = await listingService.fetchListing(99999999);
+  print("Non-existent lodging: ${nonExistentLodging == null ? 'Passed' : 'Failed'}"); // Expect: Passed
+
+  // 🔵 Clean up database after tests
+  // await listingService.clearListing();
 }
+
