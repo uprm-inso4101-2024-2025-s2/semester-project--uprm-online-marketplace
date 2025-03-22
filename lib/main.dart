@@ -1,9 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'src/housing/pages/house_listing.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+import 'package:semesterprojectuprmonlinemarketplace/services/auth/auth_gate.dart';
+import 'package:semesterprojectuprmonlinemarketplace/themes/uprm_green.dart';
+import 'package:semesterprojectuprmonlinemarketplace/providers/notification_provider.dart';
+import 'firebase_options.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => NotificationProvider(), // ✅ Provide notifications globally
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -11,18 +23,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: const Size(500, 500), /// Base design size
-      minTextAdapt: true,
-      splitScreenMode: true,
-      builder: (context, child) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'House Marketplace',
-          theme: ThemeData(primarySwatch: Colors.green),
-          home: HouseList(),
-        );
-      },
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: const AuthGate(),
+      theme: greenMode,
     );
   }
 }
