@@ -5,6 +5,8 @@ import 'package:semesterprojectuprmonlinemarketplace/src/housing/pages/house_lis
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'housing/pages/profile_edit_userdetails.dart';
+import 'housing/pages/profile.dart';
 
 import 'housing/pages/signup_page.dart';
 
@@ -49,6 +51,7 @@ Future<void> initializeFirebase() async{
   //print("Firebase Emulators Connected: Firestore (8081), Auth (9099)");
 }
 class MyApp extends StatelessWidget {
+
   const MyApp({super.key});
 
   // This widget is the root of your application.
@@ -74,7 +77,9 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: HouseList(),
+      // home: HouseList(),
+      home: ProfileScreen(), //this has a button on top left that takes u to Profile() page
+      // home: Profile(),
       debugShowCheckedModeBanner: false,
     );
   }
