@@ -4,18 +4,18 @@
   "managers": ["anthonyharriel", "Gerardoruiz1"],
   "milestones": {
     "Milestone 1": {
-      "startDate": "2025-01-27",
-      "endDate": "2025-02-21",
+      "startDate": "2025-01-27T00:08:00-04:00",
+      "endDate": "2025-02-21T00:23:59-04:00",
       "projectedGroupGrade": 100.0
     },
     "Milestone 2": {
-      "startDate": "2025-02-24",
-      "endDate": "2025-03-21",
+      "startDate": "2025-02-24T00:08:00-04:00",
+      "endDate": "2025-03-21T00:23:59-04:00",
       "projectedGroupGrade": 100.0
     },
     "Milestone 3": {
-      "startDate": "2025-03-24",
-      "endDate": "2025-04-30",
+      "startDate": "2025-03-24T00:08:00-04:00",
+      "endDate": "2025-04-30T00:23:59-04:00",
       "projectedGroupGrade": 100.0
     }
   },

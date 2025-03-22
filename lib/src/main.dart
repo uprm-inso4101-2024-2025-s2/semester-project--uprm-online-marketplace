@@ -10,8 +10,6 @@ import 'housing/pages/profile.dart';
 
 import 'housing/pages/signup_page.dart';
 
-
-
 //Used to verify that the connection with firestore works well.
 //import 'package:semesterprojectuprmonlinemarketplace/services/auth_services.dart';
 //
@@ -20,6 +18,19 @@ import 'housing/pages/signup_page.dart';
 //  print(result ?? "User successfully created!");
 //}
 
+
+// Is this area not needed? Leaving in comment just in case
+//void main() { 
+//  WidgetsFlutterBinding.ensureInitialized();
+//initializeFirebase();
+//  runApp(const MyApp());
+//}
+//void initializeFirebase() async{
+//  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+//  FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+
+//  FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
 
 /*void main() async{ 
   WidgetsFlutterBinding.ensureInitialized();
