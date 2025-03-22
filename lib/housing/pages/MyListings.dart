@@ -3,19 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widgets/house_tile.dart';
 import 'package:semesterprojectuprmonlinemarketplace/housing/pages/favorite_listings.dart';
-// Import the shared data and HouseList from house_listing.dart
+// Provides shared data and navigation for the main listings page.
 import 'house_listing.dart';
-// Import the Listing Creation button and data.
+// Provides UI components for listing creation.
 import '../widgets/buttons.dart';
-import  'listings_creation.dart';
+import 'listings_creation.dart';
 
-/// Reusable Drawer widget for navigation
+/// Provides a navigation drawer for app-wide use.
+/// Contains links for primary views and administrative options.
 Widget buildAppDrawer(BuildContext context) {
   return Drawer(
     child: ListView(
       padding: EdgeInsets.zero,
       children: [
-        // Drawer header with a centered house icon.
+        /// Displays a header with a central icon representing the app's home.
         DrawerHeader(
           decoration: const BoxDecoration(
             color: Color(0xFF47804B),
@@ -28,7 +29,7 @@ Widget buildAppDrawer(BuildContext context) {
             ),
           ),
         ),
-        // Home Page -> Navigate to the real HouseList page.
+        /// Navigates to the main listings page.
         ListTile(
           leading: const Icon(Icons.home),
           title: const Text('Home Page'),
@@ -41,7 +42,7 @@ Widget buildAppDrawer(BuildContext context) {
             );
           },
         ),
-        // My Listings
+        /// Navigates to the user's own listings page.
         ListTile(
           leading: const Icon(Icons.list),
           title: const Text('My Listings'),
@@ -53,7 +54,7 @@ Widget buildAppDrawer(BuildContext context) {
             );
           },
         ),
-        // Favorites
+        /// Navigates to the user's favorites page.
         ListTile(
           leading: const Icon(Icons.favorite),
           title: const Text('Favorites'),
@@ -66,7 +67,7 @@ Widget buildAppDrawer(BuildContext context) {
           },
         ),
         const Divider(),
-        // Admin Options sub-section.
+        /// Displays additional navigation for administrative tasks.
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Text(
@@ -77,7 +78,7 @@ Widget buildAppDrawer(BuildContext context) {
             ),
           ),
         ),
-        // Inactive Listings under Admin Options.
+        /// Navigates to the page showing inactive listings.
         ListTile(
           leading: const Icon(Icons.visibility_off),
           title: const Text('Inactive Listings'),
@@ -94,7 +95,8 @@ Widget buildAppDrawer(BuildContext context) {
   );
 }
 
-/// My Listings Page: displays user-owned listings (active or inactive)
+/// Displays the listings owned by the user.
+/// For testing purposes, only listings with the title "San Juan Villa" are included.
 class MyListingsPage extends StatefulWidget {
   const MyListingsPage({Key? key}) : super(key: key);
 
@@ -105,8 +107,7 @@ class MyListingsPage extends StatefulWidget {
 class _MyListingsPageState extends State<MyListingsPage> {
   @override
   Widget build(BuildContext context) {
-    // Use the shared globalHouses from house_listing.dart.
-    // For testing, assume only "San Juan Villa" belongs to the user.
+    /// Filters the shared listings to those owned by the user (test filter by title).
     final userListings =
     globalHouses.where((house) => house["title"] == "San Juan Villa").toList();
 
@@ -115,10 +116,10 @@ class _MyListingsPageState extends State<MyListingsPage> {
       appBar: AppBar(
         backgroundColor: const Color(0xFF47804B),
         title: const Text(
-            "My Listings",
-            style: TextStyle(
-              color: Colors.white,
-            )
+          "My Listings",
+          style: TextStyle(
+            color: Colors.white,
+          ),
         ),
         automaticallyImplyLeading: false,
         leading: Builder(
@@ -128,26 +129,26 @@ class _MyListingsPageState extends State<MyListingsPage> {
           ),
         ),
       ),
-      // Change the ListView to horizontal.
+      /// Displays a horizontal scrollable view of user listings.
       body: Column(
-          children:[
-            SizedBox(height: 15.h),
-            SizedBox(
-              height: 35.h,
-              width: 50.w,
-              child: CreateButton(
-                  pressed:() {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context)=>const CreateListingPage()),
-                    );
-                  },
-              ),
+        children: [
+          SizedBox(height: 15.h),
+          SizedBox(
+            height: 35.h,
+            width: 50.w,
+            child: CreateButton(
+              pressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CreateListingPage()),
+                );
+              },
             ),
-            userListings.isEmpty
+          ),
+          userListings.isEmpty
               ? const Center(child: Text("No listings found"))
               : Expanded(
-              child: ListView.builder(
+            child: ListView.builder(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.all(8.0),
               itemCount: userListings.length,
@@ -162,9 +163,9 @@ class _MyListingsPageState extends State<MyListingsPage> {
                     details: house["details"],
                     isFavorite: house["isFavorite"],
                     isActive: house["isActive"] ?? true,
+                    /// Toggles the active status for the listing.
                     onToggleStatus: () {
                       setState(() {
-                        // Toggling modifies the shared globalHouses.
                         house["isActive"] = !(house["isActive"] ?? true);
                       });
                     },
@@ -172,14 +173,14 @@ class _MyListingsPageState extends State<MyListingsPage> {
                 );
               },
             ),
-          )
-        ] // children
-      )
+          ),
+        ],
+      ),
     );
   }
 }
 
-/// Inactive Listings Page: displays all inactive listings.
+/// Displays all listings marked as inactive.
 class InactiveListingsPage extends StatefulWidget {
   const InactiveListingsPage({Key? key}) : super(key: key);
 
@@ -190,7 +191,9 @@ class InactiveListingsPage extends StatefulWidget {
 class _InactiveListingsPageState extends State<InactiveListingsPage> {
   @override
   Widget build(BuildContext context) {
-    final inactiveListings = globalHouses.where((house) => !(house["isActive"] ?? true)).toList();
+    /// Filters the shared listings to only include inactive ones.
+    final inactiveListings =
+    globalHouses.where((house) => !(house["isActive"] ?? true)).toList();
 
     return Scaffold(
       drawer: buildAppDrawer(context),
@@ -205,6 +208,7 @@ class _InactiveListingsPageState extends State<InactiveListingsPage> {
           ),
         ),
       ),
+      /// Displays inactive listings in a horizontal scrollable view.
       body: inactiveListings.isEmpty
           ? const Center(child: Text("No inactive listings"))
           : ListView.builder(
@@ -222,6 +226,7 @@ class _InactiveListingsPageState extends State<InactiveListingsPage> {
               details: house["details"],
               isFavorite: house["isFavorite"],
               isActive: house["isActive"] ?? true,
+              /// Toggles the active status for the listing.
               onToggleStatus: () {
                 setState(() {
                   house["isActive"] = !(house["isActive"] ?? true);

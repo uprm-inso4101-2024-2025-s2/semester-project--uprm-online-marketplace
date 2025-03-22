@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-/// A widget containing a Google Map with functionality
-/// to search locations and add markers.
+/// Displays a Google Map that allows users to search for locations,
+/// add markers, and manage marker interactions.
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
 
@@ -15,44 +15,45 @@ class MapScreenState extends State<MapScreen> {
   late GoogleMapController mapController;
   final Set<Marker> _markers = {};
 
-  /// Default camera position on a zoomed out view of
-  /// the University of Puerto Rico at Mayagüez.
+  /// The default camera position centered at UPRM.
   static const CameraPosition _UPRM = CameraPosition(
     target: LatLng(18.2106, -67.1418),
     zoom: 15,
   );
 
+  /// Assigns the created map controller to enable map interactions.
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
 
-  /// Basic UI Elements
+  /// A spacer widget for consistent layout spacing.
   Widget space = const SizedBox(height: 10);
 
+  /// A search bar widget for inputting locations in "lat, lng" format.
   late final Widget searchBar = SearchBar(
     hintText: " Search a location: latitude, longitude",
     onSubmitted: _submitSearch,
   );
 
+  /// A button that adds a marker at the center of the current map view.
   late final Widget addMarkerButton = FloatingActionButton(
-      onPressed: _addMarker,
-      child : const Icon(Icons.add_location)
+    onPressed: _addMarker,
+    child: const Icon(Icons.add_location),
   );
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Listings Map Page')),
       body: Center(
         child: Column(
           spacing: 50,
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget> [
+          children: <Widget>[
             searchBar,
-            // The Expanded Widget is necessary to avoid pixel overflow by map
-            Expanded (
-              // The map must be declared dynamically,
-              // refactoring to a variable would not let markers update
+            // Expanded widget prevents layout overflow when displaying the map.
+            Expanded(
+              // The dynamic map widget allows marker updates during runtime.
               child: GoogleMap(
                 onMapCreated: _onMapCreated,
                 initialCameraPosition: _UPRM,
@@ -64,6 +65,7 @@ class MapScreenState extends State<MapScreen> {
           ],
         ),
       ),
+      // A secondary action that navigates the camera to the default location.
       floatingActionButton: FloatingActionButton(
         onPressed: _goToUPRM,
         child: const Icon(Icons.school),
@@ -71,53 +73,46 @@ class MapScreenState extends State<MapScreen> {
     );
   }
 
-
-  /// Parses a user input string into latitude and longitude coordinates.
+  /// Converts the input string into coordinates and navigates the map.
   ///
-  /// If the input is valid, it calls [_goToSearch] to move the map to the specified location.
-  /// If the input is invalid, an error message is shown to the user.
-  ///
-  /// [input] A string containing the latitude and longitude in the format "lat, lng".
-  void _submitSearch(String input){
+  /// If the input is valid, it moves the camera to the specified location;
+  /// otherwise, it shows an error message.
+  void _submitSearch(String input) {
     List<String> coords = input.split(",");
-    if(coords.length == 2){
-      try{
+    if (coords.length == 2) {
+      try {
         final latitude = double.parse(coords[0].trim());
         final longitude = double.parse(coords[1].trim());
         _goToSearch(LatLng(latitude, longitude));
       } catch (e) {
         _showError("Invalid coordinates: $input.");
       }
-    }
-    else {
+    } else {
       _showError("Invalid input format. Expected: lat, lng");
     }
   }
 
-  /// Moves the map focus to the specified coordinates.
+  /// Animates the map camera to focus on the provided coordinates.
   ///
-  /// This function animates the camera to zoom into a specific location on the map.
-  /// If the [mapController] is not initialized, it does nothing.
-  ///
-  /// [coords] The latitude and longitude of the location to navigate to.
-  ///
-  /// Returns a [Future] that completes when the camera animation is done.
+  /// Uses a predefined zoom level to ensure clarity.
   Future<void> _goToSearch(LatLng coords) async {
-    if(mapController == null) return;
+    if (mapController == null) return;
     await mapController.animateCamera(
-        CameraUpdate.newCameraPosition(CameraPosition(target: coords, zoom: 16))
+      CameraUpdate.newCameraPosition(
+        CameraPosition(target: coords, zoom: 16),
+      ),
     );
   }
 
-  /// Moves the map focus to the default UPRM location.
+  /// Navigates the map camera to the default UPRM location.
   Future<void> _goToUPRM() async {
     _goToSearch(_UPRM.target);
   }
 
-  /// Retrieves the center coordinates of the visible map and places a marker.
+  /// Determines the center of the visible map area and places a marker.
   Future<void> _addMarker() async {
-    if(mapController == null) return;
-    LatLngBounds region =  await mapController.getVisibleRegion();
+    if (mapController == null) return;
+    LatLngBounds region = await mapController.getVisibleRegion();
     LatLng coords = LatLng(
       (region.northeast.latitude + region.southwest.latitude) / 2,
       (region.northeast.longitude + region.southwest.longitude) / 2,
@@ -125,42 +120,31 @@ class MapScreenState extends State<MapScreen> {
     _placeMarker(coords);
   }
 
-  /// Places a marker at the specified coordinates on the map.
+  /// Adds a marker at the given location with an info window that supports deletion.
   ///
-  /// The marker displays the latitude and longitude in an info window.
-  /// Tapping the info window deletes the marker.
-  ///
-  /// [coords] The [LatLng] position where the marker should be placed.
-  void _placeMarker(LatLng coords){
+  /// The info window displays the coordinates, and tapping it removes the marker.
+  void _placeMarker(LatLng coords) {
     setState(() {
       _markers.add(Marker(
         markerId: MarkerId(coords.toString()),
         position: coords,
         infoWindow: InfoWindow(
-            title: "Tap to Delete",
-            snippet: "Latitude: ${coords.latitude}, Longitude: ${coords.longitude}",
-            // Tap the text of the info window to delete the marker.
-            onTap: () => _deleteMarker(coords.toString())
+          title: "Tap to Delete",
+          snippet: "Latitude: ${coords.latitude}, Longitude: ${coords.longitude}",
+          onTap: () => _deleteMarker(coords.toString()),
         ),
       ));
     });
   }
 
-  /// Deletes a marker given it unique ID.
-  ///
-  /// This is for later when a landlord wants to delete the marker of listing
-  /// or if the listing itself is deleted.
-  ///
-  /// [id] The [markerID.value] of the marker to be removed from the map.
-  void _deleteMarker(String id){
+  /// Removes a marker based on its unique identifier.
+  void _deleteMarker(String id) {
     setState(() {
       _markers.removeWhere((marker) => marker.markerId.value == id);
     });
   }
 
-  /// Shows an error message in a Snackbar.
-  ///
-  /// [message] The error message to be shown to the user.
+  /// Displays an error message to the user via a Snackbar.
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

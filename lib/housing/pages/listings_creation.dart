@@ -4,354 +4,376 @@ import 'package:image_picker/image_picker.dart';
 import '../../Classes/ListingService.dart';
 import '../../Classes/LodgingClass.dart';
 
-class CreateListingPage extends StatefulWidget{
-  const CreateListingPage({Key? key}) : super(key:key);
+/// This widget provides an interface for creating a new listing.
+/// It includes form fields for listing details, image upload functionality,
+/// and validation logic to ensure all inputs are correct before creation.
+class CreateListingPage extends StatefulWidget {
+  const CreateListingPage({Key? key}) : super(key: key);
 
   @override
   State<CreateListingPage> createState() => _CreateListingPageState();
 }
 
-class _CreateListingPageState extends State<CreateListingPage>{
-  //Accesses the Listing Service unique instance.
-  ListingService listingService= ListingService();
+class _CreateListingPageState extends State<CreateListingPage> {
+  /// Instance for handling listing-related operations.
+  ListingService listingService = ListingService();
 
-  //Manages FocusNodes for disposal.
-  final List<FocusNode> _focusNodes= [];
-  //Allows user input storing.
-  TextEditingController titleController= TextEditingController();
-  TextEditingController locationController= TextEditingController();
-  TextEditingController priceController= TextEditingController();
-  TextEditingController bedroomsController= TextEditingController();
-  TextEditingController restroomsController= TextEditingController();
-  TextEditingController parkingController= TextEditingController();
-  TextEditingController descriptionController= TextEditingController();
+  /// Collection of focus nodes for managing input focus.
+  final List<FocusNode> _focusNodes = [];
 
-  //Allows image input storing.
-  final List<String> _imageUrls= [];
-  final ImagePicker _picker= ImagePicker();
+  /// Controllers to capture user inputs for listing attributes.
+  TextEditingController titleController = TextEditingController();
+  TextEditingController locationController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
+  TextEditingController bedroomsController = TextEditingController();
+  TextEditingController restroomsController = TextEditingController();
+  TextEditingController parkingController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+
+  /// Stores image file paths selected by the user.
+  final List<String> _imageUrls = [];
+  final ImagePicker _picker = ImagePicker();
+
+  /// Controls the image carousel display.
   late PageController _pageController;
-  int _currentPage=0;
-  //Indicator that every input is valid before the creation of a Listing.
-  final _formKey= GlobalKey<FormState>();
+  int _currentPage = 0;
+
+  /// Key used to validate the listing creation form.
+  final _formKey = GlobalKey<FormState>();
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _pageController = PageController();
   }
 
-  //Listing creation's main widget.
+  /// Builds the main UI for creating a listing.
+  /// This includes an image display area, input fields, and action buttons.
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
           backgroundColor: const Color(0xFF47804B),
           title: Text(
-              "Creating Listing",
-              style: TextStyle(
-                color: Colors.white,
-              )
-          )
-      ),
+            "Creating Listing",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          )),
       body: Padding(
-          padding: EdgeInsets.symmetric(vertical: 30.h),
-          child: Center(
-              child: Card(
-                  elevation: 5.0,
-                  color: const Color(0xFFF7F2FA),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+        padding: EdgeInsets.symmetric(vertical: 30.h),
+        child: Center(
+          child: Card(
+            elevation: 5.0,
+            color: const Color(0xFFF7F2FA),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Section for image management and basic actions.
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(width: 8.5.w),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Row(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(width: 8.5.w),
-                                  Column( //First Column
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children:[
-                                        Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              ElevatedButton(
-                                                  style: ElevatedButton.styleFrom(
-                                                    backgroundColor: const Color(0xFF47804B),
-                                                  ),
-                                                  onPressed: (){
-                                                    cancelConfirmation();;
-                                                    setState(() {});
-                                                  },
-                                                  child: Text("Cancel",
-                                                    style : TextStyle(color: Colors.white),
-                                                  )
-                                              ),
-                                              SizedBox(width: 120.w),
-                                            ]
-                                        ),
-                                        SizedBox(height: 10.h),
-                                        _createImageDisplay(),
-                                        SizedBox(height: 8.h),
-                                        Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children:[
-                                              Container(height: 18.h, width: 47.w,
-                                                  child: ElevatedButton(
-                                                      onPressed: (){
-                                                        removeCurrentImage();
-                                                        setState(() {});
-                                                      },
-                                                      style: ElevatedButton.styleFrom(
-                                                        backgroundColor:
-                                                        const Color(0xFF47804B),
-                                                      ),
-                                                      child: const Text(
-                                                          "Remove Image",
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                          )
-                                                      )
-                                                  )
-                                              ),
-                                              SizedBox(width:40.w),
-                                              Container(height: 18.h, width: 45.w,
-                                                  child: ElevatedButton(
-                                                      onPressed: _pickImages,
-                                                      style: ElevatedButton.styleFrom(
-                                                        backgroundColor: const Color(0xFF47804B),
-                                                      ),
-                                                      child: const Text(
-                                                          "Add Images",
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                          )
-                                                      )
-                                                  )
-                                              ),
-                                            ]
-                                        ),
-                                        SizedBox(height: 28.h),
-                                      ]
-                                  ),
-                                  SizedBox(width: 1.5.w),
-                                  Column( //Second Column
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        SizedBox(height: 30.h),
-                                        _createTextField("Description", maxLines: 3,
-                                            width: 200.w,
-                                            controller: descriptionController),
-                                        Row( //This Row creates two columns for text boxes.
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                //Title, Price & Restrooms Textboxes Creation.
-                                                SizedBox(height: 12.5.h),
-                                                _createTextField("Title", width: 100.w,
-                                                    controller: titleController),
-                                                SizedBox(height: 12.5.h),
-                                                _createTextField("Price", width: 100.w,
-                                                    controller: priceController),
-                                                SizedBox(height: 12.5.h),
-                                                _createTextField("Restrooms", width: 100.w,
-                                                    controller: restroomsController),
-                                              ],
-                                            ),
-                                            SizedBox(width: 1.5.w),
-                                            //Location, Bedrooms, Parking TextBoxes Creation
-                                            Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  SizedBox(height: 12.5.h),
-                                                  _createTextField("Location", width: 100.w,
-                                                      controller: locationController),
-                                                  SizedBox(height: 12.5.h),
-                                                  _createTextField("Bedrooms", width: 100.w,
-                                                      controller: bedroomsController),
-                                                  SizedBox(height: 12.5.h),
-                                                  _createTextField("Parking Amount", width: 100.w,
-                                                      controller: parkingController),
-                                                ]
-                                            )
-                                          ],
-                                        ),
-                                        SizedBox(height: 52.h),
-                                        Row( //Creates the Save button on the bottom right corner.
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                            children:[
-                                              SizedBox(width: 150.w),
-                                              Container(
-                                                  width: 40.w,
-                                                  height: 35.h,
-                                                  child: FloatingActionButton(
-                                                    heroTag: "create_button",
-                                                    backgroundColor: const Color(0xFF47804B),
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(10.r),
-                                                    ),
-                                                    child: Text("CREATE",
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.bold,
-                                                          color: Colors.white,
-                                                        )
-                                                    ),
-                                                    onPressed: (){
-                                                      if(_imageUrls.isEmpty){
-                                                        ScaffoldMessenger.of(context).showSnackBar(
-                                                            const SnackBar(
-                                                                duration: Duration(seconds: 5),
-                                                                backgroundColor: Color(0xFF47804B),
-                                                                content: Text(
-                                                                    "Make sure you insert at least one Image.",
-                                                                    style: TextStyle(color: Colors.white,))
-                                                            )
-                                                        );
-                                                      }if(_formKey.currentState!.validate()) {
-                                                        createOwnListing();
-                                                      }
-                                                    },
-                                                  )
-                                              )
-                                            ]
-                                        ),
-                                      ]
-                                  ),
-                                ]
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                // Cancel action that prompts the user for confirmation.
+                                ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF47804B),
+                                    ),
+                                    onPressed: () {
+                                      cancelConfirmation();
+                                      setState(() {});
+                                    },
+                                    child: Text(
+                                      "Cancel",
+                                      style: TextStyle(color: Colors.white),
+                                    )),
+                                SizedBox(width: 120.w),
+                              ],
                             ),
-                          ]
-                      ),
+                            SizedBox(height: 10.h),
+                            // Displays the selected images in a carousel.
+                            _createImageDisplay(),
+                            SizedBox(height: 8.h),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                // Action to remove the currently displayed image.
+                                Container(
+                                    height: 18.h,
+                                    width: 47.w,
+                                    child: ElevatedButton(
+                                        onPressed: () {
+                                          removeCurrentImage();
+                                          setState(() {});
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                          const Color(0xFF47804B),
+                                        ),
+                                        child: const Text("Remove Image",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            )))),
+                                SizedBox(width: 40.w),
+                                // Action to add new images via the image picker.
+                                Container(
+                                    height: 18.h,
+                                    width: 45.w,
+                                    child: ElevatedButton(
+                                        onPressed: _pickImages,
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                          const Color(0xFF47804B),
+                                        ),
+                                        child: const Text("Add Images",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            )))),
+                              ],
+                            ),
+                            SizedBox(height: 28.h),
+                          ],
+                        ),
+                        SizedBox(width: 1.5.w),
+                        // Section for capturing listing details via text input.
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 30.h),
+                            _createTextField("Description",
+                                maxLines: 3,
+                                width: 200.w,
+                                controller: descriptionController),
+                            Row(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Input fields for title, price, and restrooms.
+                                    SizedBox(height: 12.5.h),
+                                    _createTextField("Title",
+                                        width: 100.w,
+                                        controller: titleController),
+                                    SizedBox(height: 12.5.h),
+                                    _createTextField("Price",
+                                        width: 100.w,
+                                        controller: priceController),
+                                    SizedBox(height: 12.5.h),
+                                    _createTextField("Restrooms",
+                                        width: 100.w,
+                                        controller: restroomsController),
+                                  ],
+                                ),
+                                SizedBox(width: 1.5.w),
+                                // Input fields for location, bedrooms, and parking.
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(height: 12.5.h),
+                                    _createTextField("Location",
+                                        width: 100.w,
+                                        controller: locationController),
+                                    SizedBox(height: 12.5.h),
+                                    _createTextField("Bedrooms",
+                                        width: 100.w,
+                                        controller: bedroomsController),
+                                    SizedBox(height: 12.5.h),
+                                    _createTextField("Parking Amount",
+                                        width: 100.w,
+                                        controller: parkingController),
+                                  ],
+                                )
+                              ],
+                            ),
+                            SizedBox(height: 52.h),
+                            // Save button to create the listing after validating inputs.
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                SizedBox(width: 150.w),
+                                Container(
+                                    width: 40.w,
+                                    height: 35.h,
+                                    child: FloatingActionButton(
+                                      heroTag: "create_button",
+                                      backgroundColor: const Color(0xFF47804B),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                        BorderRadius.circular(10.r),
+                                      ),
+                                      child: Text("CREATE",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          )),
+                                      onPressed: () {
+                                        if (_imageUrls.isEmpty) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(
+                                              duration:
+                                              Duration(seconds: 5),
+                                              backgroundColor:
+                                              Color(0xFF47804B),
+                                              content: Text(
+                                                  "Make sure you insert at least one Image.",
+                                                  style: TextStyle(
+                                                      color: Colors.white))));
+                                        }
+                                        if (_formKey.currentState!.validate()) {
+                                          createOwnListing();
+                                        }
+                                      },
+                                    ))
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                  )
-              )
-          )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
 
-  //Widget where data validation is handled, as well as various interactive
-  //UI features.
+  /// Returns a reusable text field widget with built-in validation.
+  /// This abstraction allows for easy extension of validation logic or UI changes.
   @override
-  Widget _createTextField(String label, {int maxLines = 1,
-    double width= double.infinity, TextEditingController? controller}) {
-    FocusNode focusNode= FocusNode();
+  Widget _createTextField(String label,
+      {int maxLines = 1,
+        double width = double.infinity,
+        TextEditingController? controller}) {
+    FocusNode focusNode = FocusNode();
     _focusNodes.add(focusNode);
     return SizedBox(
       width: width,
-      child:StatefulBuilder(
-        builder: (context, setState){
-          focusNode.addListener((){
-            setState((){});
+      child: StatefulBuilder(
+        builder: (context, setState) {
+          focusNode.addListener(() {
+            setState(() {});
           });
           return TextFormField(
             controller: controller,
             maxLines: maxLines,
             focusNode: focusNode,
-
-            //Data Validation
-            validator: (value){
-              String? input= controller?.text;
-              if(label=="Title"){
-                if(input!=null){
-                  if(input.trim().isNotEmpty){
-                    return null;
-                  }return "Insert valid title.";
-                }return "Insert valid title";
-
-              }
-                else if(label=="Price"){
-                  if(input!=null) {
-                    double? price= double.tryParse(input);
-                    if (price!= null && price>0) {
-                      return null;
-                    }return "Insert valid price.";
-                  }return "Insert valid price.";
-                }else if(label=="Location"){
-                  if(input!=null){
-                    if(input.trim().isNotEmpty){
-                      return null;
-                    }return "Insert valid Location.";
-                  }return "Insert valid Location.";
-                }
-                else if(label=="Restrooms"){
-                  if(input!=null){
-                    int? restroomAmount= int.tryParse(input);
-                    if(restroomAmount!=null && restroomAmount>0){
-                      return null;
-                    }return "Insert valid amount.";
-                  }return "Insert valid amount.";
-                }
-                else if(label=="Bedrooms"){
-                  if(input!=null){
-                    int? bedroomAmount= int.tryParse(input);
-                    if(bedroomAmount!=null && bedroomAmount>0){
-                      return null;
-                    }return "Insert valid amount.";
-                  }return "Insert valid amount.";
-                }
-                else if(label=="Parking Amount"){
-                  if(input!=null){
-                    int? parkingAmount= int.tryParse(input);
-                    if(parkingAmount!=null && parkingAmount>=0){
-                      return null;
-                    }return "Insert valid amount.";
-                  }return "Insert valid amount.";
-                }
-                else if(label=="Description"){
+            // Implements field-specific validation logic.
+            validator: (value) {
+              String? input = controller?.text;
+              if (label == "Title") {
+                if (input != null && input.trim().isNotEmpty) {
                   return null;
                 }
+                return "Insert valid title.";
+              } else if (label == "Price") {
+                if (input != null) {
+                  double? price = double.tryParse(input);
+                  if (price != null && price > 0) {
+                    return null;
+                  }
+                  return "Insert valid price.";
+                }
+                return "Insert valid price.";
+              } else if (label == "Location") {
+                if (input != null && input.trim().isNotEmpty) {
+                  return null;
+                }
+                return "Insert valid Location.";
+              } else if (label == "Restrooms") {
+                if (input != null) {
+                  int? restroomAmount = int.tryParse(input);
+                  if (restroomAmount != null && restroomAmount > 0) {
+                    return null;
+                  }
+                  return "Insert valid amount.";
+                }
+                return "Insert valid amount.";
+              } else if (label == "Bedrooms") {
+                if (input != null) {
+                  int? bedroomAmount = int.tryParse(input);
+                  if (bedroomAmount != null && bedroomAmount > 0) {
+                    return null;
+                  }
+                  return "Insert valid amount.";
+                }
+                return "Insert valid amount.";
+              } else if (label == "Parking Amount") {
+                if (input != null) {
+                  int? parkingAmount = int.tryParse(input);
+                  if (parkingAmount != null && parkingAmount >= 0) {
+                    return null;
+                  }
+                  return "Insert valid amount.";
+                }
+                return "Insert valid amount.";
+              } else if (label == "Description") {
+                return null;
+              }
             },
-            //Checks the value of the validator to then conclude if the Listing can be created.
-            //Insert If statement
             decoration: InputDecoration(
               labelText: label,
               labelStyle: TextStyle(
-                color: focusNode.hasFocus ?  Color(0xFF47804B) : Colors.black,
+                color: focusNode.hasFocus
+                    ? Color(0xFF47804B)
+                    : Colors.black,
               ),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.r)),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Color(0xFF47804B), width: 2.0)
-              ),
+                  borderSide: BorderSide(color: Color(0xFF47804B), width: 2.0)),
               errorBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.red, width: 2.0)
-              ),
+                  borderSide: BorderSide(color: Colors.red, width: 2.0)),
             ),
           );
         },
-      )
+      ),
     );
   }
 
-  //function that adds the input pictures into a list.
-  Future<void> _pickImages() async{
-    final List<XFile>? pickedFiles= await _picker.pickMultiImage();
-    if(pickedFiles != null && pickedFiles.isNotEmpty){
-      setState((){
+  /// Invokes the image picker to select multiple images.
+  /// Selected image paths are added to the listing's image collection.
+  Future<void> _pickImages() async {
+    final List<XFile>? pickedFiles = await _picker.pickMultiImage();
+    if (pickedFiles != null && pickedFiles.isNotEmpty) {
+      setState(() {
         _imageUrls.addAll(pickedFiles.map((file) => file.path));
       });
     }
   }
 
-  //This widget handles the Image logic.
-  Widget _createImageDisplay(){
-    return _imageUrls.isEmpty ? Container(
+  /// Displays images in a carousel with navigation controls.
+  /// Encapsulates image display logic and user navigation within the slider.
+  Widget _createImageDisplay() {
+    return _imageUrls.isEmpty
+        ? Container(
+        width: 150.w,
+        height: 200.h,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.black),
+          borderRadius: BorderRadius.circular(10.r),
+        ),
+        child: Icon(Icons.image,
+            size: 25.sp, color: Color(0xFF47804B)))
+        : Container(
       width: 150.w,
       height: 200.h,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.black),
-        borderRadius: BorderRadius.circular(10.r),
-      ),
-        child: Icon(Icons.image, size:25.sp, color: Color(0xFF47804B))
-    )
-    : Container(
-      width: 150.w,
-      height:200.h,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black),
         borderRadius: BorderRadius.circular(10.r),
@@ -361,21 +383,21 @@ class _CreateListingPageState extends State<CreateListingPage>{
           PageView.builder(
             controller: _pageController,
             itemCount: _imageUrls.length,
-            onPageChanged: (index){
+            onPageChanged: (index) {
               setState(() {
-                _currentPage= index;
+                _currentPage = index;
               });
             },
-            itemBuilder: (context, index){
+            itemBuilder: (context, index) {
               return Image.network(
                 _imageUrls[index],
                 fit: BoxFit.cover,
               );
             },
           ),
-          if(_currentPage > 0)
+          if (_currentPage > 0)
             Positioned(
-              left:5.w,
+              left: 5.w,
               top: 80.h,
               child: GestureDetector(
                 onTap: _previousImage,
@@ -390,93 +412,95 @@ class _CreateListingPageState extends State<CreateListingPage>{
                 ),
               ),
             ),
-          if(_currentPage < _imageUrls.length-1)
+          if (_currentPage < _imageUrls.length - 1)
             Positioned(
-              right:5.w,
-              top:80.h,
+              right: 5.w,
+              top: 80.h,
               child: GestureDetector(
                 onTap: _nextImage,
                 child: CircleAvatar(
                   backgroundColor: Colors.white,
-                    radius: 12.r,
-                    child: Icon(
-                      Icons.chevron_right,
-                      color: Colors.black,
-                      size: 14.sp,
-                    ),
+                  radius: 12.r,
+                  child: Icon(
+                    Icons.chevron_right,
+                    color: Colors.black,
+                    size: 14.sp,
                   ),
                 ),
+              ),
             ),
         ],
       ),
     );
   }
 
+  /// Initiates the process to remove the currently displayed image.
+  /// If no images are present, a notification is shown.
   @override
-  void removeCurrentImage(){
-    if(_imageUrls.isNotEmpty) {
+  void removeCurrentImage() {
+    if (_imageUrls.isNotEmpty) {
       imageRemoveConfirmation();
-    }else{
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              duration: Duration(seconds: 5),
-              backgroundColor: Color(0xFF47804B),
-              content: Text(
-                  "No images were found.",
-                  style: TextStyle(color: Colors.white,)
-              )
-          )
-      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          duration: Duration(seconds: 5),
+          backgroundColor: Color(0xFF47804B),
+          content: Text(
+            "No images were found.",
+            style: TextStyle(color: Colors.white),
+          )));
     }
   }
 
-  //Will ask for confirmation if cancel button is hit.
+  /// Displays a confirmation dialog when the user cancels the listing creation.
   @override
-  Future<void> cancelConfirmation() async{
+  Future<void> cancelConfirmation() async {
     showDialog(
       context: context,
-      builder: (context){
+      builder: (context) {
         return AlertDialog(
-          title: Text("Are you sure you want to cancel?",
+          title: Text(
+            "Are you sure you want to cancel?",
             style: TextStyle(fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
-          actions:[
+          actions: [
             Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children:[
-                  TextButton(
-                    onPressed: () =>Navigator.pop(context),
-                    style: ButtonStyle(
-                        overlayColor: WidgetStateProperty.resolveWith((states){
-                          if(states.contains(WidgetState.hovered)){
-                            return Color.fromRGBO(255, 0, 0, 0.2);
-                          }
-                          return null;
-                        })
-                    ),
-                    child: Text("Cancel",
-                      style: TextStyle(color: Colors.red,),),
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ButtonStyle(
+                      overlayColor:
+                      WidgetStateProperty.resolveWith((states) {
+                        if (states.contains(WidgetState.hovered)) {
+                          return Color.fromRGBO(255, 0, 0, 0.2);
+                        }
+                        return null;
+                      })),
+                  child: Text(
+                    "Cancel",
+                    style: TextStyle(color: Colors.red),
                   ),
-                  SizedBox(width:100.w),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {});
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                    },
-                    style: ButtonStyle(
-                        overlayColor: WidgetStateProperty.resolveWith((states){
-                          if(states.contains(WidgetState.hovered)){
-                            return  Color.fromRGBO(71, 128, 75, 0.2);
-                          }
-                          return null;
-                        })
-                    ),
-                    child: Text("Confirm",
-                        style: TextStyle(color: Color(0xFF47804B))),
-                  ),
-                ]
+                ),
+                SizedBox(width: 100.w),
+                TextButton(
+                  onPressed: () {
+                    setState(() {});
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  },
+                  style: ButtonStyle(
+                      overlayColor:
+                      WidgetStateProperty.resolveWith((states) {
+                        if (states.contains(WidgetState.hovered)) {
+                          return Color.fromRGBO(71, 128, 75, 0.2);
+                        }
+                        return null;
+                      })),
+                  child: Text("Confirm",
+                      style: TextStyle(color: Color(0xFF47804B))),
+                ),
+              ],
             ),
           ],
         );
@@ -484,67 +508,72 @@ class _CreateListingPageState extends State<CreateListingPage>{
     );
   }
 
-  //Asks the user for confirmation before removing an image.
+  /// Displays a confirmation dialog before removing an image from the selection.
   @override
-  Future<void> imageRemoveConfirmation() async{
+  Future<void> imageRemoveConfirmation() async {
     showDialog(
       context: context,
-      builder: (context){
+      builder: (context) {
         return AlertDialog(
-          title: Text("Are you sure you want to delete this image?",
+          title: Text(
+            "Are you sure you want to delete this image?",
             style: TextStyle(fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
-          actions:[
+          actions: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children:[
+              children: [
                 TextButton(
-                  onPressed: () =>Navigator.pop(context),
+                  onPressed: () => Navigator.pop(context),
                   style: ButtonStyle(
-                      overlayColor: WidgetStateProperty.resolveWith((states){
-                        if(states.contains(WidgetState.hovered)){
+                      overlayColor:
+                      WidgetStateProperty.resolveWith((states) {
+                        if (states.contains(WidgetState.hovered)) {
                           return Color.fromRGBO(255, 0, 0, 0.2);
                         }
                         return null;
-                      })
+                      })),
+                  child: Text(
+                    "Cancel",
+                    style: TextStyle(color: Colors.red),
                   ),
-                  child: Text("Cancel",
-                  style: TextStyle(color: Colors.red,),),
                 ),
-                SizedBox(width:100.w),
+                SizedBox(width: 100.w),
                 TextButton(
                   onPressed: () {
                     _imageUrls.removeAt(_currentPage);
-                    if(_currentPage>0) {
+                    if (_currentPage > 0) {
                       _currentPage--;
-                    }else{
-                      _currentPage=0;
+                    } else {
+                      _currentPage = 0;
                     }
                     setState(() {});
                     Navigator.pop(context);
                   },
                   style: ButtonStyle(
-                    overlayColor: WidgetStateProperty.resolveWith((states){
-                      if(states.contains(WidgetState.hovered)){
-                        return  Color.fromRGBO(71, 128, 75, 0.2);
-                      }
-                      return null;
-                    })
-                  ),
-                child: Text("Confirm",
-                style: TextStyle(color: Color(0xFF47804B))),
+                      overlayColor:
+                      WidgetStateProperty.resolveWith((states) {
+                        if (states.contains(WidgetState.hovered)) {
+                          return Color.fromRGBO(71, 128, 75, 0.2);
+                        }
+                        return null;
+                      })),
+                  child: Text("Confirm",
+                      style: TextStyle(color: Color(0xFF47804B))),
                 ),
-              ]
+              ],
             ),
           ],
         );
       },
     );
   }
+
+  /// Advances the image slider to the next image.
   @override
-  void _nextImage(){
-    if(_currentPage < _imageUrls.length-1){
+  void _nextImage() {
+    if (_currentPage < _imageUrls.length - 1) {
       setState(() {
         _currentPage++;
         _pageController.animateToPage(
@@ -556,9 +585,10 @@ class _CreateListingPageState extends State<CreateListingPage>{
     }
   }
 
+  /// Moves the image slider to the previous image.
   @override
-  void _previousImage(){
-    if(_currentPage > 0){
+  void _previousImage() {
+    if (_currentPage > 0) {
       setState(() {
         _currentPage--;
         _pageController.animateToPage(
@@ -569,31 +599,41 @@ class _CreateListingPageState extends State<CreateListingPage>{
       });
     }
   }
-  //Function uses validated input and creates a new instance of Listings.
-  //Utilizing the ListingService
-  @override
-  void createOwnListing(){
-    String title= titleController.text;
-    double price= double.parse(priceController.text);
-    String location= locationController.text;
-    int bedrooms= int.parse(bedroomsController.text);
-    int restrooms= int.parse(restroomsController.text);
-    int parking= int.parse(parkingController.text);
-    String description= descriptionController.text;
-    List<String> imagesList= _imageUrls;
 
-    Lodging newLodging= Lodging(owner: "DummyOwner", availability: "Available",
-      title: title, price: price, location: location,
-      condition: "DummyCondition", bedrooms: bedrooms, restrooms: restrooms,
-      parking: parking, description: description, isActive: true,
-      imageUrls: imagesList);
+  /// Uses validated input to create a new listing instance.
+  /// The new listing is then submitted via the ListingService.
+  @override
+  void createOwnListing() {
+    String title = titleController.text;
+    double price = double.parse(priceController.text);
+    String location = locationController.text;
+    int bedrooms = int.parse(bedroomsController.text);
+    int restrooms = int.parse(restroomsController.text);
+    int parking = int.parse(parkingController.text);
+    String description = descriptionController.text;
+    List<String> imagesList = _imageUrls;
+
+    Lodging newLodging = Lodging(
+      owner: "DummyOwner",
+      availability: "Available",
+      title: title,
+      price: price,
+      location: location,
+      condition: "DummyCondition",
+      bedrooms: bedrooms,
+      restrooms: restrooms,
+      parking: parking,
+      description: description,
+      isActive: true,
+      imageUrls: imagesList,
+    );
     listingService.createListing(newLodging);
     Navigator.pop(context);
   }
 
-
+  /// Releases all resources held by controllers and focus nodes.
   @override
-  void dispose(){
+  void dispose() {
     _imageUrls.clear();
     titleController.dispose();
     locationController.dispose();
@@ -602,11 +642,9 @@ class _CreateListingPageState extends State<CreateListingPage>{
     restroomsController.dispose();
     parkingController.dispose();
     descriptionController.dispose();
-    for(var focusNode in _focusNodes){
+    for (var focusNode in _focusNodes) {
       focusNode.dispose();
     }
     super.dispose();
   }
 }
-
-

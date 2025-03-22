@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+/// Represents a detailed page for a house listing.
+/// Displays house information, an image slider, description, and a contact form.
+/// The layout adapts to different screen sizes.
 class HousePage extends StatefulWidget {
   final String title;
   final String price;
@@ -32,6 +35,7 @@ class _HousePageState extends State<HousePage> {
     _pageController = PageController();
   }
 
+  /// Advances the image slider to the next image, if available.
   void _nextImage() {
     if (_currentPage < widget.images.length - 1) {
       setState(() {
@@ -45,6 +49,7 @@ class _HousePageState extends State<HousePage> {
     }
   }
 
+  /// Moves the image slider to the previous image, if available.
   void _previousImage() {
     if (_currentPage > 0) {
       setState(() {
@@ -78,19 +83,19 @@ class _HousePageState extends State<HousePage> {
       ),
       body: Padding(
         padding: EdgeInsets.all(16.w),
+        // Adapts the layout based on available width.
         child: LayoutBuilder(
           builder: (context, constraints) {
             bool isWideScreen = constraints.maxWidth > 800;
-            return isWideScreen
-                ? _buildWideLayout()
-                : _buildNarrowLayout();
+            return isWideScreen ? _buildWideLayout() : _buildNarrowLayout();
           },
         ),
       ),
     );
   }
 
-  /// **Wide Screen Layout**
+  /// Constructs a layout optimized for wide screens.
+  /// Arranges the image slider, description, and contact form side by side.
   Widget _buildWideLayout() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,7 +122,8 @@ class _HousePageState extends State<HousePage> {
     );
   }
 
-  /// **Narrow Screen Layout**
+  /// Constructs a layout optimized for narrow screens.
+  /// Stacks the image slider, description, and contact form vertically.
   Widget _buildNarrowLayout() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,7 +142,8 @@ class _HousePageState extends State<HousePage> {
     );
   }
 
-  /// **Image Slider with Navigation**
+  /// Builds an image slider with navigation controls.
+  /// Encapsulates the logic for displaying and navigating through house images.
   Widget _buildImageSlider() {
     return Stack(
       children: [
@@ -148,7 +155,11 @@ class _HousePageState extends State<HousePage> {
             child: PageView(
               controller: _pageController,
               children: widget.images.map((image) {
-                return Image.asset(image, fit: BoxFit.cover, width: double.infinity);
+                return Image.asset(
+                  image,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                );
               }).toList(),
             ),
           ),
@@ -183,7 +194,7 @@ class _HousePageState extends State<HousePage> {
     );
   }
 
-  /// **Contact Form for Landlord Inquiry**
+  /// Renders a contact form within a card to allow inquiries about the listing.
   Widget _buildContactForm() {
     return Card(
       elevation: 5,
@@ -193,13 +204,20 @@ class _HousePageState extends State<HousePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(widget.title, style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold)),
+            Text(widget.title,
+                style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold)),
             SizedBox(height: 8.h),
-            Text(widget.price, style: TextStyle(fontSize: 8.sp, fontWeight: FontWeight.bold, color: Colors.green)),
+            Text(widget.price,
+                style: TextStyle(
+                    fontSize: 8.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green)),
             SizedBox(height: 8.h),
-            Text('📍 ${widget.location}', style: TextStyle(fontSize: 6.sp, color: Colors.black54)),
+            Text('📍 ${widget.location}',
+                style: TextStyle(fontSize: 6.sp, color: Colors.black54)),
             Divider(),
-            Text('Contact Landlord', style: TextStyle(fontSize: 6.sp, fontWeight: FontWeight.bold)),
+            Text('Contact Landlord',
+                style: TextStyle(fontSize: 6.sp, fontWeight: FontWeight.bold)),
             SizedBox(height: 8.h),
             _buildTextField('Your Name'),
             SizedBox(height: 10.h),
@@ -211,10 +229,11 @@ class _HousePageState extends State<HousePage> {
                 padding: EdgeInsets.symmetric(vertical: 12.h),
               ),
               onPressed: () {
-                // Handle form submission
+                // Handle form submission (logic can be extended later).
               },
               child: Center(
-                child: Text('Send Inquiry', style: TextStyle(fontSize: 8.sp, color: Colors.white)),
+                child: Text('Send Inquiry',
+                    style: TextStyle(fontSize: 8.sp, color: Colors.white)),
               ),
             ),
           ],
@@ -223,7 +242,8 @@ class _HousePageState extends State<HousePage> {
     );
   }
 
-  /// **Reusable TextField Widget**
+  /// Creates a reusable styled text field for user input.
+  /// Supports customization such as label text and maximum lines.
   Widget _buildTextField(String label, {int maxLines = 1}) {
     return TextField(
       maxLines: maxLines,

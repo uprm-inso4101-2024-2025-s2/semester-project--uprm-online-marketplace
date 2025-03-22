@@ -1,4 +1,6 @@
-class Product{
+/// Product class serves as a base blueprint for all product types.
+/// It provides standard attributes and methods that other specific products can extend.
+class Product {
   String owner;
   double price;
   String availability;
@@ -6,8 +8,7 @@ class Product{
   String description;
   String title;
 
-
-  //Constructor
+  /// Constructs a Product instance with required fields and optional defaults.
   Product({
     required this.owner,
     required this.availability,
@@ -17,7 +18,7 @@ class Product{
     required this.title,
   });
 
-  //Getters
+  // Getters
   String getOwner() => owner;
   double getPrice() => price;
   String getAvailability() => availability;
@@ -25,12 +26,11 @@ class Product{
   String getDescription() => description;
   String getTitle() => title;
 
-  //Setters
+  // Setters
   void setOwner(String owner) => this.owner = owner;
   void setPrice(double price) => this.price = price;
   void setAvailability(String availability) => this.availability = availability;
   void setCondition(String condition) => this.condition = condition;
   void setDescription(String description) => this.description = description;
   void setTitle(String title) => this.title = title;
-
 }

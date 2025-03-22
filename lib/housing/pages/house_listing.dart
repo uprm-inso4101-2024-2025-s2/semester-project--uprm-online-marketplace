@@ -5,15 +5,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widgets/house_tile.dart';
 import 'MyListings.dart'; // Provides MyListingsPage, InactiveListingsPage, and FavoritesPage
 import 'package:semesterprojectuprmonlinemarketplace/housing/pages/favorite_listings.dart';
-import 'package:firebase_core/firebase_core.dart'; // Import Firebase Core
+import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-/// ------------------------------------------
-/// Shared global houses data.
-/// ------------------------------------------
-///
-
-
+/// Global dataset representing house information.
+/// This data can be extended or replaced without modifying dependent logic.
 List<Map<String, dynamic>> globalHouses = [
   {
     "imagePath": [
@@ -65,13 +61,14 @@ List<Map<String, dynamic>> globalHouses = [
   },
 ];
 
-/// Reusable Drawer widget with Admin Options.
+/// Constructs a navigation drawer widget with primary and administrative navigation options.
+/// The structure is designed to allow additional sections or items to be added later without modification.
 Widget buildAppDrawer(BuildContext context) {
   return Drawer(
     child: ListView(
       padding: EdgeInsets.zero,
       children: [
-        // Drawer header with a centered house icon.
+        // Header section featuring a centered house icon.
         DrawerHeader(
           decoration: const BoxDecoration(
             color: Color(0xFF47804B),
@@ -84,7 +81,7 @@ Widget buildAppDrawer(BuildContext context) {
             ),
           ),
         ),
-        // Home Page: Navigates back to the main listings page.
+        // Navigation item: Home Page returns to the main listings view.
         ListTile(
           leading: const Icon(Icons.home),
           title: const Text('Home Page'),
@@ -97,7 +94,7 @@ Widget buildAppDrawer(BuildContext context) {
             );
           },
         ),
-        // My Listings
+        // Navigation item: My Listings.
         ListTile(
           leading: const Icon(Icons.list),
           title: const Text('My Listings'),
@@ -109,7 +106,7 @@ Widget buildAppDrawer(BuildContext context) {
             );
           },
         ),
-        // Favorites
+        // Navigation item: Favorites.
         ListTile(
           leading: const Icon(Icons.favorite),
           title: const Text('Favorites'),
@@ -122,7 +119,7 @@ Widget buildAppDrawer(BuildContext context) {
           },
         ),
         const Divider(),
-        // Admin Options sub-section.
+        // Section header for administrative navigation.
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Text(
@@ -133,7 +130,7 @@ Widget buildAppDrawer(BuildContext context) {
             ),
           ),
         ),
-        // Inactive Listings under Admin Options.
+        // Navigation item: Inactive Listings (administrative function).
         ListTile(
           leading: const Icon(Icons.visibility_off),
           title: const Text('Inactive Listings'),
@@ -150,8 +147,8 @@ Widget buildAppDrawer(BuildContext context) {
   );
 }
 
-/// Main Listings Page (HouseList) with advanced filters.
-/// Only active listings (isActive == true) are shown here.
+/// Main page for displaying house listings with built-in filtering options.
+/// Only active listings are shown by default, and additional filters can be applied.
 class HouseList extends StatefulWidget {
   const HouseList({super.key});
 
@@ -170,34 +167,31 @@ class HouseListState extends State<HouseList> {
   String maxPriceInput = "";
   Timer? debounceTimer;
 
-  // Add a loading state
+  // Flags to manage loading state and error handling.
   bool isLoading = true;
   bool hasError = false;
 
-  /// Filtered houses (only active listings).
+  /// Holds the filtered list of houses based on user-defined criteria.
   List<Map<String, dynamic>> filteredHouses = [];
 
   @override
   void initState() {
     super.initState();
-    // Initially, show only active houses.
+    // Retrieve the initial set of active listings.
     _fetchListings();
   }
 
-  // Simulate fetching listings from Firestore
+  /// Retrieves the house listings.
+  /// In this demonstration, a simulated delay represents a network call.
+  /// Replace with a real Firestore or API call in production.
   Future<void> _fetchListings() async {
     try {
-      // Simulate a network call delay
-      await Future.delayed(Duration(seconds: 2)); // Remove this in production
+      await Future.delayed(Duration(seconds: 2)); // Simulated network delay
 
-      // Fetch listings from Firestore or any other source
-      // Example:
-      // QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('listings').get();
-      // List<Map<String, dynamic>> listings = querySnapshot.docs.map((doc) => doc.data()).toList();
-
-      // For now, use the globalHouses as a placeholder
+      // Retrieve listings from an external source, if available.
       setState(() {
-        filteredHouses = globalHouses.where((house) => house["isActive"] == true).toList();
+        filteredHouses =
+            globalHouses.where((house) => house["isActive"] == true).toList();
         isLoading = false;
       });
     } catch (e) {
@@ -208,6 +202,7 @@ class HouseListState extends State<HouseList> {
     }
   }
 
+  /// Debounces search input and applies filtering criteria.
   void onSearchChanged(String query) {
     if (debounceTimer?.isActive ?? false) debounceTimer!.cancel();
     debounceTimer = Timer(const Duration(milliseconds: 300), () {
@@ -218,7 +213,8 @@ class HouseListState extends State<HouseList> {
     });
   }
 
-  /// Filtering now requires each house to be active.
+  /// Applies filtering criteria on the global house data.
+  /// Ensures that only active listings are shown and refines the list based on price, beds, baths, and location.
   void applyFilters() {
     setState(() {
       double? minPrice = double.tryParse(minPriceInput);
@@ -231,7 +227,6 @@ class HouseListState extends State<HouseList> {
             .contains(searchQuery.toLowerCase());
         final locationMatch = (selectedLocation == "All" ||
             house["location"] == selectedLocation);
-        // Only show active houses on the main listing.
         final isActive = house["isActive"] ?? true;
         final double housePrice = house["priceValue"];
         final priceMatch = (minPrice == null || housePrice >= minPrice) &&
@@ -254,11 +249,12 @@ class HouseListState extends State<HouseList> {
     });
   }
 
+  /// Builds the UI for advanced filtering options including price, beds, and bathrooms.
   Widget buildAdvancedFilters() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Price Range UI with two text fields.
+        // Section for price range filtering.
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
           child: Column(
@@ -303,7 +299,7 @@ class HouseListState extends State<HouseList> {
             ],
           ),
         ),
-        // Beds Filter
+        // Section for filtering by number of beds.
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
           child: Column(
@@ -325,7 +321,7 @@ class HouseListState extends State<HouseList> {
             ],
           ),
         ),
-        // Bathrooms Filter
+        // Section for filtering by number of bathrooms.
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
           child: Column(
@@ -386,7 +382,7 @@ class HouseListState extends State<HouseList> {
       drawer: buildAppDrawer(context),
       body: Column(
         children: [
-          // Search Bar
+          // Search bar for dynamic filtering of listings.
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 10.h),
             child: TextField(
@@ -400,9 +396,9 @@ class HouseListState extends State<HouseList> {
               ),
             ),
           ),
-          // Advanced Filters
+          // Advanced filter options.
           buildAdvancedFilters(),
-          // Location Filter
+          // Dropdown for location-based filtering.
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Row(
@@ -427,14 +423,14 @@ class HouseListState extends State<HouseList> {
               ],
             ),
           ),
-          // Horizontal List of Filtered Houses.
+          // Displays the list of houses that match current filters.
           Expanded(
             child: isLoading
-                ? Center(child: CircularProgressIndicator()) // Show loading indicator
+                ? Center(child: CircularProgressIndicator())
                 : hasError
-                ? Center(child: Text("Failed to load listings")) // Show error message
+                ? Center(child: Text("Failed to load listings"))
                 : filteredHouses.isEmpty
-                ? Center(child: Text("No houses found")) // Show no listings message
+                ? Center(child: Text("No houses found"))
                 : ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: filteredHouses.length,
