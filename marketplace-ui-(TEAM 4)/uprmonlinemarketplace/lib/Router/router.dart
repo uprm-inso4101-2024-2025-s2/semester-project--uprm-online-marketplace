@@ -4,20 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'home_page.dart';
+import '../Web_Pages/Home/home_page.dart';
 
-import 'login_page.dart';
-import 'sign_up_page.dart';
-import 'profile_page.dart';
-import 'map_page.dart';
-import 'support_page.dart';
-import 'faq_page.dart';
-import 'chat_page.dart';
-import 'favorites_recently_added_page.dart';
-import 'favorites_suggestions_page.dart';
-import 'favorites_trending_page.dart';
+import '../Web_Pages/Login_SignUp/login_page.dart';
+import '../Web_Pages/Login_SignUp/sign_up_page.dart';
+import '../Web_Pages/Login_SignUp/Profile/profile_page.dart';
+import '../Web_Pages/Map/map_page.dart';
+import '../Support/support_page.dart';
+import '../Support/faq_page.dart';
+import '../Web_Pages/Chat/chat_page.dart';
+import '../Web_Pages/My_Favorites/favorites_recently_added_page.dart';
+import '../Web_Pages/My_Favorites/favorites_suggestions_page.dart';
+import '../Web_Pages/My_Favorites/favorites_trending_page.dart';
 
-import 'widgets/app_layout.dart'; // Import AppLayout
+import '../widgets/app_layout.dart'; // Import AppLayout
 
 bool isAuthenticated =
     true; // Cambiar a true para propositos de testing. Al final se debe cambiar y usar la logica de autenticacion

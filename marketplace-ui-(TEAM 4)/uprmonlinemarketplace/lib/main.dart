@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'router.dart'; // Import router.dart instead
+import 'Router/router.dart'; // Import router.dart instead
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() {
