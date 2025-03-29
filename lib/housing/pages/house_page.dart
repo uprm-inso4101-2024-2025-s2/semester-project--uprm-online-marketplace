@@ -95,9 +95,11 @@ class _HousePageState extends State<HousePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+
         // Listing images
         _buildImageSlider(),
         SizedBox(height: 16.h), // spacing
+
         // Title and icons (favorite, location, message)
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -128,6 +130,7 @@ class _HousePageState extends State<HousePage> {
               )
           ],
         ),
+
         // Price and location
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,14 +141,15 @@ class _HousePageState extends State<HousePage> {
             Divider(),
           ],
         ),
-        SizedBox(height: 4.h),
+        SizedBox(height: 4.h), // spacing
+
         // Author icon, name, and listing creation date
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              spacing: 10.sp,
+              spacing: 5.sp,
               children: <Widget>[
                 CircleAvatar(
                   backgroundColor: Color(0xffE6E6E6),
@@ -161,8 +165,9 @@ class _HousePageState extends State<HousePage> {
             Text("12/12/2012", style: TextStyle(fontSize: 6.sp)),
           ],
         ),
+
         // Description
-        SizedBox(height: 6.h),
+        SizedBox(height: 6.h), // spacing
         Text(widget.description, style: TextStyle(fontSize: 7.sp)),
         SizedBox(height: 24.h),
       ],
@@ -174,9 +179,11 @@ class _HousePageState extends State<HousePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+
         // Listing images
         _buildImageSlider(),
         SizedBox(height: 16.h), // spacing
+
         // Title and icons (favorite, location, message)
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -207,6 +214,7 @@ class _HousePageState extends State<HousePage> {
               )
           ],
         ),
+
         // Price and location
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -217,7 +225,8 @@ class _HousePageState extends State<HousePage> {
             Divider(),
           ],
         ),
-        SizedBox(height: 4.h),
+        SizedBox(height: 4.h), // spacing
+
         // Author icon, name, and listing creation date
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -240,10 +249,11 @@ class _HousePageState extends State<HousePage> {
             Text("12/12/2012", style: TextStyle(fontSize: 10.sp)),
           ],
         ),
+
         // Description
-        SizedBox(height: 6.h),
+        SizedBox(height: 6.h), // spacing
         Text(widget.description, style: TextStyle(fontSize: 12.sp)),
-        SizedBox(height: 24.h),
+        SizedBox(height: 24.h), // spacing
       ],
     );
   }
