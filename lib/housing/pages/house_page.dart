@@ -65,7 +65,7 @@ class _HousePageState extends State<HousePage> {
       appBar: AppBar(
         backgroundColor: const Color(0xFF47804B),
         title: Text(
-          widget.title,
+          "House Market",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         leading: CupertinoButton(
@@ -76,7 +76,7 @@ class _HousePageState extends State<HousePage> {
           },
         ),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: EdgeInsets.all(16.w),
         child: LayoutBuilder(
           builder: (context, constraints) {
