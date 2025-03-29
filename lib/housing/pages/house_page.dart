@@ -151,8 +151,10 @@ class _HousePageState extends State<HousePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Listing images
         _buildImageSlider(),
-        SizedBox(height: 16.h),
+        SizedBox(height: 16.h), // spacing
+        // Title and icons (favorite, location, message)
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
@@ -182,14 +184,42 @@ class _HousePageState extends State<HousePage> {
               )
           ],
         ),
-        Text(widget.price, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: Colors.green)),
+        // Price and location
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 4.h,
+          children: <Widget>[
+            Text(widget.price, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: Colors.green)),
+            Text(widget.location, style: TextStyle(fontSize: 12.sp, color: Colors.black54)),
+            Divider(),
+          ],
+        ),
         SizedBox(height: 4.h),
-        Text(widget.location, style: TextStyle(fontSize: 12.sp, color: Colors.black54)),
-        SizedBox(height: 4.h),
-        Divider(),
+        // Author icon, name, and listing creation date
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              spacing: 10.sp,
+              children: <Widget>[
+                CircleAvatar(
+                  backgroundColor: Color(0xffE6E6E6),
+                  radius: 16.sp,
+                  child: Icon(
+                    Icons.person,
+                    color: Color.fromARGB(255, 145, 145, 145),
+                  ),
+                ),
+                Text("Juan del Pueblo", style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold),)
+              ],
+            ),
+            Text("12/12/2012", style: TextStyle(fontSize: 10.sp)),
+          ],
+        ),
+        SizedBox(height: 6.h),
         Text(widget.description, style: TextStyle(fontSize: 12.sp)),
         SizedBox(height: 24.h),
-        // _buildContactForm(),
       ],
     );
   }
