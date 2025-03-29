@@ -102,9 +102,34 @@ class _HousePageState extends State<HousePage> {
             children: [
               _buildImageSlider(),
               SizedBox(height: 16.h),
-              Text(
-                'House Description',
-                style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                Text(
+                  widget.title,
+                  style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold),
+                ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        IconButton(
+                          icon: const Icon(Icons.favorite_border),
+                          tooltip: "Add to favorites",
+                          onPressed: (){},
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.location_on_outlined),
+                          tooltip: "View location on map",
+                          onPressed: (){},
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.sms_outlined),
+                          tooltip: "Message seller",
+                          onPressed: (){},
+                        ),
+                      ],
+                    )
+                ],
               ),
               SizedBox(height: 8.h),
               Text(widget.description, style: TextStyle(fontSize: 7.sp)),
@@ -112,7 +137,7 @@ class _HousePageState extends State<HousePage> {
           ),
         ),
         SizedBox(width: 24.w),
-        Expanded(flex: 2, child: _buildContactForm()),
+        // Expanded(flex: 2, child: _buildContactForm()),
       ],
     );
   }
@@ -124,14 +149,39 @@ class _HousePageState extends State<HousePage> {
       children: [
         _buildImageSlider(),
         SizedBox(height: 16.h),
-        Text(
-          'House Description',
-          style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+              Text(
+                widget.title,
+                style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  IconButton(
+                    icon: const Icon(Icons.favorite_border),
+                    tooltip: "Add to favorites",
+                    onPressed: (){},
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.location_on_outlined),
+                    tooltip: "View location on map",
+                    onPressed: (){},
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.sms_outlined),
+                    tooltip: "Message seller",
+                    onPressed: (){},
+                  ),
+                ],
+              )
+          ],
         ),
         SizedBox(height: 8.h),
         Text(widget.description, style: TextStyle(fontSize: 16.sp)),
         SizedBox(height: 24.h),
-        _buildContactForm(),
+        // _buildContactForm(),
       ],
     );
   }
@@ -184,53 +234,53 @@ class _HousePageState extends State<HousePage> {
   }
 
   /// **Contact Form for Landlord Inquiry**
-  Widget _buildContactForm() {
-    return Card(
-      elevation: 5,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
-      child: Padding(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(widget.title, style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8.h),
-            Text(widget.price, style: TextStyle(fontSize: 8.sp, fontWeight: FontWeight.bold, color: Colors.green)),
-            SizedBox(height: 8.h),
-            Text('📍 ${widget.location}', style: TextStyle(fontSize: 6.sp, color: Colors.black54)),
-            Divider(),
-            Text('Contact Landlord', style: TextStyle(fontSize: 6.sp, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8.h),
-            _buildTextField('Your Name'),
-            SizedBox(height: 10.h),
-            _buildTextField('Your Message', maxLines: 3),
-            SizedBox(height: 10.h),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF47804B),
-                padding: EdgeInsets.symmetric(vertical: 12.h),
-              ),
-              onPressed: () {
-                // Handle form submission
-              },
-              child: Center(
-                child: Text('Send Inquiry', style: TextStyle(fontSize: 8.sp, color: Colors.white)),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget _buildContactForm() {
+  //   return Card(
+  //     elevation: 5,
+  //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+  //     child: Padding(
+  //       padding: EdgeInsets.all(16.w),
+  //       child: Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           Text(widget.title, style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold)),
+  //           SizedBox(height: 8.h),
+  //           Text(widget.price, style: TextStyle(fontSize: 8.sp, fontWeight: FontWeight.bold, color: Colors.green)),
+  //           SizedBox(height: 8.h),
+  //           Text('📍 ${widget.location}', style: TextStyle(fontSize: 6.sp, color: Colors.black54)),
+  //           Divider(),
+  //           Text('Contact Landlord', style: TextStyle(fontSize: 6.sp, fontWeight: FontWeight.bold)),
+  //           SizedBox(height: 8.h),
+  //           _buildTextField('Your Name'),
+  //           SizedBox(height: 10.h),
+  //           _buildTextField('Your Message', maxLines: 3),
+  //           SizedBox(height: 10.h),
+  //           ElevatedButton(
+  //             style: ElevatedButton.styleFrom(
+  //               backgroundColor: const Color(0xFF47804B),
+  //               padding: EdgeInsets.symmetric(vertical: 12.h),
+  //             ),
+  //             onPressed: () {
+  //               // Handle form submission
+  //             },
+  //             child: Center(
+  //               child: Text('Send Inquiry', style: TextStyle(fontSize: 8.sp, color: Colors.white)),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   /// **Reusable TextField Widget**
-  Widget _buildTextField(String label, {int maxLines = 1}) {
-    return TextField(
-      maxLines: maxLines,
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
-      ),
-    );
-  }
+  // Widget _buildTextField(String label, {int maxLines = 1}) {
+  //   return TextField(
+  //     maxLines: maxLines,
+  //     decoration: InputDecoration(
+  //       labelText: label,
+  //       border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
+  //     ),
+  //   );
+  // }
 }
