@@ -92,56 +92,79 @@ class _HousePageState extends State<HousePage> {
 
   /// **Wide Screen Layout**
   Widget _buildWideLayout() {
-    return Row(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          flex: 3,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildImageSlider(),
-              SizedBox(height: 16.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                Text(
-                  widget.title,
-                  style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold),
-                ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        IconButton(
-                          icon: const Icon(Icons.favorite_border),
-                          tooltip: "Add to favorites",
-                          onPressed: (){},
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.location_on_outlined),
-                          tooltip: "View location on map",
-                          onPressed: (){},
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.sms_outlined),
-                          tooltip: "Message seller",
-                          onPressed: (){},
-                        ),
-                      ],
-                    )
-                ],
+        // Listing images
+        _buildImageSlider(),
+        SizedBox(height: 16.h), // spacing
+        // Title and icons (favorite, location, message)
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+              Text(
+                widget.title,
+                style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold),
               ),
-              Text(widget.price, style: TextStyle(fontSize: 8.sp, fontWeight: FontWeight.bold, color: Colors.green)),
-              SizedBox(height: 4.h),
-              Text(widget.location, style: TextStyle(fontSize: 6.sp, color: Colors.black54)),
-              SizedBox(height: 4.h),
-              Divider(),
-              Text(widget.description, style: TextStyle(fontSize: 7.sp)),
-            ],
-          ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  IconButton(
+                    icon: const Icon(Icons.favorite_border),
+                    tooltip: "Add to favorites",
+                    onPressed: (){},
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.location_on_outlined),
+                    tooltip: "View location on map",
+                    onPressed: (){},
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.sms_outlined),
+                    tooltip: "Message seller",
+                    onPressed: (){},
+                  ),
+                ],
+              )
+          ],
         ),
-        SizedBox(width: 24.w),
-        // Expanded(flex: 2, child: _buildContactForm()),
+        // Price and location
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 4.h,
+          children: <Widget>[
+            Text(widget.price, style: TextStyle(fontSize: 6.sp, fontWeight: FontWeight.bold, color: Colors.green)),
+            Text(widget.location, style: TextStyle(fontSize: 6.sp, color: Colors.black54)),
+            Divider(),
+          ],
+        ),
+        SizedBox(height: 4.h),
+        // Author icon, name, and listing creation date
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              spacing: 10.sp,
+              children: <Widget>[
+                CircleAvatar(
+                  backgroundColor: Color(0xffE6E6E6),
+                  radius: 8.sp,
+                  child: Icon(
+                    Icons.person,
+                    color: Color.fromARGB(255, 145, 145, 145),
+                  ),
+                ),
+                Text("Juan del Pueblo", style: TextStyle(fontSize: 6.sp, fontWeight: FontWeight.bold),)
+              ],
+            ),
+            Text("12/12/2012", style: TextStyle(fontSize: 6.sp)),
+          ],
+        ),
+        // Description
+        SizedBox(height: 6.h),
+        Text(widget.description, style: TextStyle(fontSize: 7.sp)),
+        SizedBox(height: 24.h),
       ],
     );
   }
@@ -217,6 +240,7 @@ class _HousePageState extends State<HousePage> {
             Text("12/12/2012", style: TextStyle(fontSize: 10.sp)),
           ],
         ),
+        // Description
         SizedBox(height: 6.h),
         Text(widget.description, style: TextStyle(fontSize: 12.sp)),
         SizedBox(height: 24.h),
