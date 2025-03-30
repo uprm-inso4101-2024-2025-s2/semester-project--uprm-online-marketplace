@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:semesterprojectuprmonlinemarketplace/housing/pages/house_listing.dart';
 
 class HousePage extends StatefulWidget {
   final String title;
@@ -8,6 +9,7 @@ class HousePage extends StatefulWidget {
   final String location;
   final List<String> images;
   final String description;
+  final bool isFavorite;
 
   const HousePage({
     super.key,
@@ -16,6 +18,7 @@ class HousePage extends StatefulWidget {
     required this.location,
     required this.images,
     required this.description,
+    required this.isFavorite,
   });
 
   @override
@@ -25,11 +28,13 @@ class HousePage extends StatefulWidget {
 class _HousePageState extends State<HousePage> {
   late PageController _pageController;
   int _currentPage = 0;
+  late bool _isFavorite;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
+    _isFavorite = widget.isFavorite;
   }
 
   void _nextImage() {
@@ -112,9 +117,21 @@ class _HousePageState extends State<HousePage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   IconButton(
-                    icon: const Icon(Icons.favorite_border),
+                    icon: Icon(
+                      _isFavorite ? Icons.favorite : Icons.favorite_border,
+                      color: _isFavorite ? Colors.red : Color(0xFF212529) ,
+                    ),
                     tooltip: "Add to favorites",
-                    onPressed: (){},
+                    onPressed: (){
+                      setState(() {
+                        _isFavorite = !_isFavorite;
+                        for (int i = 0; i < globalHouses.length; i++) {
+                            if (widget.title == globalHouses[i]["title"]) {
+                              globalHouses[i]["isFavorite"] = _isFavorite;
+                            }
+                          }
+                      });
+                    },
                   ),
                   IconButton(
                     icon: const Icon(Icons.location_on_outlined),
@@ -196,9 +213,21 @@ class _HousePageState extends State<HousePage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   IconButton(
-                    icon: const Icon(Icons.favorite_border),
+                    icon: Icon(
+                      _isFavorite ? Icons.favorite : Icons.favorite_border,
+                      color: _isFavorite ? Colors.red : Color(0xFF212529) ,
+                    ),
                     tooltip: "Add to favorites",
-                    onPressed: (){},
+                    onPressed: (){
+                      setState(() {
+                        _isFavorite = !_isFavorite;
+                        for (int i = 0; i < globalHouses.length; i++) {
+                            if (widget.title == globalHouses[i]["title"]) {
+                              globalHouses[i]["isFavorite"] = _isFavorite;
+                            }
+                          }
+                      });
+                    },
                   ),
                   IconButton(
                     icon: const Icon(Icons.location_on_outlined),

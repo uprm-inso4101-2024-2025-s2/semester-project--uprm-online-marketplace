@@ -147,6 +147,7 @@ class HouseTileState extends State<HouseTile> {
             builder: (context) => HousePage(
               title: widget.title,
               price: widget.price,
+              isFavorite: widget.isFavorite,
               location: "Mayagüez, PR",
               images: widget.imagePath,
               description: "Spacious 3-bedroom house with modern amenities...",
