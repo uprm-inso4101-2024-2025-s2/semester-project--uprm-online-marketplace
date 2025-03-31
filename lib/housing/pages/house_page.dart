@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:semesterprojectuprmonlinemarketplace/housing/pages/house_listing.dart';
 
 class HousePage extends StatefulWidget {
   final String title;
@@ -8,6 +9,7 @@ class HousePage extends StatefulWidget {
   final String location;
   final List<String> images;
   final String description;
+  final bool isFavorite;
 
   const HousePage({
     super.key,
@@ -16,6 +18,7 @@ class HousePage extends StatefulWidget {
     required this.location,
     required this.images,
     required this.description,
+    required this.isFavorite,
   });
 
   @override
@@ -25,11 +28,13 @@ class HousePage extends StatefulWidget {
 class _HousePageState extends State<HousePage> {
   late PageController _pageController;
   int _currentPage = 0;
+  late bool _isFavorite;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
+    _isFavorite = widget.isFavorite;
   }
 
   void _nextImage() {
@@ -65,7 +70,7 @@ class _HousePageState extends State<HousePage> {
       appBar: AppBar(
         backgroundColor: const Color(0xFF47804B),
         title: Text(
-          widget.title,
+          "House Market",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         leading: CupertinoButton(
@@ -76,7 +81,7 @@ class _HousePageState extends State<HousePage> {
           },
         ),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: EdgeInsets.all(16.w),
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -92,27 +97,96 @@ class _HousePageState extends State<HousePage> {
 
   /// **Wide Screen Layout**
   Widget _buildWideLayout() {
-    return Row(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          flex: 3,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildImageSlider(),
-              SizedBox(height: 16.h),
+
+        // Listing images
+        _buildImageSlider(),
+        SizedBox(height: 16.h), // spacing
+
+        // Title and icons (favorite, location, message)
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
               Text(
-                'House Description',
+                widget.title,
                 style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 8.h),
-              Text(widget.description, style: TextStyle(fontSize: 7.sp)),
-            ],
-          ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  IconButton(
+                    icon: Icon(
+                      _isFavorite ? Icons.favorite : Icons.favorite_border,
+                      color: _isFavorite ? Colors.red : Color(0xFF212529) ,
+                    ),
+                    tooltip: "Add to favorites",
+                    onPressed: (){
+                      setState(() {
+                        _isFavorite = !_isFavorite;
+                        for (int i = 0; i < globalHouses.length; i++) {
+                            if (widget.title == globalHouses[i]["title"]) {
+                              globalHouses[i]["isFavorite"] = _isFavorite;
+                            }
+                          }
+                      });
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.location_on_outlined),
+                    tooltip: "View location on map",
+                    onPressed: (){},
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.sms_outlined),
+                    tooltip: "Message seller",
+                    onPressed: (){},
+                  ),
+                ],
+              )
+          ],
         ),
-        SizedBox(width: 24.w),
-        Expanded(flex: 2, child: _buildContactForm()),
+
+        // Price and location
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 4.h,
+          children: <Widget>[
+            Text(widget.price, style: TextStyle(fontSize: 6.sp, fontWeight: FontWeight.bold, color: Colors.green)),
+            Text(widget.location, style: TextStyle(fontSize: 6.sp, color: Colors.black54)),
+            Divider(),
+          ],
+        ),
+        SizedBox(height: 4.h), // spacing
+
+        // Author icon, name, and listing creation date
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              spacing: 5.sp,
+              children: <Widget>[
+                CircleAvatar(
+                  backgroundColor: Color(0xffE6E6E6),
+                  radius: 8.sp,
+                  child: Icon(
+                    Icons.person,
+                    color: Color.fromARGB(255, 145, 145, 145),
+                  ),
+                ),
+                Text("Juan del Pueblo", style: TextStyle(fontSize: 6.sp, fontWeight: FontWeight.bold),)
+              ],
+            ),
+            Text("12/12/2012", style: TextStyle(fontSize: 6.sp)),
+          ],
+        ),
+
+        // Description
+        SizedBox(height: 6.h), // spacing
+        Text(widget.description, style: TextStyle(fontSize: 7.sp)),
+        SizedBox(height: 24.h),
       ],
     );
   }
@@ -122,16 +196,93 @@ class _HousePageState extends State<HousePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+
+        // Listing images
         _buildImageSlider(),
-        SizedBox(height: 16.h),
-        Text(
-          'House Description',
-          style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
+        SizedBox(height: 16.h), // spacing
+
+        // Title and icons (favorite, location, message)
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+              Text(
+                widget.title,
+                style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  IconButton(
+                    icon: Icon(
+                      _isFavorite ? Icons.favorite : Icons.favorite_border,
+                      color: _isFavorite ? Colors.red : Color(0xFF212529) ,
+                    ),
+                    tooltip: "Add to favorites",
+                    onPressed: (){
+                      setState(() {
+                        _isFavorite = !_isFavorite;
+                        for (int i = 0; i < globalHouses.length; i++) {
+                            if (widget.title == globalHouses[i]["title"]) {
+                              globalHouses[i]["isFavorite"] = _isFavorite;
+                            }
+                          }
+                      });
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.location_on_outlined),
+                    tooltip: "View location on map",
+                    onPressed: (){},
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.sms_outlined),
+                    tooltip: "Message seller",
+                    onPressed: (){},
+                  ),
+                ],
+              )
+          ],
         ),
-        SizedBox(height: 8.h),
-        Text(widget.description, style: TextStyle(fontSize: 16.sp)),
-        SizedBox(height: 24.h),
-        _buildContactForm(),
+
+        // Price and location
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 4.h,
+          children: <Widget>[
+            Text(widget.price, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: Colors.green)),
+            Text(widget.location, style: TextStyle(fontSize: 12.sp, color: Colors.black54)),
+            Divider(),
+          ],
+        ),
+        SizedBox(height: 4.h), // spacing
+
+        // Author icon, name, and listing creation date
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              spacing: 10.sp,
+              children: <Widget>[
+                CircleAvatar(
+                  backgroundColor: Color(0xffE6E6E6),
+                  radius: 16.sp,
+                  child: Icon(
+                    Icons.person,
+                    color: Color.fromARGB(255, 145, 145, 145),
+                  ),
+                ),
+                Text("Juan del Pueblo", style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold),)
+              ],
+            ),
+            Text("12/12/2012", style: TextStyle(fontSize: 10.sp)),
+          ],
+        ),
+
+        // Description
+        SizedBox(height: 6.h), // spacing
+        Text(widget.description, style: TextStyle(fontSize: 12.sp)),
+        SizedBox(height: 24.h), // spacing
       ],
     );
   }
@@ -184,53 +335,53 @@ class _HousePageState extends State<HousePage> {
   }
 
   /// **Contact Form for Landlord Inquiry**
-  Widget _buildContactForm() {
-    return Card(
-      elevation: 5,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
-      child: Padding(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(widget.title, style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8.h),
-            Text(widget.price, style: TextStyle(fontSize: 8.sp, fontWeight: FontWeight.bold, color: Colors.green)),
-            SizedBox(height: 8.h),
-            Text('📍 ${widget.location}', style: TextStyle(fontSize: 6.sp, color: Colors.black54)),
-            Divider(),
-            Text('Contact Landlord', style: TextStyle(fontSize: 6.sp, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8.h),
-            _buildTextField('Your Name'),
-            SizedBox(height: 10.h),
-            _buildTextField('Your Message', maxLines: 3),
-            SizedBox(height: 10.h),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF47804B),
-                padding: EdgeInsets.symmetric(vertical: 12.h),
-              ),
-              onPressed: () {
-                // Handle form submission
-              },
-              child: Center(
-                child: Text('Send Inquiry', style: TextStyle(fontSize: 8.sp, color: Colors.white)),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget _buildContactForm() {
+  //   return Card(
+  //     elevation: 5,
+  //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+  //     child: Padding(
+  //       padding: EdgeInsets.all(16.w),
+  //       child: Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           Text(widget.title, style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold)),
+  //           SizedBox(height: 8.h),
+  //           Text(widget.price, style: TextStyle(fontSize: 8.sp, fontWeight: FontWeight.bold, color: Colors.green)),
+  //           SizedBox(height: 8.h),
+  //           Text('📍 ${widget.location}', style: TextStyle(fontSize: 6.sp, color: Colors.black54)),
+  //           Divider(),
+  //           Text('Contact Landlord', style: TextStyle(fontSize: 6.sp, fontWeight: FontWeight.bold)),
+  //           SizedBox(height: 8.h),
+  //           _buildTextField('Your Name'),
+  //           SizedBox(height: 10.h),
+  //           _buildTextField('Your Message', maxLines: 3),
+  //           SizedBox(height: 10.h),
+  //           ElevatedButton(
+  //             style: ElevatedButton.styleFrom(
+  //               backgroundColor: const Color(0xFF47804B),
+  //               padding: EdgeInsets.symmetric(vertical: 12.h),
+  //             ),
+  //             onPressed: () {
+  //               // Handle form submission
+  //             },
+  //             child: Center(
+  //               child: Text('Send Inquiry', style: TextStyle(fontSize: 8.sp, color: Colors.white)),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   /// **Reusable TextField Widget**
-  Widget _buildTextField(String label, {int maxLines = 1}) {
-    return TextField(
-      maxLines: maxLines,
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
-      ),
-    );
-  }
+  // Widget _buildTextField(String label, {int maxLines = 1}) {
+  //   return TextField(
+  //     maxLines: maxLines,
+  //     decoration: InputDecoration(
+  //       labelText: label,
+  //       border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
+  //     ),
+  //   );
+  // }
 }
