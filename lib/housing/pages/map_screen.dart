@@ -1,6 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import "package:http/http.dart" as http;
+import 'dart:convert';
 
 /// A widget containing a Google Map with functionality
 /// to search locations and add markers.
@@ -30,7 +31,7 @@ class MapScreenState extends State<MapScreen> {
   Widget space = const SizedBox(height: 10);
 
   late final Widget searchBar = SearchBar(
-    hintText: " Search a location: latitude, longitude",
+    hintText: " Search a location",
     onSubmitted: _submitSearch,
   );
 
@@ -77,20 +78,87 @@ class MapScreenState extends State<MapScreen> {
   /// If the input is valid, it calls [_goToSearch] to move the map to the specified location.
   /// If the input is invalid, an error message is shown to the user.
   ///
-  /// [input] A string containing the latitude and longitude in the format "lat, lng".
-  void _submitSearch(String input){
-    List<String> coords = input.split(",");
-    if(coords.length == 2){
-      try{
-        final latitude = double.parse(coords[0].trim());
-        final longitude = double.parse(coords[1].trim());
-        _goToSearch(LatLng(latitude, longitude));
-      } catch (e) {
-        _showError("Invalid coordinates: $input.");
+  /// [input] A place by name, or a string containing the latitude and longitude in the format "Coords: lat lng".
+  void _submitSearch(String input) async {
+    if(input.toLowerCase().startsWith("coords:")){
+      input = input.substring(7).trim();
+      List<String> coords = input.split(" ");
+      if(coords.length == 2) {
+        try {
+          final latitude = double.parse(coords[0].trim());
+          final longitude = double.parse(coords[1].trim());
+          _goToSearch(LatLng(latitude, longitude));
+        } catch (e) {
+          _showError("Invalid coordinates: ${input}.");
+        }
+      }
+      else {
+        _showError("Invalid input format. Expected: 'Coords: lat lng'");
       }
     }
     else {
-      _showError("Invalid input format. Expected: lat, lng");
+      final String apiKey = "AIzaSyAN3xamtj-oVtgU9fk0_Oitd6yMKb6kaN4";
+      /*
+      // Javascript
+      const functions = require("firebase-functions");
+      const admin = require("firebase-admin");
+      const axios = require("axios");
+
+      admin.initializeApp();
+
+      exports.placesProxy = functions.https.onRequest(async (req, res) => {
+        const { query } = req;
+        const url = 'https://maps.googleapis.com/maps/api/place/findplacefromtext/json?${new URLSearchParams(query)}&key=${apiKey}';
+
+        try {
+          const response = await axios.get(url);
+          res.json(response.data);
+        } catch (error) {
+          res.status(500).send(error.message);
+        }
+      });
+
+      // Dart
+      final Uri proxyUrl = Uri.https("your-cloud-function-url", "", {
+        "input": "san juan",
+        "inputtype": "textquery",
+        "fields": "geometry"
+      });
+
+      final response = await http.get(proxyUrl);
+       */
+
+      /** The following proxy is needed because flutter web does not allow
+       * making requests to the Google Places API directly.
+       * To get around this quickly,
+       * I used a CORS (Cross-Origin Resource Sharing) proxy.
+       * However if this project is to be pushed to production,
+       * the code above using firebase should be used.
+       */
+      // TODO: Modify to Firebase function call for production
+      final String corsProxy = "https://cors-anywhere.herokuapp.com/"; // To test this, go to this site and click 'Request temporary access to the demo server', after the search bar should call the places api just fine. If you do not do this, searching a place will result in an 'Error fetching location: Status code 403'
+      final String url = '${corsProxy}https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input="$input"&inputtype=textquery&fields=geometry&key=$apiKey';
+      try {
+
+        final response = await http.get(Uri.parse(url));
+
+        if(response.statusCode == 200) {
+          final data = json.decode(response.body);
+
+          if(data["candidates"].isNotEmpty) {
+            final latitude = data["candidates"][0]["geometry"]["location"]["lat"];
+            final longitude = data["candidates"][0]["geometry"]["location"]["lng"];
+            _goToSearch(LatLng(latitude, longitude));
+          } else {
+            _showError("Place not found: $input");
+          }
+        }
+        else {
+          _showError("Error fetching location: Status Code ${response.statusCode}");
+        }
+      } catch (e) { // This is for debugging mainly
+        _showError("$e");
+      }
     }
   }
 
