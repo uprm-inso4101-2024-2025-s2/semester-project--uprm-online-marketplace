@@ -1,45 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../Web_Pages/Home/home_page.dart';
+// import '../Web_Pages/Home/home_page.dart';
 
-import '../Web_Pages/Login_SignUp/login_page.dart';
-import '../Web_Pages/Login_SignUp/sign_up_page.dart';
-import '../Web_Pages/Login_SignUp/Profile/profile_page.dart';
-import '../Web_Pages/Map/map_page.dart';
-import '../Web_Pages/Support/support_page.dart';
-import '../Web_Pages/Support/faq_page.dart';
-import '../Web_Pages/Chat/chat_page.dart';
-import '../Web_Pages/My_Favorites/favorites_recently_added_page.dart';
-import '../Web_Pages/My_Favorites/favorites_suggestions_page.dart';
-import '../Web_Pages/My_Favorites/favorites_trending_page.dart';
+// import '../Web_Pages/Login_SignUp/login_page.dart';
+// import '../Web_Pages/Login_SignUp/sign_up_page.dart';
+// import '../Web_Pages/Login_SignUp/Profile/profile_page.dart';
+// import '../Web_Pages/Map/map_page.dart';
+//import '../Web_Pages/Support/support_page.dart';
+//import '../Web_Pages/Support/faq_page.dart';
+
+ import '../Web_Pages/My_Favorites/favorites_recently_added_page.dart';
+ import '../Web_Pages/My_Favorites/favorites_suggestions_page.dart';
+ import '../Web_Pages/My_Favorites/favorites_trending_page.dart';
 
 import '../widgets/app_layout.dart'; // Import AppLayout
 
-bool isAuthenticated =
-    true; // Cambiar a true para propositos de testing. Al final se debe cambiar y usar la logica de autenticacion
+import '../pages/chat_page.dart';
+import '../pages/home_page.dart';
+import '../pages/login_page.dart';
+import '../pages/register_page.dart';
+import '../pages/setting_page.dart';
+
+// bool isAuthenticated =
+//     true; // Cambiar a true para propositos de testing. Al final se debe cambiar y usar la logica de autenticacion
 
 final GoRouter router = GoRouter(
   routes: [
     _customPageRoute('/', HomePage()),
-    _customPageRoute('/login', LoginPage()),
-    _customPageRoute('/sign-up', SignUpPage()),
-    GoRoute(
-      path: '/profile',
-      pageBuilder:
-          (context, state) => _customTransitionPage(
-            state,
-            isAuthenticated ? ProfilePage() : LoginPage(),
-          ),
-    ),
+    _customPageRoute('/login', LoginPage(onTap:(){})),
+    _customPageRoute('/register', RegisterPage(onTap:(){})),//sign up 
+    // GoRoute(
+    //   path: '/profile',
+    //   pageBuilder:
+    //       (context, state) => _customTransitionPage(
+    //         state,
+    //         isAuthenticated ? ProfilePage() : LoginPage(),
+    //       ),
+    // ),
 
-    _customPageRoute('/support', SupportPage(), useLayout: false),
-    _customPageRoute('/faq', FaqPage()),
-    _customPageRoute('/favorites/suggestions', FavoritesSuggestionsPage()),
-    _customPageRoute('/favorites/trending', FavoritesTrendingPage()),
-    _customPageRoute('/favorites/recently-added', FavoritesRecentlyAddedPage()),
-    _customPageRoute('/chat', ChatPage(), useLayout: false),
-    _customPageRoute('/map', MapPage(), useLayout: false),
+    // _customPageRoute('/support', SupportPage(), useLayout: false),
+    // _customPageRoute('/faq', FaqPage()),
+    // _customPageRoute('/favorites/suggestions', FavoritesSuggestionsPage()),
+    // _customPageRoute('/favorites/trending', FavoritesTrendingPage()),
+    // _customPageRoute('/favorites/recently-added', FavoritesRecentlyAddedPage()),
+    _customPageRoute('/chat', ChatPage(receiverEmail: 'correo@example.com',receiverID: 'id123'), useLayout: false),
+    // _customPageRoute('/map', MapPage(), useLayout: false),
   ],
 
   errorBuilder:
@@ -51,10 +57,9 @@ GoRoute _customPageRoute(String path, Widget page, {bool useLayout = true}) {
   return GoRoute(
     path: path,
     pageBuilder:
-        (context, state) => _customTransitionPage(
-          state,
-          useLayout ? AppLayout(body: page) : page,
-        ),
+        (context, state){
+          return _customTransitionPage(state, AppLayout(body: page));
+        }
   );
 }
 

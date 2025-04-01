@@ -1,0 +1,9 @@
+This file represents a file that have code.
+The code will work in the branch 'demo_branch_179'.
+The code does not breaks other code inside this branch.
+Once this code is merged to 'main' branch, all code still works well.
+
+If this were an existing file in the 'main' branch, any new code should not break any existing code.
+
+This is a demo file, demonstrates the process of contribution.
+Issue #179.

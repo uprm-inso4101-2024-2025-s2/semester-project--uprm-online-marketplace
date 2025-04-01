@@ -56,7 +56,7 @@ class AppLayout extends StatelessWidget {
             ),
             ExpansionTile(
               leading: const Icon(Icons.account_circle),
-              title: const Text('Login / Sign Up'),
+              title: const Text('Login / Register'),
               children: <Widget>[
                 _buildNavItem(
                   context,
@@ -68,8 +68,8 @@ class AppLayout extends StatelessWidget {
                 _buildNavItem(
                   context,
                   Icons.app_registration,
-                  'Sign Up',
-                  '/sign-up',
+                  'Register',
+                  '/register',
                   currentRoute,
                 ),
               ],
