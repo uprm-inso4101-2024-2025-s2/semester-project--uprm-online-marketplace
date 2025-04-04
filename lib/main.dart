@@ -1,11 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:semesterprojectuprmonlinemarketplace/firebase_options.dart';
 import 'package:semesterprojectuprmonlinemarketplace/src/housing/pages/house_listing.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'housing/pages/profile_edit_userdetails.dart';
-import 'housing/pages/profile.dart';
+import 'package:semesterprojectuprmonlinemarketplace/src/housing/pages/signup_page.dart';
+import 'package:semesterprojectuprmonlinemarketplace/src/housing/pages/profile.dart';
+import 'package:semesterprojectuprmonlinemarketplace/src/housing/pages/profile_edit_userdetails.dart';
 
 
 //Used to verify that the connection with firestore works well.
@@ -17,17 +19,33 @@ import 'housing/pages/profile.dart';
 //}
 
 
-void main() { 
+/*void main() async{
   WidgetsFlutterBinding.ensureInitialized();
 initializeFirebase();
-  runApp(const MyApp());
+  runApp(MaterialApp(
+    home: SignUpPage(), // Set SignUpPage as the first screen
+  ));
+}*/
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeFirebase(); // Ensure Firebase initializes before runApp
+  runApp(MaterialApp(
+    // home: SignUpPage(), // Set SignUpPage as the first screen
+    home: ProfileScreen(),
+  ));
 }
-void initializeFirebase() async{
+Future<void> initializeFirebase() async{
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
-
-  FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+  if (kDebugMode) {
+    // Only use emulators in debug mode
+    try {
+      FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+      FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+    } catch (e) {
+      print("Firebase Emulator Error: $e");
+    }
+  }
   //Un-comment if you want to see the ports.
   //print("Firebase Emulators Connected: Firestore (8081), Auth (9099)");
 }
@@ -59,7 +77,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       // home: HouseList(),
-      home: ProfileScreen(), //this has a button on top left that takes u to Profile() page
+      // home: ProfileScreen(), //this has a button on top left that takes u to Profile() page
       // home: Profile(),
       debugShowCheckedModeBanner: false,
     );
@@ -151,4 +169,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
