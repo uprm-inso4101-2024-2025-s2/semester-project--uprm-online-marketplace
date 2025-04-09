@@ -1,9 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:semesterprojectuprmonlinemarketplace/firebase_options.dart';
-import 'package:semesterprojectuprmonlinemarketplace/services/auth/auth_service.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:flutter/material.dart';
+// import 'package:semesterprojectuprmonlinemarketplace/firebase_options.dart';
+// import 'package:semesterprojectuprmonlinemarketplace/services/auth/auth_service.dart';
 // void main() async {
 //   WidgetsFlutterBinding.ensureInitialized();
 //   await initializeFirebase();
@@ -46,17 +46,17 @@ import 'package:semesterprojectuprmonlinemarketplace/services/auth/auth_service.
 //   FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
 //   FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
 // }
-void main() async {
-  // Ensure Firebase is initialized
-  await Firebase.initializeApp();
+// void main() async {
+//   // Ensure Firebase is initialized
+//   await Firebase.initializeApp();
 
-  // Call the signInWithGoogle function
-  String? result = await AuthService().signInWithGoogle();
+//   // Call the signInWithGoogle function
+//   String? result = await AuthService().signInWithGoogle();
 
-  // Print result to the console
-  if (result == null) {
-    print('Google Sign-In Successful!');
-  } else {
-    print('Error: $result');
-  }
-}
+//   // Print result to the console
+//   if (result == null) {
+//     print('Google Sign-In Successful!');
+//   } else {
+//     print('Error: $result');
+//   }
+// }

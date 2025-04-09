@@ -10,9 +10,9 @@ import 'package:go_router/go_router.dart';
 //import '../Web_Pages/Support/support_page.dart';
 //import '../Web_Pages/Support/faq_page.dart';
 
- import '../Web_Pages/My_Favorites/favorites_recently_added_page.dart';
- import '../Web_Pages/My_Favorites/favorites_suggestions_page.dart';
- import '../Web_Pages/My_Favorites/favorites_trending_page.dart';
+//  import '../Web_Pages/My_Favorites/favorites_recently_added_page.dart';
+//  import '../Web_Pages/My_Favorites/favorites_suggestions_page.dart';
+//  import '../Web_Pages/My_Favorites/favorites_trending_page.dart';
 
 import '../widgets/app_layout.dart'; // Import AppLayout
 
@@ -28,8 +28,8 @@ import '../pages/setting_page.dart';
 final GoRouter router = GoRouter(
   routes: [
     _customPageRoute('/', HomePage()),
-    _customPageRoute('/login', LoginPage(onTap:(){})),
-    _customPageRoute('/register', RegisterPage(onTap:(){})),//sign up 
+    _customPageRoute('/login', LoginPage(onTap: () {})),
+    _customPageRoute('/register', RegisterPage(onTap: () {})), //sign up
     // GoRoute(
     //   path: '/profile',
     //   pageBuilder:
@@ -44,7 +44,11 @@ final GoRouter router = GoRouter(
     // _customPageRoute('/favorites/suggestions', FavoritesSuggestionsPage()),
     // _customPageRoute('/favorites/trending', FavoritesTrendingPage()),
     // _customPageRoute('/favorites/recently-added', FavoritesRecentlyAddedPage()),
-    _customPageRoute('/chat', ChatPage(receiverEmail: 'correo@example.com',receiverID: 'id123'), useLayout: false),
+    _customPageRoute(
+      '/chat',
+      ChatPage(receiverEmail: 'correo@example.com', receiverID: 'id123'),
+      useLayout: false,
+    ),
     // _customPageRoute('/map', MapPage(), useLayout: false),
   ],
 
@@ -56,10 +60,9 @@ final GoRouter router = GoRouter(
 GoRoute _customPageRoute(String path, Widget page, {bool useLayout = true}) {
   return GoRoute(
     path: path,
-    pageBuilder:
-        (context, state){
-          return _customTransitionPage(state, AppLayout(body: page));
-        }
+    pageBuilder: (context, state) {
+      return _customTransitionPage(state, AppLayout(body: page));
+    },
   );
 }
 
