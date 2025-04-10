@@ -1,69 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-// import '../Web_Pages/Home/home_page.dart';
-
-// import '../Web_Pages/Login_SignUp/login_page.dart';
-// import '../Web_Pages/Login_SignUp/sign_up_page.dart';
-// import '../Web_Pages/Login_SignUp/Profile/profile_page.dart';
-// import '../Web_Pages/Map/map_page.dart';
-//import '../Web_Pages/Support/support_page.dart';
-//import '../Web_Pages/Support/faq_page.dart';
-
-import '../housing/widgets/app_layout.dart'; // Import AppLayout
-
-import '../housing/pages/chat_page.dart';
-import '../housing/pages/home_page.dart';
+// Page imports
+import '../housing/pages/house_listing.dart';
 import '../housing/pages/login_page.dart';
 import '../housing/pages/register_page.dart';
-import '../housing/pages/setting_page.dart';
-import '../housing/pages/house_listing.dart';
-
-// bool isAuthenticated =
-//     true; // Cambiar a true para propositos de testing. Al final se debe cambiar y usar la logica de autenticacion
+import '../housing/pages/chat_page.dart';
+import '../housing/pages/MyListings.dart';
+import '../housing/pages/favorite_listings.dart';
+import '../housing/pages/map_screen.dart';
+import '../housing/widgets/app_layout.dart';
 
 final GoRouter router = GoRouter(
   routes: [
     _customPageRoute('/', HouseList()),
     _customPageRoute('/login', LoginPage(onTap: () {})),
-    _customPageRoute('/register', RegisterPage(onTap: () {})), //sign up
-    // GoRoute(
-    //   path: '/profile',
-    //   pageBuilder:
-    //       (context, state) => _customTransitionPage(
-    //         state,
-    //         isAuthenticated ? ProfilePage() : LoginPage(),
-    //       ),
-    // ),
+    _customPageRoute('/register', RegisterPage(onTap: () {})),
+    _customPageRoute('/chat', ChatPage(receiverEmail: 'correo@example.com', receiverID: 'id123'), useLayout: false),
 
-    // _customPageRoute('/support', SupportPage(), useLayout: false),
-    // _customPageRoute('/faq', FaqPage()),
-    // _customPageRoute('/favorites/suggestions', FavoritesSuggestionsPage()),
-    // _customPageRoute('/favorites/trending', FavoritesTrendingPage()),
-    // _customPageRoute('/favorites/recently-added', FavoritesRecentlyAddedPage()),
-    _customPageRoute(
-      '/chat',
-      ChatPage(receiverEmail: 'correo@example.com', receiverID: 'id123'),
-      useLayout: false,
-    ),
-    // _customPageRoute('/map', MapPage(), useLayout: false),
+    // ✅ Added new routes
+    _customPageRoute('/favorites', FavoritesPage()),
+    _customPageRoute('/map', MapScreen()),
+    _customPageRoute('/my-listings', MyListingsPage()),
+    _customPageRoute('/inactive-listings', InactiveListingsPage()),
   ],
-
-  errorBuilder:
-      (context, state) =>
-          Scaffold(body: Center(child: Text('404 Page Not Found'))),
+  errorBuilder: (context, state) => Scaffold(body: Center(child: Text('404 Page Not Found'))),
 );
 
 GoRoute _customPageRoute(String path, Widget page, {bool useLayout = true}) {
   return GoRoute(
     path: path,
     pageBuilder: (context, state) {
-      return _customTransitionPage(state, AppLayout(body: page));
+      return _customTransitionPage(
+        state,
+        useLayout ? AppLayout(body: page) : page,
+      );
     },
   );
 }
 
-List<String> navigationHistory = []; // Track visited routes
+List<String> navigationHistory = [];
 
 CustomTransitionPage _customTransitionPage(GoRouterState state, Widget child) {
   return CustomTransitionPage(
@@ -71,12 +47,12 @@ CustomTransitionPage _customTransitionPage(GoRouterState state, Widget child) {
     child: child,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       String currentRoute = state.uri.toString();
-
       bool isGoingBack = false;
+
       if (navigationHistory.isNotEmpty) {
         isGoingBack = navigationHistory.last == currentRoute;
         if (isGoingBack) {
-          navigationHistory.removeLast(); // Ensure strict back behavior
+          navigationHistory.removeLast();
         } else {
           navigationHistory.add(currentRoute);
         }
@@ -84,8 +60,7 @@ CustomTransitionPage _customTransitionPage(GoRouterState state, Widget child) {
         navigationHistory.add(currentRoute);
       }
 
-      final beginOffset =
-          isGoingBack ? const Offset(-1.0, 0.0) : const Offset(1.0, 0.0);
+      final beginOffset = isGoingBack ? const Offset(-1.0, 0.0) : const Offset(1.0, 0.0);
       const endOffset = Offset.zero;
 
       var tween = Tween<Offset>(

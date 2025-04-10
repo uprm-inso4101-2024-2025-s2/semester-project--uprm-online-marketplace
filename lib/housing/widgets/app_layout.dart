@@ -29,8 +29,9 @@ class AppLayout extends StatelessWidget {
             _buildNavItem(context, Icons.home, 'Home', '/', currentRoute),
             ExpansionTile(
               leading: const Icon(Icons.favorite),
-              title: const Text('My Favorites'),
+              title: const Text('Favorites'),
               children: <Widget>[
+                _buildNavItem(context, Icons.favorite, 'My Favorites', '/favorites', currentRoute),
                 _buildNavItem(
                   context,
                   Icons.list,
@@ -114,6 +115,9 @@ class AppLayout extends StatelessWidget {
             ),
             _buildNavItem(context, Icons.chat, 'Chat', '/chat', currentRoute),
             _buildNavItem(context, Icons.map, 'Map', '/map', currentRoute),
+            _buildNavItem(context, Icons.list, 'My Listings', '/my-listings', currentRoute),
+            _buildNavItem(context, Icons.visibility_off, 'Inactive Listings', '/inactive-listings', currentRoute),
+
           ],
         ),
       ),

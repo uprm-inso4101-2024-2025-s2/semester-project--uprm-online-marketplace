@@ -65,90 +65,6 @@ List<Map<String, dynamic>> globalHouses = [
   },
 ];
 
-/// Reusable Drawer widget with Admin Options.
-Widget buildAppDrawer(BuildContext context) {
-  return Drawer(
-    child: ListView(
-      padding: EdgeInsets.zero,
-      children: [
-        // Drawer header with a centered house icon.
-        DrawerHeader(
-          decoration: const BoxDecoration(
-            color: Color(0xFF47804B),
-          ),
-          child: Center(
-            child: Icon(
-              Icons.house,
-              size: 48.sp,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        // Home Page: Navigates back to the main listings page.
-        ListTile(
-          leading: const Icon(Icons.home),
-          title: const Text('Home Page'),
-          onTap: () {
-            Navigator.pop(context); // Close the drawer.
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const HouseList()),
-                  (Route<dynamic> route) => false,
-            );
-          },
-        ),
-        // My Listings
-        ListTile(
-          leading: const Icon(Icons.list),
-          title: const Text('My Listings'),
-          onTap: () {
-            Navigator.pop(context);
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const MyListingsPage()),
-            );
-          },
-        ),
-        // Favorites
-        ListTile(
-          leading: const Icon(Icons.favorite),
-          title: const Text('Favorites'),
-          onTap: () {
-            Navigator.pop(context);
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const FavoritesPage()),
-            );
-          },
-        ),
-        const Divider(),
-        // Admin Options sub-section.
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Text(
-            "Admin Options",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[700],
-            ),
-          ),
-        ),
-        // Inactive Listings under Admin Options.
-        ListTile(
-          leading: const Icon(Icons.visibility_off),
-          title: const Text('Inactive Listings'),
-          onTap: () {
-            Navigator.pop(context);
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const InactiveListingsPage()),
-            );
-          },
-        ),
-      ],
-    ),
-  );
-}
 
 /// Main Listings Page (HouseList) with advanced filters.
 /// Only active listings (isActive == true) are shown here.
@@ -356,34 +272,6 @@ class HouseListState extends State<HouseList> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF47804B),
-        title: const Text(
-          'House Market',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        leading: CupertinoButton(
-          child: const Icon(
-            CupertinoIcons.line_horizontal_3,
-            color: Colors.white,
-            size: 20,
-          ),
-          onPressed: () {
-            _scaffoldKey.currentState?.openDrawer();
-          },
-        ),
-        actions: [
-          CupertinoButton(
-            child: Icon(
-              CupertinoIcons.search,
-              size: 8.sp,
-              color: Colors.white,
-            ),
-            onPressed: () {},
-          )
-        ],
-      ),
-      drawer: buildAppDrawer(context),
       body: Column(
         children: [
           // Search Bar

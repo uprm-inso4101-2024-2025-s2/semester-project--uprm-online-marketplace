@@ -43,7 +43,6 @@ class MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      appBar: AppBar(title: Text('Listings Map Page')),
       body: Center(
         child: Column(
           spacing: 50,

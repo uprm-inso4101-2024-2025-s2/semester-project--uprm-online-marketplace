@@ -25,21 +25,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
   @override
   Widget build(BuildContext context) {
       return Scaffold(
-      drawer: buildAppDrawer(context),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF47804B),
-        title: const Text(
-          'House Market',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        automaticallyImplyLeading: false,
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(CupertinoIcons.line_horizontal_3, color: Colors.white),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          ),
-        ),
-      ),
+
       body: Column(
         children: [
           // Heading text.

@@ -9,90 +9,6 @@ import 'house_listing.dart';
 import '../widgets/buttons.dart';
 import  'listings_creation.dart';
 
-/// Reusable Drawer widget for navigation
-Widget buildAppDrawer(BuildContext context) {
-  return Drawer(
-    child: ListView(
-      padding: EdgeInsets.zero,
-      children: [
-        // Drawer header with a centered house icon.
-        DrawerHeader(
-          decoration: const BoxDecoration(
-            color: Color(0xFF47804B),
-          ),
-          child: Center(
-            child: Icon(
-              Icons.house,
-              size: 48.sp,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        // Home Page -> Navigate to the real HouseList page.
-        ListTile(
-          leading: const Icon(Icons.home),
-          title: const Text('Home Page'),
-          onTap: () {
-            Navigator.pop(context);
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const HouseList()),
-                  (Route<dynamic> route) => false,
-            );
-          },
-        ),
-        // My Listings
-        ListTile(
-          leading: const Icon(Icons.list),
-          title: const Text('My Listings'),
-          onTap: () {
-            Navigator.pop(context);
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const MyListingsPage()),
-            );
-          },
-        ),
-        // Favorites
-        ListTile(
-          leading: const Icon(Icons.favorite),
-          title: const Text('Favorites'),
-          onTap: () {
-            Navigator.pop(context);
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const FavoritesPage()),
-            );
-          },
-        ),
-        const Divider(),
-        // Admin Options sub-section.
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Text(
-            "Admin Options",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[700],
-            ),
-          ),
-        ),
-        // Inactive Listings under Admin Options.
-        ListTile(
-          leading: const Icon(Icons.visibility_off),
-          title: const Text('Inactive Listings'),
-          onTap: () {
-            Navigator.pop(context);
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const InactiveListingsPage()),
-            );
-          },
-        ),
-      ],
-    ),
-  );
-}
 
 /// My Listings Page: displays user-owned listings (active or inactive)
 class MyListingsPage extends StatefulWidget {
@@ -111,23 +27,7 @@ class _MyListingsPageState extends State<MyListingsPage> {
     globalHouses.where((house) => house["title"] == "San Juan Villa").toList();
 
     return Scaffold(
-      drawer: buildAppDrawer(context),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF47804B),
-        title: const Text(
-            "My Listings",
-            style: TextStyle(
-              color: Colors.white,
-            )
-        ),
-        automaticallyImplyLeading: false,
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(CupertinoIcons.line_horizontal_3, color: Colors.white),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          ),
-        ),
-      ),
+
       // Change the ListView to horizontal.
       body: Column(
           children:[
@@ -193,18 +93,6 @@ class _InactiveListingsPageState extends State<InactiveListingsPage> {
     final inactiveListings = globalHouses.where((house) => !(house["isActive"] ?? true)).toList();
 
     return Scaffold(
-      drawer: buildAppDrawer(context),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF47804B),
-        title: const Text("Inactive Listings"),
-        automaticallyImplyLeading: false,
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(CupertinoIcons.line_horizontal_3, color: Colors.white),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          ),
-        ),
-      ),
       body: inactiveListings.isEmpty
           ? const Center(child: Text("No inactive listings"))
           : ListView.builder(
