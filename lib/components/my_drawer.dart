@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:semesterprojectuprmonlinemarketplace/services/auth/auth_service.dart';
-import 'package:semesterprojectuprmonlinemarketplace/pages/setting_page.dart';
+import 'package:semesterprojectuprmonlinemarketplace/housing/pages/setting_page.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});

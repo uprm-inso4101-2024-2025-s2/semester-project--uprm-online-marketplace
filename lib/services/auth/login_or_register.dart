@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:semesterprojectuprmonlinemarketplace/pages/login_page.dart';
-import 'package:semesterprojectuprmonlinemarketplace/pages/register_page.dart';
+import 'package:semesterprojectuprmonlinemarketplace/housing/pages/login_page.dart';
+import 'package:semesterprojectuprmonlinemarketplace/housing/pages/register_page.dart';
 
 //toggles between our Register Page and Login Page
 
