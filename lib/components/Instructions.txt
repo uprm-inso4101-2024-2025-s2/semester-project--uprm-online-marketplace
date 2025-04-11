@@ -1,0 +1,8 @@
+Everything in this folder are things that we are gonna use in other parts of the app , like :
+1. textBox
+2. button
+etc.
+
+
+
+Formatted this way is more organize and faster to understand
