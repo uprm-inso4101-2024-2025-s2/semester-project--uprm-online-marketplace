@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:semesterprojectuprmonlinemarketplace/src/constants/text.dart';
+
+import '../../constants/text.dart';
 
 /* -- This file contain all buttons used in login. --
 * Add additional buttons at the bottom.

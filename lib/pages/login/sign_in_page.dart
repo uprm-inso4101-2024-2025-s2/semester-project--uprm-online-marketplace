@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:semesterprojectuprmonlinemarketplace/src/constants/text.dart';
-import 'package:semesterprojectuprmonlinemarketplace/src/login/login_widgets/buttons.dart';
-import 'package:semesterprojectuprmonlinemarketplace/src/login/login_widgets/text_fields.dart';
+
+import '../../components/login_widgets/buttons.dart';
+import '../../components/login_widgets/text_fields.dart';
+import '../../constants/text.dart';
 
 void main() {
   /*
