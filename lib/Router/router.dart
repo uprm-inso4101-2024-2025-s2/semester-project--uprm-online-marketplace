@@ -22,6 +22,8 @@ import '../pages/login_page.dart';
 import '../pages/register_page.dart';
 import '../pages/setting_page.dart';
 
+import '../src/housing/pages/profile.dart';
+
 // bool isAuthenticated =
 //     true; // Cambiar a true para propositos de testing. Al final se debe cambiar y usar la logica de autenticacion
 
@@ -30,6 +32,7 @@ final GoRouter router = GoRouter(
     _customPageRoute('/', HomePage()),
     _customPageRoute('/login', LoginPage(onTap: () {})),
     _customPageRoute('/register', RegisterPage(onTap: () {})), //sign up
+    GoRoute(path: '/profile', builder: (context, state) => ProfileScreen()),
     // GoRoute(
     //   path: '/profile',
     //   pageBuilder:

@@ -54,6 +54,15 @@ class AppLayout extends StatelessWidget {
                 ),
               ],
             ),
+
+            _buildNavItem(
+              context,
+              Icons.person,
+              'My Profile',
+              '/profile',
+              currentRoute,
+            ),
+
             ExpansionTile(
               leading: const Icon(Icons.account_circle),
               title: const Text('Login / Register'),

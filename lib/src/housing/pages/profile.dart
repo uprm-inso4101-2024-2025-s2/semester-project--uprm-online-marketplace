@@ -162,68 +162,68 @@ class ProfileScreenState extends State<ProfileScreen> {
                 const Text("• 1 number", style: TextStyle(color: Colors.grey)),
               ],
               const SizedBox(height: 8),
-              ElevatedButton(
-                onPressed: () async {
-                  AuthService authService = AuthService();
-                  authService.useMock = true;
+              // ElevatedButton(
+              //   onPressed: () async {
+              //     AuthService authService = AuthService();
+              //     authService.useMock = true;
 
-                  String newValue = controller.text.trim();
-                  String? result;
+              //     String newValue = controller.text.trim();
+              //     String? result;
 
-                  if (title == 'Email') {
-                    bool exists = await authService.checkIfEmailExists(
-                      newValue,
-                    );
-                    if (!exists) {
-                      _showSnack("This email does not exist");
-                      return;
-                    }
-                    result = await authService.updateEmail(newValue);
-                  } else if (title == 'Password') {
-                    if (newValue.length < 8 ||
-                        !RegExp(r'\d').hasMatch(newValue)) {
-                      if (newValue.length < 8)
-                        _showSnack(
-                          "Password must contain 8 characters or more",
-                        );
-                      if (!RegExp(r'\d').hasMatch(newValue))
-                        _showSnack("Password must contain at least 1 number");
-                      return;
-                    }
-                    result = await authService.updatePassword(newValue);
-                  } else if (title == 'Name') {
-                    if (newValue.isEmpty) {
-                      _showSnack("Name cannot be empty");
-                      return;
-                    }
-                    result = await authService.updateUsername(newValue);
-                  } else if (title == 'Number') {
-                    if (newValue.length != 10) {
-                      _showSnack("Phone number must be 10 digits");
-                      return;
-                    }
-                    result = await authService.updateNumber(newValue);
-                  }
+              //     if (title == 'Email') {
+              //       bool exists = await authService.checkIfEmailExists(
+              //         newValue,
+              //       );
+              //       if (!exists) {
+              //         _showSnack("This email does not exist");
+              //         return;
+              //       }
+              //       result = await authService.updateEmail(newValue);
+              //     } else if (title == 'Password') {
+              //       if (newValue.length < 8 ||
+              //           !RegExp(r'\d').hasMatch(newValue)) {
+              //         if (newValue.length < 8)
+              //           _showSnack(
+              //             "Password must contain 8 characters or more",
+              //           );
+              //         if (!RegExp(r'\d').hasMatch(newValue))
+              //           _showSnack("Password must contain at least 1 number");
+              //         return;
+              //       }
+              //       result = await authService.updatePassword(newValue);
+              //     } else if (title == 'Name') {
+              //       if (newValue.isEmpty) {
+              //         _showSnack("Name cannot be empty");
+              //         return;
+              //       }
+              //       result = await authService.updateUsername(newValue);
+              //     } else if (title == 'Number') {
+              //       if (newValue.length != 10) {
+              //         _showSnack("Phone number must be 10 digits");
+              //         return;
+              //       }
+              //       result = await authService.updateNumber(newValue);
+              //     }
 
-                  if (result == null) {
-                    _showSnack("$title updated!");
-                  } else {
-                    _showSnack(result);
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF47804B),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 22,
-                    vertical: 12,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: Text("Update $title"),
-              ),
+              //     if (result == null) {
+              //       _showSnack("$title updated!");
+              //     } else {
+              //       _showSnack(result);
+              //     }
+              //   },
+              //   style: ElevatedButton.styleFrom(
+              //     backgroundColor: const Color(0xFF47804B),
+              //     foregroundColor: Colors.white,
+              //     padding: const EdgeInsets.symmetric(
+              //       horizontal: 22,
+              //       vertical: 12,
+              //     ),
+              //     shape: RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.circular(8),
+              //     ),
+              //   ),
+              //   child: Text("Update $title"),
+              // ),
             ],
           ),
         );
