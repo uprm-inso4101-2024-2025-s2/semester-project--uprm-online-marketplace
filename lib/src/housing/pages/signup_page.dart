@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-//import 'package:firebase_auth/firebase_auth.dart';
+import 'package:semesterprojectuprmonlinemarketplace/src/housing/pages/profile_edit_userdetails.dart';
 import '../../../services/auth_services.dart';
-//import '../../home_page.dart'; // Once succesfull sigh-up where the user should be sent
+import 'profile.dart'; 
+
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
 
@@ -75,7 +76,7 @@ class SignUpPageState extends State<SignUpPage> {
       String? user = (await authService.signUp(email, password, username, role));
 
       if (user != null) {
-        // Navigate to home/profile page after successful sign-up
+       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Profile()),);
       } else {
         setState(() {
           errorMessage = "Sign-Up Failed. Try again.";
