@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       title: 'UPRM Marketplace',
       theme: greenMode, // Assuming greenMode is defined in your themes
       routerConfig: router, // Uses GoRouter for navigation

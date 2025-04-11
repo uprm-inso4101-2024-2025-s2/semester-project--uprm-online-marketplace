@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:semesterprojectuprmonlinemarketplace/services/auth/auth_service.dart';
 import 'package:semesterprojectuprmonlinemarketplace/components/my_button.dart';
 import 'package:semesterprojectuprmonlinemarketplace/components/my_textfield.dart';
@@ -26,6 +27,7 @@ class LoginPage extends StatelessWidget {
         _emailController.text,
         _pwController.text,
       );
+      context.go('/');
     }
     //Cacth any errors
     catch (e) {

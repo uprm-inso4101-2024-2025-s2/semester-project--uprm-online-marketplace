@@ -10,9 +10,9 @@ import 'package:go_router/go_router.dart';
 //import '../Web_Pages/Support/support_page.dart';
 //import '../Web_Pages/Support/faq_page.dart';
 
- import '../Web_Pages/My_Favorites/favorites_recently_added_page.dart';
- import '../Web_Pages/My_Favorites/favorites_suggestions_page.dart';
- import '../Web_Pages/My_Favorites/favorites_trending_page.dart';
+ // import '../Web_Pages/My_Favorites/favorites_recently_added_page.dart';
+ // import '../Web_Pages/My_Favorites/favorites_suggestions_page.dart';
+ // import '../Web_Pages/My_Favorites/favorites_trending_page.dart';
 
 import '../widgets/app_layout.dart'; // Import AppLayout
 
@@ -26,6 +26,7 @@ import '../pages/setting_page.dart';
 //     true; // Cambiar a true para propositos de testing. Al final se debe cambiar y usar la logica de autenticacion
 
 final GoRouter router = GoRouter(
+  initialLocation: '/login',
   routes: [
     _customPageRoute('/', HomePage()),
     _customPageRoute('/login', LoginPage(onTap:(){})),
