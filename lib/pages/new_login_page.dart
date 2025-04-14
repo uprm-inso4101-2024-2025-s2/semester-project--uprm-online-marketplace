@@ -62,36 +62,38 @@ class _LoginBodyState extends State<LoginBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.center,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            // Page Title
-            Text("Title: Login"),
-            _space20,
-            // Email Field
-            MyTextfield(
-              hintText: loginEmail,
-              obscureText: false,
-              controller: TextEditingController(),
-            ),
-            _space10,
-            MyTextfield(
-              hintText: loginPassword,
-              obscureText: true,
-              controller: TextEditingController(),
-            ),
-            _space20,
-            TextButton(
-              onPressed: () {},
-              child: Text(loginForgotPassword),
-            ),
-            _space20,
-            MyButton(text: loginButton, onTap: () {}),
-            _space25,
-          ],
+    return SingleChildScrollView(
+      child: Align(
+        alignment: Alignment.center,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              // Page Title
+              Text("Title: Login"),
+              _space20,
+              // Email Field
+              MyTextfield(
+                hintText: loginEmail,
+                obscureText: false,
+                controller: TextEditingController(),
+              ),
+              _space10,
+              MyTextfield(
+                hintText: loginPassword,
+                obscureText: true,
+                controller: TextEditingController(),
+              ),
+              _space20,
+              TextButton(
+                onPressed: () {},
+                child: Text(loginForgotPassword),
+              ),
+              _space20,
+              MyButton(text: loginButton, onTap: () {}),
+              _space25,
+            ],
+          ),
         ),
       ),
     );
