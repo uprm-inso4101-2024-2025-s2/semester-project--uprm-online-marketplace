@@ -29,7 +29,9 @@ class LoginPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: TextButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context);
+          },
           child: Text(loginAppBarBack),
         ),
         title: const Text(loginAppBarTitle),
