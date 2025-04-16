@@ -5,10 +5,8 @@ import 'package:semesterprojectuprmonlinemarketplace/src/housing/pages/house_lis
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'housing/pages/profile_edit_userdetails.dart';
-import 'housing/pages/profile.dart';
-
-import 'housing/pages/signup_page.dart';
+import 'package:semesterprojectuprmonlinemarketplace/src/housing/pages/profile_edit_userdetails.dart';
+import 'package:semesterprojectuprmonlinemarketplace/src/housing/pages/signup_page.dart';
 
 //Used to verify that the connection with firestore works well.
 //import 'package:semesterprojectuprmonlinemarketplace/services/auth_services.dart';
@@ -18,9 +16,8 @@ import 'housing/pages/signup_page.dart';
 //  print(result ?? "User successfully created!");
 //}
 
-
 // Is this area not needed? Leaving in comment just in case
-//void main() { 
+//void main() {
 //  WidgetsFlutterBinding.ensureInitialized();
 //initializeFirebase();
 //  runApp(const MyApp());
@@ -32,7 +29,7 @@ import 'housing/pages/signup_page.dart';
 
 //  FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
 
-/*void main() async{ 
+/*void main() async{
   WidgetsFlutterBinding.ensureInitialized();
 initializeFirebase();
   runApp(MaterialApp(
@@ -42,17 +39,25 @@ initializeFirebase();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebase(); // Ensure Firebase initializes before runApp
-  runApp(MaterialApp(
-    home: SignUpPage(), // Set SignUpPage as the first screen
-  ));
+  runApp(
+    MaterialApp(
+      home: SignUpPage(), // Set SignUpPage as the first screen
+    ),
+  );
 }
-Future<void> initializeFirebase() async{
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+Future<void> initializeFirebase() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   if (kDebugMode) {
     // Only use emulators in debug mode
     try {
-      FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+      FirebaseFirestore.instance.useFirestoreEmulator(
+        'localhost',
+        8080,
+      );
       FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
     } catch (e) {
       print("Firebase Emulator Error: $e");
@@ -61,8 +66,8 @@ Future<void> initializeFirebase() async{
   //Un-comment if you want to see the ports.
   //print("Firebase Emulators Connected: Firestore (8081), Auth (9099)");
 }
-class MyApp extends StatelessWidget {
 
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
@@ -86,10 +91,13 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepPurple,
+        ),
       ),
       // home: HouseList(),
-      home: ProfileScreen(), //this has a button on top left that takes u to Profile() page
+      home: ProfileScreen(),
+      //this has a button on top left that takes u to Profile() page
       // home: Profile(),
       debugShowCheckedModeBanner: false,
     );
@@ -141,7 +149,8 @@ class _MyHomePageState extends State<MyHomePage> {
         // TRY THIS: Try changing the color here to a specific color (to
         // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
         // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor:
+            Theme.of(context).colorScheme.inversePrimary,
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
@@ -165,7 +174,9 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text('You have pushed the button this many times:'),
+            const Text(
+              'You have pushed the button this many times:',
+            ),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
