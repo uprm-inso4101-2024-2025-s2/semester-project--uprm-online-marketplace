@@ -1,15 +1,25 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import '../components/my_button.dart';
 import '../components/my_textfield.dart';
 import '../constants/strings.dart';
+import '../firebase_options.dart';
 
-void main() {
+void main() async {
   /*
    * Entry point to the Login Page.
    * The purpose of this main function is to test this file
    * separately from the rest of the application.
    */
+
+  // Initialize Firebase
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // Run the application
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: true,
