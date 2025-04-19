@@ -22,6 +22,7 @@ class LoginPage extends StatelessWidget {
 
     //try login
     try {
+      print('logged in');
       await authService.signInWithEmailPassword(
         _emailController.text,
         _pwController.text,
@@ -34,6 +35,8 @@ class LoginPage extends StatelessWidget {
         builder: (context) => AlertDialog(title: Text(e.toString())),
       );
     }
+
+    await authService.getCurrentUserID();
   }
 
   @override

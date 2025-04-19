@@ -12,6 +12,11 @@ class AuthService {
   User? getCurrentUser() {
     return _auth.currentUser;
   }
+  //get current user id
+  String? getCurrentUserID() {
+    print(_auth.currentUser?.uid);
+    return _auth.currentUser?.uid;
+  }
 
   //sign in (login page)
 

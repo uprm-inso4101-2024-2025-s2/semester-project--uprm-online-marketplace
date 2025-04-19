@@ -76,6 +76,7 @@ class HouseList extends StatefulWidget {
 }
 
 class HouseListState extends State<HouseList> {
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   String searchQuery = "";

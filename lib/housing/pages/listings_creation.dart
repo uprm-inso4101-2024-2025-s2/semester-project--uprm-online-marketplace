@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../Classes/ListingService.dart';
 import '../../Classes/LodgingClass.dart';
+import 'package:semesterprojectuprmonlinemarketplace/services/auth/auth_service.dart';
 
 class CreateListingPage extends StatefulWidget{
   const CreateListingPage({Key? key}) : super(key:key);
@@ -573,6 +574,7 @@ class _CreateListingPageState extends State<CreateListingPage>{
   //Utilizing the ListingService
   @override
   void createOwnListing(){
+    final authService = AuthService();
     String title= titleController.text;
     double price= double.parse(priceController.text);
     String location= locationController.text;
@@ -585,7 +587,7 @@ class _CreateListingPageState extends State<CreateListingPage>{
     Lodging newLodging= Lodging(owner: "DummyOwner", availability: "Available",
       title: title, price: price, location: location,
       condition: "DummyCondition", bedrooms: bedrooms, restrooms: restrooms,
-      parking: parking, description: description, isActive: true,
+      parking: parking, description: description, isActive: true, uid: authService.getCurrentUserID(),
       imageUrls: imagesList);
     listingService.createListing(newLodging);
     Navigator.pop(context);

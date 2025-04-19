@@ -1,6 +1,7 @@
 import 'LodgingClass.dart';
 import 'package:firebase_core/firebase_core.dart'; // Import Firebase Core
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:semesterprojectuprmonlinemarketplace/services/auth/auth_service.dart';
 
 class ListingService extends LodgingManagement{
 //Identify the Listings as Maps to easily access the value based off
@@ -46,6 +47,10 @@ class ListingService extends LodgingManagement{
   // }
   @override
   Future<List<Lodging>> fetchListings() async {
+    // final user = FirebaseAuth.instance.currentUser;
+    // if(user == null){
+    //
+    // }
     QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('listings').get();
 
     List<Lodging> fetchedListings = snapshot.docs.map((doc) {

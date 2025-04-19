@@ -10,6 +10,7 @@ class Lodging extends Product{
   int restrooms;
   int parking;
   bool isActive;
+  String? uid;
   List<String> imageUrls;
 
   Lodging({
@@ -24,6 +25,7 @@ class Lodging extends Product{
     this.parking = 0,
     String description = "",
     this.isActive = true, // Correctly initialized as bool
+    this.uid = "",
     List<String>? imageUrls,
   }): id = Random().nextInt(999999999), //we will  locate listings using a random numberID. This will make us be able to locate listings more efficiently rather than by title. Titles could be the same
         this.imageUrls= imageUrls ?? [],
@@ -40,6 +42,7 @@ class Lodging extends Product{
       restrooms: data['restrooms'] ?? 0,
       parking: data['parking'] ?? 0,
       description: data['description'] ?? "",
+      uid: data['uid'] ?? "UNKNOWN",
       imageUrls: List<String>.from(data['imageUrls'] ?? []), // Ensure list is properly cast
     );
   }
@@ -55,6 +58,7 @@ class Lodging extends Product{
       'restrooms': restrooms,
       'parking': parking,
       'description': description,
+      'uid' : uid,
       'imageUrls': imageUrls,
     };
   }
@@ -166,6 +170,7 @@ extension LodgingFirestore on Lodging {
       restrooms: data['restrooms'] ?? 0,
       parking: data['parking'] ?? 0,
       description: data['description'] ?? "",
+      uid: data['uid'] ?? "UNKNOWN",
       imageUrls: data['imageUrls'] ?? [],
     );
   }
@@ -182,6 +187,7 @@ extension LodgingFirestore on Lodging {
       'restrooms': restrooms,
       'parking': parking,
       'description': description,
+      'uid': uid,
       'imageUrls' : imageUrls,
     };
   }

@@ -13,15 +13,14 @@ import 'housing/pages/map_screen.dart';
 import 'package:semesterprojectuprmonlinemarketplace/providers/notification_provider.dart';
 import 'package:semesterprojectuprmonlinemarketplace/themes/uprm_green.dart';
 
-// Firebase Configuration (incoming branch values)
 const firebaseConfig = FirebaseOptions(
-  apiKey: "AIzaSyCMjGDzcOQI1b9i8KVz87Z0qCBb9NX93_0",
-  authDomain: "online-marketplace-posting.firebaseapp.com",
-  projectId: "online-marketplace-posting",
-  storageBucket: "online-marketplace-posting.appspot.com",
-  messagingSenderId: "436131107360",
-  appId: "1:436131107360:web:d65c474f32ce843c55a245",
-  measurementId: "G-13TKBZ7EG8",
+  apiKey: "AIzaSyBqajpsar7nw9tlbDNRu13505v-PaeC0os",
+  authDomain: "online-market-f5c9f.firebaseapp.com",
+  projectId: "online-market-f5c9f",
+  storageBucket: "online-market-f5c9f.firebasestorage.app",
+  messagingSenderId: "771212475650",
+  appId: "1:771212475650:web:b1748012b5d858873cd61b",
+  measurementId: "G-WNKC1KHM1R"
 );
 
 void main() async {
