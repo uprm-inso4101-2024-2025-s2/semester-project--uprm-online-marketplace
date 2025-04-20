@@ -590,6 +590,7 @@ class _CreateListingPageState extends State<CreateListingPage>{
       parking: parking, description: description, isActive: true, uid: authService.getCurrentUserID(),
       imageUrls: imagesList);
     listingService.createListing(newLodging);
+    listingService.fetchListings();
     Navigator.pop(context);
   }
 
