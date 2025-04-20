@@ -45,19 +45,22 @@ class ListingService extends LodgingManagement{
   // List <Lodging> fetchListings(){
   //   return super.getLodgings();
   // }
+  //Fetches all the listings of the currently active user
   @override
   Future<List<Lodging>> fetchListings() async {
-    // final user = FirebaseAuth.instance.currentUser;
-    // if(user == null){
-    //
-    // }
-    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('listings').get();
+    final authService = AuthService();
+    final uid = authService.getCurrentUserID();
+    if(uid == null){
+      throw Exception("NO USER LOGGED IN");
+    }
+    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('listings').where('uid', isEqualTo: uid).get();
 
     List<Lodging> fetchedListings = snapshot.docs.map((doc) {
       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
       return Lodging.fromFirestore(data);
     }).toList();
 
+    print(fetchedListings);
     return fetchedListings;
   }
 
