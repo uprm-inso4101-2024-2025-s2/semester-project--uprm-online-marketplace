@@ -8,6 +8,8 @@ import 'house_listing.dart';
 // Import the Listing Creation button and data.
 import '../widgets/buttons.dart';
 import  'listings_creation.dart';
+import '../../Classes/ListingService.dart';
+import '../../Classes/LodgingClass.dart';
 
 
 /// My Listings Page: displays user-owned listings (active or inactive)
@@ -19,15 +21,38 @@ class MyListingsPage extends StatefulWidget {
 }
 
 class _MyListingsPageState extends State<MyListingsPage> {
+  List<Lodging> userListings = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    loadUserListings();
+  }
+
+  Future<void> loadUserListings() async {
+    try {
+      final listings = await ListingService().fetchListings();
+      setState(() {
+        userListings = listings;
+        isLoading = false;
+      });
+    } catch (e) {
+      print("Error fetching listings: $e");
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Use the shared globalHouses from house_listing.dart.
     // For testing, assume only "San Juan Villa" belongs to the user.
-    final userListings =
-    globalHouses.where((house) => house["title"] == "San Juan Villa").toList();
+    // final userListings =
+    // globalHouses.where((house) => house["title"] == "San Juan Villa").toList();
 
     return Scaffold(
-
       // Change the ListView to horizontal.
       body: Column(
           children:[
@@ -40,11 +65,15 @@ class _MyListingsPageState extends State<MyListingsPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context)=>const CreateListingPage()),
-                    );
+                    ).then((_){
+                      loadUserListings();
+                    });
                   },
               ),
             ),
-            userListings.isEmpty
+            isLoading
+            ?const Center(child:CircularProgressIndicator())
+            :userListings.isEmpty
               ? const Center(child: Text("No listings found"))
               : Expanded(
               child: ListView.builder(
@@ -52,20 +81,20 @@ class _MyListingsPageState extends State<MyListingsPage> {
               padding: const EdgeInsets.all(8.0),
               itemCount: userListings.length,
               itemBuilder: (context, index) {
-                final house = userListings[index];
+                final lodging = userListings[index];
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: HouseTile(
-                    imagePath: List<String>.from(house["imagePath"]),
-                    title: house["title"],
-                    price: house["price"],
-                    details: house["details"],
-                    isFavorite: house["isFavorite"],
-                    isActive: house["isActive"] ?? true,
+                    imagePath: lodging.imageUrls,
+                    title: lodging.title,
+                    price: lodging.price.toString(),
+                    details: lodging.description,
+                    isFavorite: false,
+                    isActive: lodging.isActive,
                     onToggleStatus: () {
                       setState(() {
                         // Toggling modifies the shared globalHouses.
-                        house["isActive"] = !(house["isActive"] ?? true);
+                        lodging.isActive =    !lodging.isActive;
                       });
                     },
                   ),
@@ -122,3 +151,4 @@ class _InactiveListingsPageState extends State<InactiveListingsPage> {
     );
   }
 }
+
