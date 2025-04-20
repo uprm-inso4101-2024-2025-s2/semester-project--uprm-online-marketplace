@@ -84,6 +84,11 @@ class Lodging extends Product{
   void removeImageUrl(String imageUrl) => imageUrls.remove(imageUrl);
   void addImageUrl(String imageUrl) => imageUrls.add(imageUrl);
 
+  @override
+  String toString() {
+    return 'Lodging(title: $title, description: $description, location: $location, price: $price, bedrooms: $bedrooms, restrooms: $restrooms, parking: $parking, availability: $availability, condition: $condition, owner: $owner, uid: $uid, imageUrls: $imageUrls)';
+  }
+
 }
 
 class LodgingManagement{
