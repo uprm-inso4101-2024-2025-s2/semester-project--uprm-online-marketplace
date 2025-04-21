@@ -12,7 +12,7 @@ import 'themes/uprm_green.dart';
 
 void main() async {
   /* --- Initialize Firebase --- */
-  initializeFirebase();
+  _initializeFirebase();
 
   /* --- Run Application --- */
   runApp(
@@ -25,8 +25,8 @@ void main() async {
   );
 }
 
-/* --- Method to initialize Firebase --- */
-Future<void> initializeFirebase() async {
+/* --- Private method to initialize Firebase --- */
+Future<void> _initializeFirebase() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
