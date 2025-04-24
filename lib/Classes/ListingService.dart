@@ -64,6 +64,19 @@ class ListingService extends LodgingManagement{
     return fetchedListings;
   }
 
+  @override
+  Future<List<Lodging>> fetchAllListings() async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('listings').get();
+
+    List<Lodging> fetchedListings = snapshot.docs.map((doc) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      return Lodging.fromFirestore(data);
+    }).toList();
+
+    print(fetchedListings);
+    return fetchedListings;
+  }
+
 
   // Lodging? fetchListing(int ID){
   //   if(listings.containsKey(ID)){

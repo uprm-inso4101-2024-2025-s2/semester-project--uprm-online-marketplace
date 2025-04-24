@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:semesterprojectuprmonlinemarketplace/housing/pages/house_listing.dart';
@@ -5,25 +6,40 @@ import '../pages/house_page.dart';
 import 'buttons.dart';
 import '../pages/edit_listing.dart';
 import '../../Classes/ListingService.dart';
+import 'package:semesterprojectuprmonlinemarketplace/services/auth/auth_service.dart';
+import '../../Classes/LodgingClass.dart';
+import '../../Classes/ListingService.dart';
+import '../../Classes/LodgingClass.dart';
 
 class HouseTile extends StatefulWidget {
-  final List<String> imagePath;
-  final String title;
-  final String price;
-  final String details;
-  final bool isFavorite;
-  final bool isActive;
+  // final List<String> imagePath;
+  // final String title;
+  // final String price;
+  // final String details;
+  // final bool isFavorite;
+  // final bool isActive;
+  // final VoidCallback onToggleStatus;
+  //
+  // const HouseTile({
+  //   super.key,
+  //   required this.imagePath,
+  //   required this.title,
+  //   required this.price,
+  //   required this.details,
+  //   required this.isFavorite,
+  //   required this.isActive,
+  //   required this.onToggleStatus,
+  // });
+
+  final Lodging lodging;
   final VoidCallback onToggleStatus;
+  final VoidCallback? onToggleFavorite;
 
   const HouseTile({
     super.key,
-    required this.imagePath,
-    required this.title,
-    required this.price,
-    required this.details,
-    required this.isFavorite,
-    required this.isActive,
+    required this.lodging,
     required this.onToggleStatus,
+    this.onToggleFavorite,
   });
 
   @override
@@ -39,11 +55,11 @@ class HouseTileState extends State<HouseTile> {
   void initState() {
     super.initState();
     _pageController = PageController();
-    _isFavorite = widget.isFavorite;
+    _isFavorite = widget.lodging.isFavorite;
   }
 
   void _nextImage() {
-    if (_currentPage < widget.imagePath.length - 1) {
+    if (_currentPage < widget.lodging.imageUrls.length - 1) {
       setState(() {
         _currentPage++;
         _pageController.animateToPage(
@@ -145,12 +161,12 @@ class HouseTileState extends State<HouseTile> {
           context,
           MaterialPageRoute(
             builder: (context) => HousePage(
-              title: widget.title,
-              price: widget.price,
-              isFavorite: widget.isFavorite,
-              location: "Mayagüez, PR",
-              images: widget.imagePath,
-              description: "Spacious 3-bedroom house with modern amenities...",
+              title: widget.lodging.title,
+              price: widget.lodging.price.toString(),
+              isFavorite: widget.lodging.isFavorite,
+              location: widget.lodging.location,
+              images: widget.lodging.imageUrls,
+              description: widget.lodging.description,
             ),
           ),
         );
@@ -183,7 +199,7 @@ class HouseTileState extends State<HouseTile> {
                         width: double.infinity,
                         child: PageView(
                           controller: _pageController,
-                          children: widget.imagePath.map((imagePath) {
+                          children: widget.lodging.imageUrls.map((imagePath) {
                             return Image.asset(
                               imagePath,
                               fit: BoxFit.cover,
@@ -210,7 +226,7 @@ class HouseTileState extends State<HouseTile> {
                           ),
                         ),
                       ),
-                    if (_currentPage < widget.imagePath.length - 1)
+                    if (_currentPage < widget.lodging.imageUrls.length - 1)
                       Positioned(
                         right: 5.w,
                         top: 50.h,
@@ -237,14 +253,14 @@ class HouseTileState extends State<HouseTile> {
                       ),
                       style: IconButton.styleFrom(backgroundColor: Colors.white),
                       onPressed: () {
+                        final newFavoriteStatus = !_isFavorite;
                         setState(() {
-                          // This uses the globalHouses dummy data.
-                          // Backend implementation to be added when User backend is refined.
-                          _isFavorite = !_isFavorite;
-                          for (int i = 0; i < globalHouses.length; i++) {
-                            if (widget.title == globalHouses[i]["title"]) {
-                              globalHouses[i]["isFavorite"] = _isFavorite;
-                            }
+                          _isFavorite = newFavoriteStatus;
+                          widget.lodging.isFavorite = newFavoriteStatus;
+                        });
+                        FirebaseFirestore.instance.collection('listings').where('title', isEqualTo: widget.lodging.title).get().then((snapshot) {
+                          for (var doc in snapshot.docs) {
+                            doc.reference.update({'isFavorite': newFavoriteStatus});
                           }
                         });
                       }),
@@ -260,7 +276,7 @@ class HouseTileState extends State<HouseTile> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      widget.title,
+                      widget.lodging.title,
                       maxLines:1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(fontSize: 7.sp, fontWeight: FontWeight.bold), //18 old size
@@ -270,7 +286,7 @@ class HouseTileState extends State<HouseTile> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          widget.price,
+                          widget.lodging.price.toString(),
                           style: TextStyle(fontSize: 6.sp, fontWeight: FontWeight.bold), //16 old size
                         ),
                         Row(
@@ -278,7 +294,7 @@ class HouseTileState extends State<HouseTile> {
                             Icon(Icons.star, color: Colors.black, size: 6.sp), //18 old size
                             SizedBox(width: 2.w),
                             Text(
-                              widget.details,
+                              widget.lodging.description,
                               style: TextStyle(fontSize: 6.sp, fontWeight: FontWeight.bold), //14 old size
                             ),
                           ],
@@ -291,11 +307,11 @@ class HouseTileState extends State<HouseTile> {
                       children: [
                         Flexible( // Ensures the text adapts to available space
                           child: Text(
-                            widget.isActive ? "Active" : "Inactive",
+                            widget.lodging.isActive ? "Active" : "Inactive",
                             style: TextStyle(
                               fontSize: 4.sp, //6
                               fontWeight: FontWeight.bold,
-                              color: widget.isActive ? Colors.green : Colors.red,
+                              color: widget.lodging.isActive ? Colors.green : Colors.red,
                             ),
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
@@ -312,7 +328,7 @@ class HouseTileState extends State<HouseTile> {
                         onPressed: widget.onToggleStatus,
                         child: FittedBox(
                           child: Text(
-                            widget.isActive ? "Deactivate" : "Activate",
+                            widget.lodging.isActive ? "Deactivate" : "Activate",
                             style: TextStyle(fontSize: 5.sp),
                           ),
                         ),

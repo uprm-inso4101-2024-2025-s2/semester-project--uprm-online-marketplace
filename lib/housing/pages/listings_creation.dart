@@ -587,7 +587,7 @@ class _CreateListingPageState extends State<CreateListingPage>{
     Lodging newLodging= Lodging(owner: "DummyOwner", availability: "Available",
       title: title, price: price, location: location,
       condition: "DummyCondition", bedrooms: bedrooms, restrooms: restrooms,
-      parking: parking, description: description, isActive: true, uid: authService.getCurrentUserID(),
+      parking: parking, description: description, isActive: true, uid: authService.getCurrentUserID(), isFavorite: false,
       imageUrls: imagesList);
     listingService.createListing(newLodging);
     listingService.fetchListings();

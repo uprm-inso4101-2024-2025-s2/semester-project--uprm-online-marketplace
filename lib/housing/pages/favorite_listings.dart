@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import '../widgets/house_tile.dart';
 // Import the shared data and HouseList from house_listing.dart
 import 'house_listing.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../Classes/ListingService.dart';
+import '../../Classes/LodgingClass.dart';
+import 'package:semesterprojectuprmonlinemarketplace/services/auth/auth_service.dart';
 
 
 class FavoritesPage extends StatefulWidget {
@@ -14,12 +18,28 @@ class FavoritesPage extends StatefulWidget {
 
 class _FavoritesPageState extends State<FavoritesPage> {
 
-  List<Map<String, dynamic>> favoriteListings = [];
+  List<Lodging> favoriteListings = [];
 
   @override
   void initState() {
     super.initState();
-    favoriteListings = globalHouses.where((house) => house["isFavorite"] == true).toList();
+    fetchFavoriteListings();
+  }
+
+  @override
+  Future<void> fetchFavoriteListings() async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('listings').where('isFavorite', isEqualTo: true).get();
+
+    List<Lodging> fetchedListings = snapshot.docs.map((doc) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      return Lodging.fromFirestore(data);
+    }).toList();
+
+    // print(fetchedListings);
+    // return fetchedListings;
+    setState(() {
+      favoriteListings = fetchedListings;
+    });
   }
   
   @override
@@ -44,25 +64,40 @@ class _FavoritesPageState extends State<FavoritesPage> {
                 : ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: favoriteListings.length,
-              itemBuilder: (context, index) {
-                var house = favoriteListings[index];
-                return SingleChildScrollView(
-                  padding: const EdgeInsets.all(8.0),
-                  child: HouseTile(
-                    imagePath: List<String>.from(house["imagePath"]),
-                    title: house["title"],
-                    price: house["price"],
-                    details: house["details"],
-                    isFavorite: house["isFavorite"],
-                    isActive: house["isActive"] ?? true,
+              // itemBuilder: (context, index) {
+              //   final lodging = favoriteListings[index];
+              //   return SingleChildScrollView(
+              //     padding: const EdgeInsets.all(8.0),
+              //     child: HouseTile(
+              //       imagePath: house.imageUrls,
+              //       title: house.title,
+              //       price: house.price.toString(),
+              //       details: house.description,
+              //       isFavorite: house.isFavorite,
+              //       isActive: house.isActive,
+              //       onToggleStatus: () {
+              //         setState(() {
+              //           house.isActive = !house.isActive;
+              //         });
+              //       },
+              //     ),
+              //   );
+              // },
+                itemBuilder: (context, index) {
+                  final lodging = favoriteListings[index];
+                  return HouseTile(
+                    lodging: lodging,
                     onToggleStatus: () {
                       setState(() {
-                        house["isActive"] = !(house["isActive"] ?? true);
+                        lodging.isActive = !lodging.isActive;
+                        FirebaseFirestore.instance
+                            .collection('listings')
+                            .doc(lodging.id.toString())
+                            .update({'isActive': lodging.isActive});
                       });
                     },
-                  ),
-                );
-              },
+                  );
+                },
             ),
           ),
         ],

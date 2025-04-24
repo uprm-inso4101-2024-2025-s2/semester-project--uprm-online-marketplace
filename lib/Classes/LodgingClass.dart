@@ -12,6 +12,7 @@ class Lodging extends Product{
   bool isActive;
   String? uid;
   List<String> imageUrls;
+  bool isFavorite;
 
   Lodging({
     required String owner,
@@ -26,8 +27,10 @@ class Lodging extends Product{
     String description = "",
     this.isActive = true, // Correctly initialized as bool
     this.uid = "",
+    this.isFavorite = false,
     List<String>? imageUrls,
-  }): id = Random().nextInt(999999999), //we will  locate listings using a random numberID. This will make us be able to locate listings more efficiently rather than by title. Titles could be the same
+  }):
+        id = Random().nextInt(999999999), //we will  locate listings using a random numberID. This will make us be able to locate listings more efficiently rather than by title. Titles could be the same
         this.imageUrls= imageUrls ?? [],
         super(owner:owner, availability:availability, price:price, condition:condition, description:description, title:title);
   factory Lodging.fromFirestore(Map<String, dynamic> data) {
@@ -43,6 +46,8 @@ class Lodging extends Product{
       parking: data['parking'] ?? 0,
       description: data['description'] ?? "",
       uid: data['uid'] ?? "UNKNOWN",
+      isFavorite: data['isFavorite'] ?? false,
+
       imageUrls: List<String>.from(data['imageUrls'] ?? []), // Ensure list is properly cast
     );
   }
@@ -59,6 +64,7 @@ class Lodging extends Product{
       'parking': parking,
       'description': description,
       'uid' : uid,
+      'isFavorite' : isFavorite,
       'imageUrls': imageUrls,
     };
   }
@@ -86,7 +92,7 @@ class Lodging extends Product{
 
   @override
   String toString() {
-    return 'Lodging(title: $title, description: $description, location: $location, price: $price, bedrooms: $bedrooms, restrooms: $restrooms, parking: $parking, availability: $availability, condition: $condition, owner: $owner, uid: $uid, imageUrls: $imageUrls)';
+    return 'Lodging(title: $title, description: $description, location: $location, price: $price, bedrooms: $bedrooms, restrooms: $restrooms, parking: $parking, availability: $availability, condition: $condition, owner: $owner, uid: $uid, isFavorite: $isFavorite, imageUrls: $imageUrls)';
   }
 
 }
@@ -176,6 +182,7 @@ extension LodgingFirestore on Lodging {
       parking: data['parking'] ?? 0,
       description: data['description'] ?? "",
       uid: data['uid'] ?? "UNKNOWN",
+      isFavorite: data['isFavorite'] ?? false,
       imageUrls: data['imageUrls'] ?? [],
     );
   }
@@ -193,6 +200,7 @@ extension LodgingFirestore on Lodging {
       'parking': parking,
       'description': description,
       'uid': uid,
+      'isFavorite': isFavorite,
       'imageUrls' : imageUrls,
     };
   }

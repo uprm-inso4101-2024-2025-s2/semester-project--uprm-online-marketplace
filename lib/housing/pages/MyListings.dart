@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -82,22 +83,17 @@ class _MyListingsPageState extends State<MyListingsPage> {
               itemCount: userListings.length,
               itemBuilder: (context, index) {
                 final lodging = userListings[index];
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: HouseTile(
-                    imagePath: lodging.imageUrls,
-                    title: lodging.title,
-                    price: lodging.price.toString(),
-                    details: lodging.description,
-                    isFavorite: false,
-                    isActive: lodging.isActive,
-                    onToggleStatus: () {
-                      setState(() {
-                        // Toggling modifies the shared globalHouses.
-                        lodging.isActive =    !lodging.isActive;
-                      });
-                    },
-                  ),
+                return HouseTile(
+                  lodging: lodging,
+                  onToggleStatus: () {
+                    setState(() {
+                      lodging.isActive = !lodging.isActive;
+                      FirebaseFirestore.instance
+                          .collection('listings')
+                          .doc(lodging.id.toString())
+                          .update({'isActive': lodging.isActive});
+                    });
+                  },
                 );
               },
             ),
@@ -129,23 +125,35 @@ class _InactiveListingsPageState extends State<InactiveListingsPage> {
         padding: const EdgeInsets.all(8.0),
         itemCount: inactiveListings.length,
         itemBuilder: (context, index) {
-          final house = inactiveListings[index];
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: HouseTile(
-              imagePath: List<String>.from(house["imagePath"]),
-              title: house["title"],
-              price: house["price"],
-              details: house["details"],
-              isFavorite: house["isFavorite"],
-              isActive: house["isActive"] ?? true,
-              onToggleStatus: () {
-                setState(() {
-                  house["isActive"] = !(house["isActive"] ?? true);
-                });
-              },
-            ),
-          );
+          final lodging = inactiveListings[index];
+          // return Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: HouseTile(
+          //     imagePath: List<String>.from(house["imagePath"]),
+          //     title: house["title"],
+          //     price: house["price"],
+          //     details: house["details"],
+          //     isFavorite: house["isFavorite"],
+          //     isActive: house["isActive"] ?? true,
+          //     onToggleStatus: () {
+          //       setState(() {
+          //         house["isActive"] = !(house["isActive"] ?? true);
+          //       });
+          //     },
+          //   ),
+          // );
+          // return HouseTile(
+          //   lodging: lodging,
+          //   onToggleStatus: () {
+          //     setState(() {
+          //       lodging.isActive = !lodging.isActive;
+          //       FirebaseFirestore.instance
+          //           .collection('listings')
+          //           .doc(lodging.id.toString())
+          //           .update({'isActive': lodging.isActive});
+          //     });
+          //   },
+          // );
         },
       ),
     );

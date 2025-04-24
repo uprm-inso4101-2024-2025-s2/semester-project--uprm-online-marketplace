@@ -7,6 +7,8 @@ import 'MyListings.dart'; // Provides MyListingsPage, InactiveListingsPage, and 
 import 'package:semesterprojectuprmonlinemarketplace/housing/pages/favorite_listings.dart';
 import 'package:firebase_core/firebase_core.dart'; // Import Firebase Core
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../Classes/ListingService.dart';
+import '../../Classes/LodgingClass.dart';
 
 /// ------------------------------------------
 /// Shared global houses data.
@@ -77,6 +79,8 @@ class HouseList extends StatefulWidget {
 
 class HouseListState extends State<HouseList> {
 
+  List<Lodging> allListings = [];
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   String searchQuery = "";
@@ -92,7 +96,7 @@ class HouseListState extends State<HouseList> {
   bool hasError = false;
 
   /// Filtered houses (only active listings).
-  List<Map<String, dynamic>> filteredHouses = [];
+  List<Lodging> filteredHouses = [];
 
   @override
   void initState() {
@@ -105,7 +109,8 @@ class HouseListState extends State<HouseList> {
   Future<void> _fetchListings() async {
     try {
       // Simulate a network call delay
-      await Future.delayed(Duration(seconds: 2)); // Remove this in production
+      // await Future.delayed(Duration(seconds: 2)); // Remove this in production
+      final listings = await ListingService().fetchAllListings();
 
       // Fetch listings from Firestore or any other source
       // Example:
@@ -114,10 +119,12 @@ class HouseListState extends State<HouseList> {
 
       // For now, use the globalHouses as a placeholder
       setState(() {
-        filteredHouses = globalHouses.where((house) => house["isActive"] == true).toList();
+        allListings = listings;
+        filteredHouses = listings.where((listing) => listing.isActive == true).toList();
         isLoading = false;
       });
     } catch (e) {
+      print("Error fetching listings: $e");
       setState(() {
         hasError = true;
         isLoading = false;
@@ -141,35 +148,30 @@ class HouseListState extends State<HouseList> {
       double? minPrice = double.tryParse(minPriceInput);
       double? maxPrice = double.tryParse(maxPriceInput);
 
-      filteredHouses = globalHouses.where((house) {
-        final titleMatch = house["title"]
-            .toString()
-            .toLowerCase()
-            .contains(searchQuery.toLowerCase());
-        final locationMatch = (selectedLocation == "All" ||
-            house["location"] == selectedLocation);
-        // Only show active houses on the main listing.
-        final isActive = house["isActive"] ?? true;
-        final double housePrice = house["priceValue"];
-        final priceMatch = (minPrice == null || housePrice >= minPrice) &&
-            (maxPrice == null || housePrice <= maxPrice);
+      filteredHouses = allListings.where((listing) {
+        final titleMatch = listing.title.toLowerCase().contains(searchQuery.toLowerCase());
+        final locationMatch = (selectedLocation == "All" || listing.location == selectedLocation);
+        final isActive = listing.isActive;
+        final priceMatch = (minPrice == null || listing.price >= minPrice) &&
+            (maxPrice == null || listing.price <= maxPrice);
 
         bool bedsMatch = true;
         if (bedsInput.isNotEmpty) {
           int? desiredBeds = int.tryParse(bedsInput);
-          bedsMatch = (desiredBeds != null && house["beds"] == desiredBeds);
+          bedsMatch = (desiredBeds != null && listing.bedrooms == desiredBeds);
         }
 
         bool bathsMatch = true;
         if (bathsInput.isNotEmpty) {
           int? desiredBaths = int.tryParse(bathsInput);
-          bathsMatch = (desiredBaths != null && house["baths"] == desiredBaths);
+          bathsMatch = (desiredBaths != null && listing.restrooms == desiredBaths);
         }
 
         return titleMatch && locationMatch && isActive && priceMatch && bedsMatch && bathsMatch;
       }).toList();
     });
   }
+
 
   Widget buildAdvancedFilters() {
     return Column(
@@ -328,23 +330,35 @@ class HouseListState extends State<HouseList> {
               scrollDirection: Axis.horizontal,
               itemCount: filteredHouses.length,
               itemBuilder: (context, index) {
-                var house = filteredHouses[index];
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: HouseTile(
-                    imagePath: List<String>.from(house["imagePath"]),
-                    title: house["title"],
-                    price: house["price"],
-                    details: house["details"],
-                    isFavorite: house["isFavorite"],
-                    isActive: house["isActive"] ?? true,
-                    onToggleStatus: () {
-                      setState(() {
-                        house["isActive"] = !(house["isActive"] ?? true);
-                        applyFilters();
-                      });
-                    },
-                  ),
+                final lodging = filteredHouses[index];
+                // return Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: HouseTile(
+                //     imagePath: house.imageUrls,
+                //     title: house.title,
+                //     price: house.price.toString(),
+                //     details: house.description,
+                //     isFavorite: false,
+                //     isActive: house.isActive,
+                //     onToggleStatus: () {
+                //       setState(() {
+                //         house.isActive = !house.isActive;
+                //         applyFilters();
+                //       });
+                //     },
+                //   ),
+                // );
+                return HouseTile(
+                  lodging: lodging,
+                  onToggleStatus: () {
+                    setState(() {
+                      lodging.isActive = !lodging.isActive;
+                      FirebaseFirestore.instance
+                          .collection('listings')
+                          .doc(lodging.id.toString())
+                          .update({'isActive': lodging.isActive});
+                    });
+                  },
                 );
               },
             ),
