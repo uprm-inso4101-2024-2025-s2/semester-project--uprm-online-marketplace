@@ -27,7 +27,7 @@ class MyTextfield extends StatelessWidget {
         horizontal: 25.0,
       ),
 
-      child: TextField(
+      child: TextFormField(
         obscureText:
             obscureText, //is a bool , we need it as a variable because we don't one every single textbox to be hidden , just like HintText
         controller:
