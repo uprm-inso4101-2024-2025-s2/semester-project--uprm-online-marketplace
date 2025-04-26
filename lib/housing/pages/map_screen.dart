@@ -36,21 +36,21 @@ class MapScreenState extends State<MapScreen> {
   );
 
   late final Widget addMarkerButton = FloatingActionButton(
-      onPressed: _addMarker,
-      child : const Icon(Icons.add_location)
+    onPressed: _addMarker,
+    child: const Icon(Icons.add_location),
   );
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: Column(
           spacing: 50,
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget> [
+          children: <Widget>[
             searchBar,
             // The Expanded Widget is necessary to avoid pixel overflow by map
-            Expanded (
+            Expanded(
               // The map must be declared dynamically,
               // refactoring to a variable would not let markers update
               child: GoogleMap(
@@ -71,7 +71,6 @@ class MapScreenState extends State<MapScreen> {
     );
   }
 
-
   /// Parses a user input string into latitude and longitude coordinates.
   ///
   /// If the input is valid, it calls [_goToSearch] to move the map to the specified location.
@@ -79,10 +78,10 @@ class MapScreenState extends State<MapScreen> {
   ///
   /// [input] A place by name, or a string containing the latitude and longitude in the format "Coords: lat lng".
   void _submitSearch(String input) async {
-    if(input.toLowerCase().startsWith("coords:")){
+    if (input.toLowerCase().startsWith("coords:")) {
       input = input.substring(7).trim();
       List<String> coords = input.split(" ");
-      if(coords.length == 2) {
+      if (coords.length == 2) {
         try {
           final latitude = double.parse(coords[0].trim());
           final longitude = double.parse(coords[1].trim());
@@ -90,13 +89,14 @@ class MapScreenState extends State<MapScreen> {
         } catch (e) {
           _showError("Invalid coordinates: ${input}.");
         }
+      } else {
+        _showError(
+          "Invalid input format. Expected: 'Coords: lat lng'",
+        );
       }
-      else {
-        _showError("Invalid input format. Expected: 'Coords: lat lng'");
-      }
-    }
-    else {
-      final String apiKey = "AIzaSyAN3xamtj-oVtgU9fk0_Oitd6yMKb6kaN4";
+    } else {
+      final String apiKey =
+          "AIzaSyAN3xamtj-oVtgU9fk0_Oitd6yMKb6kaN4";
       /*
       // Javascript
       const functions = require("firebase-functions");
@@ -135,27 +135,32 @@ class MapScreenState extends State<MapScreen> {
        * the code above using firebase should be used.
        */
       // TODO: Modify to Firebase function call for production
-      final String corsProxy = "https://cors-anywhere.herokuapp.com/"; // To test this, go to this site and click 'Request temporary access to the demo server', after the search bar should call the places api just fine. If you do not do this, searching a place will result in an 'Error fetching location: Status code 403'
-      final String url = '${corsProxy}https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input="$input"&inputtype=textquery&fields=geometry&key=$apiKey';
+      final String corsProxy =
+          "https://cors-anywhere.herokuapp.com/"; // To test this, go to this site and click 'Request temporary access to the demo server', after the search bar should call the places api just fine. If you do not do this, searching a place will result in an 'Error fetching location: Status code 403'
+      final String url =
+          '${corsProxy}https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input="$input"&inputtype=textquery&fields=geometry&key=$apiKey';
       try {
-
         final response = await http.get(Uri.parse(url));
 
-        if(response.statusCode == 200) {
+        if (response.statusCode == 200) {
           final data = json.decode(response.body);
 
-          if(data["candidates"].isNotEmpty) {
-            final latitude = data["candidates"][0]["geometry"]["location"]["lat"];
-            final longitude = data["candidates"][0]["geometry"]["location"]["lng"];
+          if (data["candidates"].isNotEmpty) {
+            final latitude =
+                data["candidates"][0]["geometry"]["location"]["lat"];
+            final longitude =
+                data["candidates"][0]["geometry"]["location"]["lng"];
             _goToSearch(LatLng(latitude, longitude));
           } else {
             _showError("Place not found: $input");
           }
+        } else {
+          _showError(
+            "Error fetching location: Status Code ${response.statusCode}",
+          );
         }
-        else {
-          _showError("Error fetching location: Status Code ${response.statusCode}");
-        }
-      } catch (e) { // This is for debugging mainly
+      } catch (e) {
+        // This is for debugging mainly
         _showError("$e");
       }
     }
@@ -170,9 +175,11 @@ class MapScreenState extends State<MapScreen> {
   ///
   /// Returns a [Future] that completes when the camera animation is done.
   Future<void> _goToSearch(LatLng coords) async {
-    if(mapController == null) return;
+    if (mapController == null) return;
     await mapController.animateCamera(
-        CameraUpdate.newCameraPosition(CameraPosition(target: coords, zoom: 16))
+      CameraUpdate.newCameraPosition(
+        CameraPosition(target: coords, zoom: 16),
+      ),
     );
   }
 
@@ -183,11 +190,12 @@ class MapScreenState extends State<MapScreen> {
 
   /// Retrieves the center coordinates of the visible map and places a marker.
   Future<void> _addMarker() async {
-    if(mapController == null) return;
-    LatLngBounds region =  await mapController.getVisibleRegion();
+    if (mapController == null) return;
+    LatLngBounds region = await mapController.getVisibleRegion();
     LatLng coords = LatLng(
       (region.northeast.latitude + region.southwest.latitude) / 2,
-      (region.northeast.longitude + region.southwest.longitude) / 2,
+      (region.northeast.longitude + region.southwest.longitude) /
+          2,
     );
     _placeMarker(coords);
   }
@@ -198,18 +206,21 @@ class MapScreenState extends State<MapScreen> {
   /// Tapping the info window deletes the marker.
   ///
   /// [coords] The [LatLng] position where the marker should be placed.
-  void _placeMarker(LatLng coords){
+  void _placeMarker(LatLng coords) {
     setState(() {
-      _markers.add(Marker(
-        markerId: MarkerId(coords.toString()),
-        position: coords,
-        infoWindow: InfoWindow(
+      _markers.add(
+        Marker(
+          markerId: MarkerId(coords.toString()),
+          position: coords,
+          infoWindow: InfoWindow(
             title: "Tap to Delete",
-            snippet: "Latitude: ${coords.latitude}, Longitude: ${coords.longitude}",
+            snippet:
+                "Latitude: ${coords.latitude}, Longitude: ${coords.longitude}",
             // Tap the text of the info window to delete the marker.
-            onTap: () => _deleteMarker(coords.toString())
+            onTap: () => _deleteMarker(coords.toString()),
+          ),
         ),
-      ));
+      );
     });
   }
 
@@ -219,9 +230,11 @@ class MapScreenState extends State<MapScreen> {
   /// or if the listing itself is deleted.
   ///
   /// [id] The [markerID.value] of the marker to be removed from the map.
-  void _deleteMarker(String id){
+  void _deleteMarker(String id) {
     setState(() {
-      _markers.removeWhere((marker) => marker.markerId.value == id);
+      _markers.removeWhere(
+        (marker) => marker.markerId.value == id,
+      );
     });
   }
 
