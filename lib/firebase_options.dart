@@ -26,11 +26,20 @@ class DefaultFirebaseOptions {
           'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.iOS:
-        return ios;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for ios - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
-        return windows;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for windows - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -44,40 +53,12 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBz-GbFqVpZsS98177J_b0a6NrJ_Gm7UZs',
-    appId: '1:739934329938:web:117804e113cdb2ff73138b',
-    messagingSenderId: '739934329938',
-    projectId: 'team3chat-8b26c',
-    authDomain: 'team3chat-8b26c.firebaseapp.com',
-    storageBucket: 'team3chat-8b26c.firebasestorage.app',
-    measurementId: 'G-HPVJ3PH5TG',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCeNLiWVSj_Sg78f_g8W_OdpJvyUEN7AGc',
-    appId: '1:739934329938:ios:e9c44b6a7ea6d58b73138b',
-    messagingSenderId: '739934329938',
-    projectId: 'team3chat-8b26c',
-    storageBucket: 'team3chat-8b26c.firebasestorage.app',
-    iosBundleId: 'com.uprmonline.uprmChat',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyCeNLiWVSj_Sg78f_g8W_OdpJvyUEN7AGc',
-    appId: '1:739934329938:ios:e9c44b6a7ea6d58b73138b',
-    messagingSenderId: '739934329938',
-    projectId: 'team3chat-8b26c',
-    storageBucket: 'team3chat-8b26c.firebasestorage.app',
-    iosBundleId: 'com.uprmonline.uprmChat',
-  );
-
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyBz-GbFqVpZsS98177J_b0a6NrJ_Gm7UZs',
-    appId: '1:739934329938:web:1b5ed7e0f8f876cc73138b',
-    messagingSenderId: '739934329938',
-    projectId: 'team3chat-8b26c',
-    authDomain: 'team3chat-8b26c.firebaseapp.com',
-    storageBucket: 'team3chat-8b26c.firebasestorage.app',
-    measurementId: 'G-EV48Z3ZTQB',
+    apiKey: 'AIzaSyBqajpsar7nw9tlbDNRu13505v-PaeC0os',
+    appId: '1:771212475650:web:b1748012b5d858873cd61b',
+    messagingSenderId: '771212475650',
+    projectId: 'online-market-f5c9f',
+    authDomain: 'online-market-f5c9f.firebaseapp.com',
+    storageBucket: 'online-market-f5c9f.firebasestorage.app',
+    measurementId: 'G-WNKC1KHM1R',
   );
 }
