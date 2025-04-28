@@ -1,11 +1,7 @@
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widgets/house_tile.dart';
-import 'MyListings.dart'; // Provides MyListingsPage, InactiveListingsPage, and FavoritesPage
-import 'package:semesterprojectuprmonlinemarketplace/housing/pages/favorite_listings.dart';
-import 'package:firebase_core/firebase_core.dart'; // Import Firebase Core
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../Classes/ListingService.dart';
 import '../../Classes/LodgingClass.dart';
