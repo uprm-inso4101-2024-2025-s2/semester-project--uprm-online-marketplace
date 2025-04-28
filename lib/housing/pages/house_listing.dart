@@ -71,60 +71,41 @@ List<Map<String, dynamic>> globalHouses = [
 /// Main Listings Page (HouseList) with advanced filters.
 /// Only active listings (isActive == true) are shown here.
 class HouseList extends StatefulWidget {
-  const HouseList({super.key});
+  const HouseList({Key? key}) : super(key: key);
 
   @override
   HouseListState createState() => HouseListState();
 }
 
 class HouseListState extends State<HouseList> {
-
   List<Lodging> allListings = [];
-
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  String searchQuery = "";
-  String selectedLocation = "All";
-  String bedsInput = "";
-  String bathsInput = "";
-  String minPriceInput = "";
-  String maxPriceInput = "";
-  Timer? debounceTimer;
-
-  // Add a loading state
+  List<Lodging> filteredHouses = [];
   bool isLoading = true;
   bool hasError = false;
 
-  /// Filtered houses (only active listings).
-  List<Lodging> filteredHouses = [];
+  String searchQuery = '';
+  String selectedLocation = 'All';
+  String bedsInput = '';
+  String bathsInput = '';
+  String minPriceInput = '';
+  String maxPriceInput = '';
+  Timer? debounceTimer;
 
   @override
   void initState() {
     super.initState();
-    // Initially, show only active houses.
     _fetchListings();
   }
 
-  // Simulate fetching listings from Firestore
   Future<void> _fetchListings() async {
     try {
-      // Simulate a network call delay
-      // await Future.delayed(Duration(seconds: 2)); // Remove this in production
       final listings = await ListingService().fetchAllListings();
-
-      // Fetch listings from Firestore or any other source
-      // Example:
-      // QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('listings').get();
-      // List<Map<String, dynamic>> listings = querySnapshot.docs.map((doc) => doc.data()).toList();
-
-      // For now, use the globalHouses as a placeholder
       setState(() {
         allListings = listings;
-        filteredHouses = listings.where((listing) => listing.isActive == true).toList();
+        filteredHouses = listings.where((l) => l.isActive).toList();
         isLoading = false;
       });
     } catch (e) {
-      print("Error fetching listings: $e");
       setState(() {
         hasError = true;
         isLoading = false;
@@ -133,7 +114,7 @@ class HouseListState extends State<HouseList> {
   }
 
   void onSearchChanged(String query) {
-    if (debounceTimer?.isActive ?? false) debounceTimer!.cancel();
+    debounceTimer?.cancel();
     debounceTimer = Timer(const Duration(milliseconds: 300), () {
       setState(() {
         searchQuery = query;
@@ -142,228 +123,180 @@ class HouseListState extends State<HouseList> {
     });
   }
 
-  /// Filtering now requires each house to be active.
   void applyFilters() {
+    final minP = double.tryParse(minPriceInput);
+    final maxP = double.tryParse(maxPriceInput);
     setState(() {
-      double? minPrice = double.tryParse(minPriceInput);
-      double? maxPrice = double.tryParse(maxPriceInput);
-
-      filteredHouses = allListings.where((listing) {
-        final titleMatch = listing.title.toLowerCase().contains(searchQuery.toLowerCase());
-        final locationMatch = (selectedLocation == "All" || listing.location == selectedLocation);
-        final isActive = listing.isActive;
-        final priceMatch = (minPrice == null || listing.price >= minPrice) &&
-            (maxPrice == null || listing.price <= maxPrice);
-
-        bool bedsMatch = true;
-        if (bedsInput.isNotEmpty) {
-          int? desiredBeds = int.tryParse(bedsInput);
-          bedsMatch = (desiredBeds != null && listing.bedrooms == desiredBeds);
-        }
-
-        bool bathsMatch = true;
-        if (bathsInput.isNotEmpty) {
-          int? desiredBaths = int.tryParse(bathsInput);
-          bathsMatch = (desiredBaths != null && listing.restrooms == desiredBaths);
-        }
-
-        return titleMatch && locationMatch && isActive && priceMatch && bedsMatch && bathsMatch;
+      filteredHouses = allListings.where((l) {
+        final matchesTitle = l.title.toLowerCase().contains(searchQuery.toLowerCase());
+        final matchesLoc = selectedLocation == 'All' || l.location == selectedLocation;
+        final matchesPrice = (minP == null || l.price >= minP) && (maxP == null || l.price <= maxP);
+        final matchesBeds = bedsInput.isEmpty || l.bedrooms == int.tryParse(bedsInput);
+        final matchesBaths = bathsInput.isEmpty || l.restrooms == int.tryParse(bathsInput);
+        return matchesTitle && matchesLoc && matchesPrice && matchesBeds && matchesBaths && l.isActive;
       }).toList();
     });
   }
 
-
   Widget buildAdvancedFilters() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Price Range UI with two text fields.
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text("Price Range (\$)"),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        labelText: "Min Price",
-                        hintText: "e.g. 50",
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          minPriceInput = value;
-                          applyFilters();
-                        });
-                      },
-                    ),
-                  ),
-                  SizedBox(width: 10.w),
-                  Expanded(
-                    child: TextField(
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        labelText: "Max Price",
-                        hintText: "e.g. 200",
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          maxPriceInput = value;
-                          applyFilters();
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ],
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          _filterCard(
+            icon: Icons.attach_money,
+            label: 'Min',
+            value: minPriceInput,
+            onChanged: (v) => setState(() { minPriceInput = v; applyFilters(); }),
+            width: 80.w,
           ),
-        ),
-        // Beds Filter
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text("Beds:"),
-              TextField(
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  hintText: "Enter number of beds",
+          SizedBox(width: 12.w),
+          _filterCard(
+            icon: Icons.money_off,
+            label: 'Max',
+            value: maxPriceInput,
+            onChanged: (v) => setState(() { maxPriceInput = v; applyFilters(); }),
+            width: 80.w,
+          ),
+          SizedBox(width: 12.w),
+          _filterCard(
+            icon: Icons.king_bed,
+            label: 'Beds',
+            value: bedsInput,
+            onChanged: (v) => setState(() { bedsInput = v; applyFilters(); }),
+            width: 70.w,
+          ),
+          SizedBox(width: 12.w),
+          _filterCard(
+            icon: Icons.bathtub,
+            label: 'Baths',
+            value: bathsInput,
+            onChanged: (v) => setState(() { bathsInput = v; applyFilters(); }),
+            width: 70.w,
+          ),
+          SizedBox(width: 12.w),
+          Container(
+            width: 120.w,
+            child: InputDecorator(
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.place, size: 10.sp, color: Colors.black,),
+                labelText: 'Location',
+                contentPadding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 8.w),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
+                isDense: true,
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  value: selectedLocation,
+                  items: ['All', 'San Juan', 'Carolina', 'Downtown']
+                      .map((loc) => DropdownMenuItem(value: loc, child: Text(loc)))
+                      .toList(),
+                  onChanged: (val) {
+                    setState(() {
+                      selectedLocation = val!;
+                      applyFilters();
+                    });
+                  },
+                  isDense: true,
                 ),
-                onChanged: (value) {
-                  setState(() {
-                    bedsInput = value;
-                    applyFilters();
-                  });
-                },
               ),
-            ],
+            ),
           ),
-        ),
-        // Bathrooms Filter
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text("Bathrooms:"),
-              TextField(
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  hintText: "Enter number of bathrooms",
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    bathsInput = value;
-                    applyFilters();
-                  });
-                },
+        ],
+      ),
+    );
+  }
+
+  Widget _filterCard({
+    required IconData icon,
+    required String label,
+    required String value,
+    required void Function(String) onChanged,
+    required double width,
+  }) {
+    return Container(
+      width: width,
+      padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 8.w),
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(8.r),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 15.sp, color: Colors.black),
+          SizedBox(width: 4.w),
+          Expanded(
+            child: TextFormField(
+              initialValue: value,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                hintText: label,
+                border: InputBorder.none,
+                isDense: true,
+                contentPadding: EdgeInsets.zero,
               ),
-            ],
+              onChanged: onChanged,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
       backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          // Search Bar
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 10.h),
-            child: TextField(
-              onChanged: onSearchChanged,
-              decoration: InputDecoration(
-                hintText: "Search houses...",
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Search Bar
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+              child: TextField(
+                onChanged: onSearchChanged,
+                decoration: InputDecoration(
+                  hintText: 'Search houses...',
+                  prefixIcon: const Icon(Icons.search),
+                  isDense: true,
+                  contentPadding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
                 ),
               ),
             ),
-          ),
-          // Advanced Filters
-          buildAdvancedFilters(),
-          // Location Filter
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Row(
-              children: [
-                const Text("Location: "),
-                DropdownButton<String>(
-                  value: selectedLocation,
-                  items: <String>["All", "San Juan", "Carolina", "Downtown"]
-                      .map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {
-                    setState(() {
-                      selectedLocation = newValue!;
-                      applyFilters();
-                    });
-                  },
-                ),
-              ],
+            // Improved Filters
+            buildAdvancedFilters(),
+            // Listings
+            Expanded(
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : hasError
+                  ? const Center(child: Text('Failed to load listings'))
+                  : filteredHouses.isEmpty
+                  ? const Center(child: Text('No houses found'))
+                  : ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: filteredHouses.length,
+                itemBuilder: (context, i) {
+                  final l = filteredHouses[i];
+                  return HouseTile(
+                    lodging: l,
+                    onToggleStatus: () {
+                      setState(() {
+                        l.isActive = !l.isActive;
+                        FirebaseFirestore.instance
+                            .collection('listings')
+                            .doc(l.id.toString())
+                            .update({'isActive': l.isActive});
+                      });
+                    },
+                  );
+                },
+              ),
             ),
-          ),
-          // Horizontal List of Filtered Houses.
-          Expanded(
-            child: isLoading
-                ? Center(child: CircularProgressIndicator()) // Show loading indicator
-                : hasError
-                ? Center(child: Text("Failed to load listings")) // Show error message
-                : filteredHouses.isEmpty
-                ? Center(child: Text("No houses found")) // Show no listings message
-                : ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: filteredHouses.length,
-              itemBuilder: (context, index) {
-                final lodging = filteredHouses[index];
-                // return Padding(
-                //   padding: const EdgeInsets.all(8.0),
-                //   child: HouseTile(
-                //     imagePath: house.imageUrls,
-                //     title: house.title,
-                //     price: house.price.toString(),
-                //     details: house.description,
-                //     isFavorite: false,
-                //     isActive: house.isActive,
-                //     onToggleStatus: () {
-                //       setState(() {
-                //         house.isActive = !house.isActive;
-                //         applyFilters();
-                //       });
-                //     },
-                //   ),
-                // );
-                return HouseTile(
-                  lodging: lodging,
-                  onToggleStatus: () {
-                    setState(() {
-                      lodging.isActive = !lodging.isActive;
-                      FirebaseFirestore.instance
-                          .collection('listings')
-                          .doc(lodging.id.toString())
-                          .update({'isActive': lodging.isActive});
-                    });
-                  },
-                );
-              },
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
