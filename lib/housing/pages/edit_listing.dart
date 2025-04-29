@@ -714,7 +714,7 @@ class _EditListingPageState extends State<EditListingPage>{
 
 
 
-    listingService.updateListing(currListing?.id, title: title, price: price,
+    listingService.updateListing(currListing!.id, title: title, price: price,
       location: location, condition: "DummyCondition", bedrooms: bedrooms,
       restrooms: restrooms, parking: parking, isActive: true,
       imageUrls: _imageUrls );

@@ -341,7 +341,7 @@ class HouseTileState extends State<HouseTile> {
                           Flexible(
                             child: EditButton(
                               pressed:() {
-                                print("Listing being Edited: " + widget.lodging.id);
+                                print("Listing being Edited: " + widget.lodging.id.toString());
                                 Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (

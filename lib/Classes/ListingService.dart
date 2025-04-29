@@ -1,3 +1,4 @@
+
 import 'LodgingClass.dart';
 import 'package:firebase_core/firebase_core.dart'; // Import Firebase Core
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,7 +14,7 @@ class ListingService extends LodgingManagement{
 
 //For now the listings will be utilizing the Lodging class, if the project were
 //to expand and utilize other products, this value type might change.
-  final Map<String, Lodging> listings= {};
+  final Map<int, Lodging> listings= {};
 
   //Creates a singular instance of ListingService.
   static final ListingService _instance= ListingService._internal();
@@ -24,43 +25,19 @@ class ListingService extends LodgingManagement{
   factory ListingService(){
     return _instance;
   }
+
   @override
-  Future<String> createFirestoreDoc() async{
-    final docRef= FirebaseFirestore.instance.collection('listings').doc();
-    final autoID= docRef.id;
-    //Here is uses that ID to create a new Lodging with the ID now being docID
-    return autoID;
-  }
-  @override
-  Future<void> createListing(Lodging lodging,) async{
-    if(listings.containsKey(lodging.getID())) {
+  Future<void> createListing(Lodging lodging) async{
+    if(listings.containsKey(lodging.getID())){
       throw ArgumentError('No Duplicates Allowed.');
     }else{
-      String id= await createFirestoreDoc();
-      Lodging newlodging= Lodging(
-        id:id,
-        owner: lodging.owner,
-        availability: lodging.availability,
-        title: lodging.title,
-        price: lodging.price,
-        location: lodging.location,
-        condition: lodging.condition,
-        bedrooms: lodging.bedrooms,
-        restrooms: lodging.restrooms,
-        parking: lodging.parking,
-        description: lodging.description,
-        isActive: lodging.isActive,
-        uid: lodging.uid,
-        isFavorite: lodging.isFavorite,
-        imageUrls: lodging.imageUrls,
-      );
-      listings[id]= newlodging;
-      super.addLodging(newlodging);
+      listings[lodging.getID()]= lodging;
+      super.addLodging(lodging);
 
       //Adds to Firestore
       //gets a reference to the listings collection in firestore, .doc(id) tries to find a document that already has that id
       //.set() saves the lodging data in firestore, replacing the document if it already existed, if the doc didnt exist it just creates new one
-      await FirebaseFirestore.instance.collection("listings").doc(id).set(lodging.toFirestore());
+      await FirebaseFirestore.instance.collection("listings").doc(lodging.getID().toString()).set(lodging.toFirestore());
       print("Added to Firestore: ${lodging.title}");
     }
   }
@@ -102,7 +79,7 @@ class ListingService extends LodgingManagement{
   }
 
 
-  // Lodging? fetchListing(String ID){
+  // Lodging? fetchListing(int ID){
   //   if(listings.containsKey(ID)){
   //     if(findLodgingWithId(ID)!=null){
   //       return listings[ID];
@@ -113,8 +90,8 @@ class ListingService extends LodgingManagement{
   //     throw ArgumentError("Item not Found.");
   //   }
   // }
-  Future<Lodging?> fetchListing(String id) async {
-    DocumentSnapshot doc = await FirebaseFirestore.instance.collection('listings').doc(id).get();
+  Future<Lodging?> fetchListing(int id) async {
+    DocumentSnapshot doc = await FirebaseFirestore.instance.collection('listings').doc(id.toString()).get();
 
     if (doc.exists) {
       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
@@ -133,7 +110,7 @@ class ListingService extends LodgingManagement{
   }
 
   @override
-  Future<void> updateListing(String? id, {String? title, String? condition,
+  Future<void> updateListing(int id, {String? title, String? condition,
     String? description, double? price, String? location,
     int? bedrooms, int? restrooms, int? parking, bool? isActive,List<String>? imageUrls}) async{
     if(!listings.containsKey(id)){
@@ -142,22 +119,22 @@ class ListingService extends LodgingManagement{
     else{
 
       Lodging? newLodging= editLodging(
-          id,
-          newTitle: title,
-          newCondition: condition,
-          newDescription:description,
-          newPrice: price,
-          newLocation: location,
-          newBedrooms: bedrooms,
-          newRestrooms: restrooms,
-          newParking: parking,
-          newImageUrls: imageUrls,
+        id,
+        newTitle: title,
+        newCondition: condition,
+        newDescription:description,
+        newPrice: price,
+        newLocation: location,
+        newBedrooms: bedrooms,
+        newRestrooms: restrooms,
+        newParking: parking,
+        newImageUrls: imageUrls,
       );
       if(newLodging!=null){
-        listings[id!]= newLodging;
+        listings[id]= newLodging;
 
         //Update in Firestore
-        await FirebaseFirestore.instance.collection('listings').doc(id).update({
+        await FirebaseFirestore.instance.collection('listings').doc(id.toString()).update({
           if(title != null) "title" : title,
           if(condition != null) "condition" : condition,
           if(description != null) "description" : description,
@@ -173,42 +150,36 @@ class ListingService extends LodgingManagement{
   }
 
   @override
-  Future<void> deleteListing(String? id) async {
+  Future<void> deleteListing(int id) async {
     try {
-      if(id!=null) {
-        Lodging? lodging = await fetchListing(id);
-        if (lodging == null) {
-          throw ArgumentError("Lodging not found locally.");
-        }
-        final authService = AuthService();
-        final currUid = authService.getCurrentUserID();
-
-        if (currUid == null) {
-          throw Exception("No user logged in");
-        }
-
-        await FirebaseFirestore.instance.collection('listings').doc(
-            id.toString()).delete();
-        // QuerySnapshot snapshot = await FirebaseFirestore.instance.collection(
-        //   'listings')
-        //   .where('title', isEqualTo: lodging.title)
-        //   .where('uid', isEqualTo: currUid)
-        //   .get();
-        // print("Query returned ${snapshot.docs.length} document(s)");
-        // if (snapshot.docs.isEmpty) {
-        //   throw ArgumentError("Listing NOT found in Firestore.");
-        // }//Deletes the found Listing in Firebase.
-        //   for (var doc in snapshot.docs) {
-        //     await doc.reference.delete();
-        //     print("Deleted listing document: ${doc.id}");
-        //   }
-        deleteLodging(lodging, id);
-        listings.remove(id);
-        print("Deleted $id from local listings");
+      Lodging? lodging = findLodgingWithId(id);
+      if(lodging==null){
+        throw ArgumentError("Lodging not found locally.");
       }
-      else{
-        throw ArgumentError("Listing ID is null");
+      final authService= AuthService();
+      final currUid= authService.getCurrentUserID();
+
+      if(currUid==null){
+        throw Exception("No user logged in");
       }
+
+      //await FirebaseFirestore.instance.collection('listings').doc(id.toString()).delete();
+      QuerySnapshot snapshot = await FirebaseFirestore.instance.collection(
+          'listings')
+          .where('title', isEqualTo: lodging.title)
+          .where('uid', isEqualTo: currUid)
+          .get();
+      print("Query returned ${snapshot.docs.length} document(s)");
+      if (snapshot.docs.isEmpty) {
+        throw ArgumentError("Listing NOT found in Firestore.");
+      }//Deletes the found Listing in Firebase.
+      for (var doc in snapshot.docs) {
+        await doc.reference.delete();
+        print("Deleted listing document: ${doc.id}");
+      }
+      deleteLodging(lodging, id);
+      listings.remove(id);
+      print("Deleted $id from local listings");
     }catch(e, stack){
       print("ISSUE DELETING FROM FIRESTORE: $e");
       print(stack);
@@ -230,7 +201,7 @@ class ListingService extends LodgingManagement{
   }
 
   // Toggle active/inactive status of a listing
-  void toggleListingStatus(String id, bool isActive) {
+  void toggleListingStatus(int id, bool isActive) {
     if (listings.containsKey(id)) {
       listings[id]?.setStatus(isActive);
       print("Listing with ID $id is now ${isActive ? 'Active' : 'Inactive'}");
