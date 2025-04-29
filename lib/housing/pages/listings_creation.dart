@@ -214,7 +214,7 @@ class _CreateListingPageState extends State<CreateListingPage>{
                                                                     style: TextStyle(color: Colors.white,))
                                                             )
                                                         );
-                                                      }if(_formKey.currentState!.validate()) {
+                                                      }else if(_formKey.currentState!.validate()) {
                                                         createOwnListing();
                                                       }
                                                     },
@@ -583,8 +583,11 @@ class _CreateListingPageState extends State<CreateListingPage>{
     int parking= int.parse(parkingController.text);
     String description= descriptionController.text;
     List<String> imagesList= _imageUrls;
+    //Creates the firebase doc calling functions
 
-    Lodging newLodging= Lodging(owner: "DummyOwner", availability: "Available",
+
+
+    Lodging newLodging= Lodging(owner: authService.getCurrentUser().toString(), availability: "Available",
       title: title, price: price, location: location,
       condition: "DummyCondition", bedrooms: bedrooms, restrooms: restrooms,
       parking: parking, description: description, isActive: true, uid: authService.getCurrentUserID(), isFavorite: false,

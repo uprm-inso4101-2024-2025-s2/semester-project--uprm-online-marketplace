@@ -32,13 +32,16 @@ class HouseTile extends StatefulWidget {
   // });
 
   final Lodging lodging;
+  final bool onMyListing;
   final VoidCallback onToggleStatus;
   final VoidCallback? onToggleFavorite;
+
 
   const HouseTile({
     super.key,
     required this.lodging,
     required this.onToggleStatus,
+    required this.onMyListing,
     this.onToggleFavorite,
   });
 
@@ -286,7 +289,7 @@ class HouseTileState extends State<HouseTile> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          widget.lodging.price.toString(),
+                          ("\$"+widget.lodging.price.toString()),
                           style: TextStyle(fontSize: 6.sp, fontWeight: FontWeight.bold), //16 old size
                         ),
                         Row(
@@ -334,18 +337,20 @@ class HouseTileState extends State<HouseTile> {
                         ),
                        ),
                         ),
-                        Flexible(
-                          child: EditButton(
-                            pressed:() {
-                              Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (
-                                  context) => const EditListingPage()
-                              ),
-                              );
-                            }
+                        if(widget.onMyListing)
+                          Flexible(
+                            child: EditButton(
+                              pressed:() {
+                                print("Listing being Edited: " + widget.lodging.id);
+                                Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (
+                                    context) =>  EditListingPage(currListing: widget.lodging)
+                                ),
+                                );
+                              }
+                            ),
                           ),
-                        ),
                       ],
                     )
                   ],

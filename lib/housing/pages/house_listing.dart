@@ -278,6 +278,7 @@ class HouseListState extends State<HouseList> {
                   final l = filteredHouses[i];
                   return HouseTile(
                     lodging: l,
+                    onMyListing: false,
                     onToggleStatus: () {
                       setState(() {
                         l.isActive = !l.isActive;

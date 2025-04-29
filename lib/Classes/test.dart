@@ -238,7 +238,7 @@ void main() async {
   print("Fetched lodging title: ${fetchedLodging?.title}"); // Expect: Lodging 1
 
   // 🔵 Test fetchListing(id) for a non-existent listing
-  Lodging? nonExistentLodging = await listingService.fetchListing(99999999);
+  Lodging? nonExistentLodging = await listingService.fetchListing("99999999");
   print("Non-existent lodging: ${nonExistentLodging == null ? 'Passed' : 'Failed'}"); // Expect: Passed
 
   // 🔵 Clean up database after tests

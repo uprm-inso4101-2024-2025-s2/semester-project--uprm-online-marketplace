@@ -87,6 +87,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                   final lodging = favoriteListings[index];
                   return HouseTile(
                     lodging: lodging,
+                    onMyListing: false,
                     onToggleStatus: () {
                       setState(() {
                         lodging.isActive = !lodging.isActive;

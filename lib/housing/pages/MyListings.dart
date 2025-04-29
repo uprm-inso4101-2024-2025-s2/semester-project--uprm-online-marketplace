@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../services/auth/auth_service.dart';
 import '../widgets/house_tile.dart';
 import 'package:semesterprojectuprmonlinemarketplace/housing/pages/favorite_listings.dart';
 // Import the shared data and HouseList from house_listing.dart
@@ -16,7 +17,6 @@ import '../../Classes/LodgingClass.dart';
 /// My Listings Page: displays user-owned listings (active or inactive)
 class MyListingsPage extends StatefulWidget {
   const MyListingsPage({Key? key}) : super(key: key);
-
   @override
   State<MyListingsPage> createState() => _MyListingsPageState();
 }
@@ -24,10 +24,13 @@ class MyListingsPage extends StatefulWidget {
 class _MyListingsPageState extends State<MyListingsPage> {
   List<Lodging> userListings = [];
   bool isLoading = true;
+  final authService= AuthService();
+  String? currUid;
 
   @override
   void initState() {
     super.initState();
+    currUid= authService.getCurrentUserID();
     loadUserListings();
   }
 
@@ -58,6 +61,7 @@ class _MyListingsPageState extends State<MyListingsPage> {
       body: Column(
           children:[
             SizedBox(height: 15.h),
+            if(currUid!=null)
             SizedBox(
               height: 35.h,
               width: 50.w,
@@ -85,6 +89,7 @@ class _MyListingsPageState extends State<MyListingsPage> {
                 final lodging = userListings[index];
                 return HouseTile(
                   lodging: lodging,
+                  onMyListing: true,
                   onToggleStatus: () {
                     setState(() {
                       lodging.isActive = !lodging.isActive;

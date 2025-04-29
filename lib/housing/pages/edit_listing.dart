@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../Classes/ListingService.dart';
+import '../../Classes/LodgingClass.dart';
 
 
 //This file will identify the user and extract the ID of the current Listing
@@ -13,7 +14,8 @@ import '../../Classes/ListingService.dart';
 // The Create Listing button logic.
 
 class EditListingPage extends StatefulWidget{
-  const EditListingPage({Key? key}) : super(key:key);
+  final Lodging currListing;
+  const EditListingPage({Key? key, required this.currListing}) : super(key:key);
 
   @override
   State<EditListingPage> createState() => _EditListingPageState();
@@ -22,7 +24,7 @@ class EditListingPage extends StatefulWidget{
 class _EditListingPageState extends State<EditListingPage>{
   //Accesses the Listing Service unique instance.
   ListingService listingService= ListingService();
-
+  Lodging? currListing;
   //Manages FocusNodes for disposal.
   final List<FocusNode> _focusNodes= [];
   TextEditingController titleController= TextEditingController();
@@ -44,35 +46,32 @@ class _EditListingPageState extends State<EditListingPage>{
   @override
   void initState(){
     super.initState();
+    loadListing();
     _pageController = PageController();
   }
 
   @override
-  void updateControllers(){
+  Future<void> loadListing() async{
+    currListing= await widget.currListing;
+    setState(() {});
+  }
+  @override
+  void updateControllers() {
     //Commented since use of dummy data to validate implementation is much simpler.
     // //Parameter will be a function that links the user with the Id of their accessed Listing.
-    // Lodging? currListing= listingService.fetchListing(620001598);
-    // if(currListing!=null){
-    //   titleController.text= currListing.getTitle();
-    //   locationController.text= currListing.getLocation();
-    //   priceController.text= currListing.getPrice().toString();
-    //   bedroomsController.text= currListing.getBedrooms().toString();
-    //   restroomsController.text= currListing.getRestrooms().toString();
-    //   parkingController.text= currListing.getParking().toString();
-    //   descriptionController.text= currListing.getDescription();
-    //   _imageUrls.clear();
-    //   _imageUrls= currListing.getImageUrls();
-    //
-    titleController.text= "Edit Test";
-      locationController.text= "Should show this information editing page.";
-      priceController.text= '100.0';
-      bedroomsController.text= '2';
-      restroomsController.text= '4';
-      parkingController.text= '0';
-      descriptionController.text= "Hope it works.";
+    if (currListing != null) {
+      titleController.text = currListing!.getTitle();
+      locationController.text = currListing!.getLocation();
+      priceController.text = currListing!.getPrice().toString();
+      bedroomsController.text = currListing!.getBedrooms().toString();
+      restroomsController.text = currListing!.getRestrooms().toString();
+      parkingController.text = currListing!.getParking().toString();
+      descriptionController.text = currListing!.getDescription();
       _imageUrls.clear();
-      _imageUrls= [];
-      }
+      _imageUrls = currListing!.getImageUrls();
+    }
+  }
+
 
 
 //The Main widget for the Editing Feature.
@@ -138,7 +137,7 @@ class _EditListingPageState extends State<EditListingPage>{
                                         updateControllers();
                                         setState(() {});
                                       },
-                                      child: Text("Load Information",
+                                      child: Text("Load Previous Information",
                                         style : TextStyle(color: Colors.white),
                                       )
                                   ),
@@ -284,6 +283,7 @@ class _EditListingPageState extends State<EditListingPage>{
                                           );
                                         }if(_formKey.currentState!.validate()) {
                                           modifyOwnListing();
+                                          print("Listing was Edited: " + currListing!.id.toString());
                                         }
                                       },
                                     )
@@ -497,6 +497,7 @@ class _EditListingPageState extends State<EditListingPage>{
   //Asks for confirmation before removing a listing.
   @override
   Future<void> listingRemovalConfirmation() async{
+    BuildContext dialogContext= context;
     showDialog(
       context: context,
       builder: (context){
@@ -522,11 +523,18 @@ class _EditListingPageState extends State<EditListingPage>{
                 ),
                 SizedBox(width:100.w),
                 TextButton(
-                  onPressed: () {
-                    listingService.deleteListing(1000000); //will delete the Listing
-                    setState(() {});
-                    Navigator.pop(context);
-                    Navigator.pop(context);
+                  onPressed: ()  {
+                    try{
+                      Navigator.pop(context);
+                      if (currListing?.id != "") {
+                        deleteListing(currListing); //will delete the Listing
+                      } else {
+                        print("Listing was null. Cannot delete.");
+                      }
+                      Navigator.pop(dialogContext);
+                    }catch(e){
+                      print("ERROR WHILE DELETING LISTING: $e");
+                    }
                   },
                   style: ButtonStyle(
                     overlayColor: WidgetStateProperty.resolveWith((states){
@@ -546,7 +554,15 @@ class _EditListingPageState extends State<EditListingPage>{
       },
     );
   }
-
+  @override
+  void deleteListing(Lodging? listing) async{
+    print("Deleting Listing: $listing");
+    if (listing != null) {
+      await listingService.deleteListing(listing.id);
+    } else {
+      print("Error: Listing is null.");
+    }
+  }
   //Will ask for confirmation if cancel button is hit.
   @override
   Future<void> cancelConfirmation() async{
@@ -698,7 +714,7 @@ class _EditListingPageState extends State<EditListingPage>{
 
 
 
-    listingService.updateListing(620001598, title: title, price: price,
+    listingService.updateListing(currListing?.id, title: title, price: price,
       location: location, condition: "DummyCondition", bedrooms: bedrooms,
       restrooms: restrooms, parking: parking, isActive: true,
       imageUrls: _imageUrls );
@@ -708,6 +724,7 @@ class _EditListingPageState extends State<EditListingPage>{
 
   @override
   void dispose(){
+    currListing=null;
     _imageUrls.clear();
     titleController.dispose();
     locationController.dispose();

@@ -44,7 +44,7 @@ class CreateButton extends StatelessWidget {
         onPressed: pressed,
 
         child: Text(
-            "Create a Listing",
+            "Create Listing",
             style: TextStyle(
               color: const Color(0xFF47804B),
               fontWeight: FontWeight.bold,
