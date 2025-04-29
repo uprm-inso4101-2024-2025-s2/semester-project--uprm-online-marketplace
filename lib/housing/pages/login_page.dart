@@ -7,8 +7,10 @@ import 'package:semesterprojectuprmonlinemarketplace/components/my_textfield.dar
 
 class LoginPage extends StatelessWidget {
   // email and pw text controllers (See who logs in)
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _pwController = TextEditingController();
+  final TextEditingController _emailController =
+      TextEditingController();
+  final TextEditingController _pwController =
+      TextEditingController();
 
   //Tap to go to register
 
@@ -32,7 +34,8 @@ class LoginPage extends StatelessWidget {
     catch (e) {
       showDialog(
         context: context,
-        builder: (context) => AlertDialog(title: Text(e.toString())),
+        builder:
+            (context) => AlertDialog(title: Text(e.toString())),
       );
     }
 
@@ -46,71 +49,79 @@ class LoginPage extends StatelessWidget {
       backgroundColor: Theme.of(context).colorScheme.surface,
 
       //Basic UI for the Login Screen
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            //logo
-            Icon(
-              Icons.message,
-              size: 60,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            const SizedBox(height: 50), // To have space between
-            Text(
-              "Welcome Back, you've been missed",
-              style: TextStyle(
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              //logo
+              Icon(
+                Icons.message,
+                size: 60,
                 color: Theme.of(context).colorScheme.primary,
-                fontSize: 16,
               ),
-            ),
-
-            const SizedBox(height: 25),
-
-            //Email textfield
-            MyTextfield(
-              hintText: "Email",
-              obscureText: false,
-              controller: _emailController,
-            ),
-            const SizedBox(height: 10),
-
-            // pw textfield
-            MyTextfield(
-              hintText: "Password",
-              obscureText: true,
-              controller: _pwController,
-            ),
-            const SizedBox(height: 25),
-
-            //login
-            MyButton(text: "Login", onTap: () => login(context)),
-            const SizedBox(height: 25),
-
-            //register now
-            Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.center, // How the text is align
-              children: [
-                Text(
-                  "Not a member? ",
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+              const SizedBox(height: 50), // To have space between
+              Text(
+                "Welcome Back, you've been missed",
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontSize: 16,
                 ),
-                GestureDetector(
-                  onTap: onTap,
-                  child: Text(
-                    "Register Now",
+              ),
+
+              const SizedBox(height: 25),
+
+              //Email textfield
+              MyTextfield(
+                hintText: "Email",
+                obscureText: false,
+                controller: _emailController,
+              ),
+              const SizedBox(height: 10),
+
+              // pw textfield
+              MyTextfield(
+                hintText: "Password",
+                obscureText: true,
+                controller: _pwController,
+              ),
+              const SizedBox(height: 25),
+
+              //login
+              MyButton(
+                text: "Login",
+                onTap: () => login(context),
+              ),
+              const SizedBox(height: 25),
+
+              //register now
+              Row(
+                mainAxisAlignment:
+                    MainAxisAlignment
+                        .center, // How the text is align
+                children: [
+                  Text(
+                    "Not a member? ",
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.primary,
+                      color:
+                          Theme.of(context).colorScheme.primary,
                     ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                  GestureDetector(
+                    onTap: onTap,
+                    child: Text(
+                      "Register Now",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color:
+                            Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

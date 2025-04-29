@@ -9,14 +9,20 @@ class MyTextfield extends StatelessWidget {
   final bool obscureText;
   final TextEditingController controller;
   final FocusNode? focusNode;
+  final String? labelText;
+  final TextStyle? labelStyle;
+  final FormFieldValidator<String>? validator;
 
   const MyTextfield({
     //my parameters for my class
     super.key,
+    this.labelText,
+    this.labelStyle,
     required this.hintText,
     required this.obscureText,
     required this.controller,
     this.focusNode,
+    this.validator,
   });
 
   @override
@@ -27,11 +33,11 @@ class MyTextfield extends StatelessWidget {
         horizontal: 25.0,
       ),
 
-      child: TextField(
-        obscureText:
-            obscureText, //is a bool , we need it as a variable because we don't one every single textbox to be hidden , just like HintText
-        controller:
-            controller, // for us to access what they write on the TextBox
+      child: TextFormField(
+        obscureText: obscureText,
+        //is a bool , we need it as a variable because we don't one every single textbox to be hidden , just like HintText
+        controller: controller,
+        // for us to access what they write on the TextBox
         focusNode: focusNode,
         decoration: InputDecoration(
           //Lets me Decorate our TextField
@@ -53,8 +59,13 @@ class MyTextfield extends StatelessWidget {
           fillColor: Theme.of(context).colorScheme.secondary,
           filled: true,
           hintText: hintText,
-          hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
+          hintStyle: TextStyle(
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          labelText: labelText,
+          labelStyle: labelStyle,
         ),
+        validator: this.validator,
       ),
     );
   }

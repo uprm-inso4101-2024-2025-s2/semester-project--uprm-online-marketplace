@@ -15,7 +15,10 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(drawer: const MyDrawer(), body: _buildUserList());
+    return Scaffold(
+      drawer: const MyDrawer(),
+      body: _buildUserList(),
+    );
   }
 
   // ✅ Notification Icon (bell + unread count)
@@ -24,7 +27,9 @@ class HomePage extends StatelessWidget {
 
     return Consumer<NotificationProvider>(
       builder: (context, notifier, child) {
-        int unreadCount = notifier.getUnreadCountForUser(currentUserID);
+        int unreadCount = notifier.getUnreadCountForUser(
+          currentUserID,
+        );
 
         return Stack(
           clipBehavior: Clip.none,
@@ -78,7 +83,10 @@ class HomePage extends StatelessWidget {
               children: [
                 const Text(
                   "Notifications",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 10),
 
@@ -96,13 +104,16 @@ class HomePage extends StatelessWidget {
                   child: ListView.builder(
                     itemCount: userNotifications.length,
                     itemBuilder: (context, index) {
-                      final notification = userNotifications[index];
+                      final notification =
+                          userNotifications[index];
                       return ListTile(
                         title: Text(
                           "${notification['count']} new messages from ${notification['senderEmail']}",
                           style: const TextStyle(fontSize: 16),
                         ),
-                        leading: const Icon(Icons.mark_chat_unread),
+                        leading: const Icon(
+                          Icons.mark_chat_unread,
+                        ),
                       );
                     },
                   ),
@@ -137,7 +148,8 @@ class HomePage extends StatelessWidget {
           children:
               snapshot.data!
                   .map<Widget>(
-                    (userData) => _buildUserListItem(userData, context),
+                    (userData) =>
+                        _buildUserListItem(userData, context),
                   )
                   .toList(),
         );
@@ -150,7 +162,8 @@ class HomePage extends StatelessWidget {
     Map<String, dynamic> userData,
     BuildContext context,
   ) {
-    if (userData['email'] != _authService.getCurrentUser()!.email) {
+    if (userData['email'] !=
+        _authService.getCurrentUser()!.email) {
       return UserTile(
         text: userData["email"],
         onTap: () {

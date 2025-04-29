@@ -15,13 +15,12 @@ import '../../Classes/LodgingClass.dart';
 /// ------------------------------------------
 ///
 
-
 List<Map<String, dynamic>> globalHouses = [
   {
     "imagePath": [
       'assets/images/house1.jpg',
       'assets/images/house2.jpg',
-      'assets/images/house3.jpg'
+      'assets/images/house3.jpg',
     ],
     "title": "San Juan Villa",
     "price": "\$100.00",
@@ -37,7 +36,7 @@ List<Map<String, dynamic>> globalHouses = [
     "imagePath": [
       'assets/images/house1.jpg',
       'assets/images/house2.jpg',
-      'assets/images/house3.jpg'
+      'assets/images/house3.jpg',
     ],
     "title": "Carolina Estate",
     "price": "\$150.00",
@@ -53,7 +52,7 @@ List<Map<String, dynamic>> globalHouses = [
     "imagePath": [
       'assets/images/house1.jpg',
       'assets/images/house2.jpg',
-      'assets/images/house3.jpg'
+      'assets/images/house3.jpg',
     ],
     "title": "Downtown Apartment",
     "price": "\$120.00",
@@ -67,7 +66,6 @@ List<Map<String, dynamic>> globalHouses = [
   },
 ];
 
-
 /// Main Listings Page (HouseList) with advanced filters.
 /// Only active listings (isActive == true) are shown here.
 class HouseList extends StatefulWidget {
@@ -78,10 +76,10 @@ class HouseList extends StatefulWidget {
 }
 
 class HouseListState extends State<HouseList> {
-
   List<Lodging> allListings = [];
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey =
+      GlobalKey<ScaffoldState>();
 
   String searchQuery = "";
   String selectedLocation = "All";
@@ -120,7 +118,10 @@ class HouseListState extends State<HouseList> {
       // For now, use the globalHouses as a placeholder
       setState(() {
         allListings = listings;
-        filteredHouses = listings.where((listing) => listing.isActive == true).toList();
+        filteredHouses =
+            listings
+                .where((listing) => listing.isActive == true)
+                .toList();
         isLoading = false;
       });
     } catch (e) {
@@ -148,30 +149,44 @@ class HouseListState extends State<HouseList> {
       double? minPrice = double.tryParse(minPriceInput);
       double? maxPrice = double.tryParse(maxPriceInput);
 
-      filteredHouses = allListings.where((listing) {
-        final titleMatch = listing.title.toLowerCase().contains(searchQuery.toLowerCase());
-        final locationMatch = (selectedLocation == "All" || listing.location == selectedLocation);
-        final isActive = listing.isActive;
-        final priceMatch = (minPrice == null || listing.price >= minPrice) &&
-            (maxPrice == null || listing.price <= maxPrice);
+      filteredHouses =
+          allListings.where((listing) {
+            final titleMatch = listing.title
+                .toLowerCase()
+                .contains(searchQuery.toLowerCase());
+            final locationMatch =
+                (selectedLocation == "All" ||
+                    listing.location == selectedLocation);
+            final isActive = listing.isActive;
+            final priceMatch =
+                (minPrice == null || listing.price >= minPrice) &&
+                (maxPrice == null || listing.price <= maxPrice);
 
-        bool bedsMatch = true;
-        if (bedsInput.isNotEmpty) {
-          int? desiredBeds = int.tryParse(bedsInput);
-          bedsMatch = (desiredBeds != null && listing.bedrooms == desiredBeds);
-        }
+            bool bedsMatch = true;
+            if (bedsInput.isNotEmpty) {
+              int? desiredBeds = int.tryParse(bedsInput);
+              bedsMatch =
+                  (desiredBeds != null &&
+                      listing.bedrooms == desiredBeds);
+            }
 
-        bool bathsMatch = true;
-        if (bathsInput.isNotEmpty) {
-          int? desiredBaths = int.tryParse(bathsInput);
-          bathsMatch = (desiredBaths != null && listing.restrooms == desiredBaths);
-        }
+            bool bathsMatch = true;
+            if (bathsInput.isNotEmpty) {
+              int? desiredBaths = int.tryParse(bathsInput);
+              bathsMatch =
+                  (desiredBaths != null &&
+                      listing.restrooms == desiredBaths);
+            }
 
-        return titleMatch && locationMatch && isActive && priceMatch && bedsMatch && bathsMatch;
-      }).toList();
+            return titleMatch &&
+                locationMatch &&
+                isActive &&
+                priceMatch &&
+                bedsMatch &&
+                bathsMatch;
+          }).toList();
     });
   }
-
 
   Widget buildAdvancedFilters() {
     return Column(
@@ -179,7 +194,10 @@ class HouseListState extends State<HouseList> {
       children: [
         // Price Range UI with two text fields.
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+          padding: EdgeInsets.symmetric(
+            horizontal: 8.0,
+            vertical: 8.0,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -224,7 +242,10 @@ class HouseListState extends State<HouseList> {
         ),
         // Beds Filter
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 8.0,
+            vertical: 8.0,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -246,7 +267,10 @@ class HouseListState extends State<HouseList> {
         ),
         // Bathrooms Filter
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 8.0,
+            vertical: 8.0,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -279,7 +303,10 @@ class HouseListState extends State<HouseList> {
         children: [
           // Search Bar
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 10.h),
+            padding: EdgeInsets.symmetric(
+              horizontal: 4.w,
+              vertical: 10.h,
+            ),
             child: TextField(
               onChanged: onSearchChanged,
               decoration: InputDecoration(
@@ -301,13 +328,18 @@ class HouseListState extends State<HouseList> {
                 const Text("Location: "),
                 DropdownButton<String>(
                   value: selectedLocation,
-                  items: <String>["All", "San Juan", "Carolina", "Downtown"]
-                      .map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
+                  items:
+                      <String>[
+                        "All",
+                        "San Juan",
+                        "Carolina",
+                        "Downtown",
+                      ].map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
                   onChanged: (newValue) {
                     setState(() {
                       selectedLocation = newValue!;
@@ -320,48 +352,58 @@ class HouseListState extends State<HouseList> {
           ),
           // Horizontal List of Filtered Houses.
           Expanded(
-            child: isLoading
-                ? Center(child: CircularProgressIndicator()) // Show loading indicator
-                : hasError
-                ? Center(child: Text("Failed to load listings")) // Show error message
-                : filteredHouses.isEmpty
-                ? Center(child: Text("No houses found")) // Show no listings message
-                : ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: filteredHouses.length,
-              itemBuilder: (context, index) {
-                final lodging = filteredHouses[index];
-                // return Padding(
-                //   padding: const EdgeInsets.all(8.0),
-                //   child: HouseTile(
-                //     imagePath: house.imageUrls,
-                //     title: house.title,
-                //     price: house.price.toString(),
-                //     details: house.description,
-                //     isFavorite: false,
-                //     isActive: house.isActive,
-                //     onToggleStatus: () {
-                //       setState(() {
-                //         house.isActive = !house.isActive;
-                //         applyFilters();
-                //       });
-                //     },
-                //   ),
-                // );
-                return HouseTile(
-                  lodging: lodging,
-                  onToggleStatus: () {
-                    setState(() {
-                      lodging.isActive = !lodging.isActive;
-                      FirebaseFirestore.instance
-                          .collection('listings')
-                          .doc(lodging.id.toString())
-                          .update({'isActive': lodging.isActive});
-                    });
-                  },
-                );
-              },
-            ),
+            child:
+                isLoading
+                    ? Center(
+                      child: CircularProgressIndicator(),
+                    ) // Show loading indicator
+                    : hasError
+                    ? Center(
+                      child: Text("Failed to load listings"),
+                    ) // Show error message
+                    : filteredHouses.isEmpty
+                    ? Center(
+                      child: Text("No houses found"),
+                    ) // Show no listings message
+                    : ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: filteredHouses.length,
+                      itemBuilder: (context, index) {
+                        final lodging = filteredHouses[index];
+                        // return Padding(
+                        //   padding: const EdgeInsets.all(8.0),
+                        //   child: HouseTile(
+                        //     imagePath: house.imageUrls,
+                        //     title: house.title,
+                        //     price: house.price.toString(),
+                        //     details: house.description,
+                        //     isFavorite: false,
+                        //     isActive: house.isActive,
+                        //     onToggleStatus: () {
+                        //       setState(() {
+                        //         house.isActive = !house.isActive;
+                        //         applyFilters();
+                        //       });
+                        //     },
+                        //   ),
+                        // );
+                        return HouseTile(
+                          lodging: lodging,
+                          onToggleStatus: () {
+                            setState(() {
+                              lodging.isActive =
+                                  !lodging.isActive;
+                              FirebaseFirestore.instance
+                                  .collection('listings')
+                                  .doc(lodging.id.toString())
+                                  .update({
+                                    'isActive': lodging.isActive,
+                                  });
+                            });
+                          },
+                        );
+                      },
+                    ),
           ),
         ],
       ),
