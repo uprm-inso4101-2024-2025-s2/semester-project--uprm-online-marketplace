@@ -3,7 +3,9 @@ import 'package:go_router/go_router.dart';
 
 // Page imports
 import '../housing/pages/house_listing.dart';
-import '../housing/pages/login_page.dart';
+
+// import '../housing/pages/login_page.dart';
+import '../housing/pages/new_login_page.dart';
 import '../housing/pages/register_page.dart';
 import '../housing/pages/chat_page.dart';
 import '../housing/pages/MyListings.dart';
@@ -16,18 +18,35 @@ final GoRouter router = GoRouter(
     _customPageRoute('/', HouseList()),
     _customPageRoute('/login', LoginPage(onTap: () {})),
     _customPageRoute('/register', RegisterPage(onTap: () {})),
-    _customPageRoute('/chat', ChatPage(receiverEmail: 'correo@example.com', receiverID: 'id123'), useLayout: false),
+    _customPageRoute(
+      '/chat',
+      ChatPage(
+        receiverEmail: 'correo@example.com',
+        receiverID: 'id123',
+      ),
+      useLayout: false,
+    ),
 
     // ✅ Added new routes
     _customPageRoute('/favorites', FavoritesPage()),
     _customPageRoute('/map', MapScreen()),
     _customPageRoute('/my-listings', MyListingsPage()),
-    _customPageRoute('/inactive-listings', InactiveListingsPage()),
+    _customPageRoute(
+      '/inactive-listings',
+      InactiveListingsPage(),
+    ),
   ],
-  errorBuilder: (context, state) => Scaffold(body: Center(child: Text('404 Page Not Found'))),
+  errorBuilder:
+      (context, state) => Scaffold(
+        body: Center(child: Text('404 Page Not Found')),
+      ),
 );
 
-GoRoute _customPageRoute(String path, Widget page, {bool useLayout = true}) {
+GoRoute _customPageRoute(
+  String path,
+  Widget page, {
+  bool useLayout = true,
+}) {
   return GoRoute(
     path: path,
     pageBuilder: (context, state) {
@@ -41,11 +60,19 @@ GoRoute _customPageRoute(String path, Widget page, {bool useLayout = true}) {
 
 List<String> navigationHistory = [];
 
-CustomTransitionPage _customTransitionPage(GoRouterState state, Widget child) {
+CustomTransitionPage _customTransitionPage(
+  GoRouterState state,
+  Widget child,
+) {
   return CustomTransitionPage(
     key: state.pageKey,
     child: child,
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+    transitionsBuilder: (
+      context,
+      animation,
+      secondaryAnimation,
+      child,
+    ) {
       String currentRoute = state.uri.toString();
       bool isGoingBack = false;
 
@@ -60,7 +87,10 @@ CustomTransitionPage _customTransitionPage(GoRouterState state, Widget child) {
         navigationHistory.add(currentRoute);
       }
 
-      final beginOffset = isGoingBack ? const Offset(-1.0, 0.0) : const Offset(1.0, 0.0);
+      final beginOffset =
+          isGoingBack
+              ? const Offset(-1.0, 0.0)
+              : const Offset(1.0, 0.0);
       const endOffset = Offset.zero;
 
       var tween = Tween<Offset>(
@@ -68,7 +98,10 @@ CustomTransitionPage _customTransitionPage(GoRouterState state, Widget child) {
         end: endOffset,
       ).chain(CurveTween(curve: Curves.easeInOut));
 
-      return SlideTransition(position: animation.drive(tween), child: child);
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
     },
     transitionDuration: const Duration(milliseconds: 300),
   );

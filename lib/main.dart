@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -20,15 +22,29 @@ const firebaseConfig = FirebaseOptions(
   storageBucket: "online-market-f5c9f.firebasestorage.app",
   messagingSenderId: "771212475650",
   appId: "1:771212475650:web:b1748012b5d858873cd61b",
-  measurementId: "G-WNKC1KHM1R"
+  measurementId: "G-WNKC1KHM1R",
 );
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   FirebaseFirestore.instance.settings = const Settings(
     persistenceEnabled: true,
   );
+  // Use Firebase Emulator if debugging
+  if (kDebugMode) {
+    try {
+      FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+      FirebaseFirestore.instance.useFirestoreEmulator(
+        'localhost',
+        8080,
+      );
+    } catch (error) {
+      print("Firebase Emulator Error: $error");
+    }
+  }
 
   runApp(
     ChangeNotifierProvider(

@@ -11,6 +11,7 @@ class MyTextfield extends StatelessWidget {
   final FocusNode? focusNode;
   final String? labelText;
   final TextStyle? labelStyle;
+  final FormFieldValidator<String>? validator;
 
   const MyTextfield({
     //my parameters for my class
@@ -21,6 +22,7 @@ class MyTextfield extends StatelessWidget {
     required this.obscureText,
     required this.controller,
     this.focusNode,
+    this.validator,
   });
 
   @override
@@ -63,6 +65,7 @@ class MyTextfield extends StatelessWidget {
           labelText: labelText,
           labelStyle: labelStyle,
         ),
+        validator: this.validator,
       ),
     );
   }
