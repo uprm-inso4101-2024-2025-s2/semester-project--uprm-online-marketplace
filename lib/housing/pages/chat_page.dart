@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:provider/provider.dart';
 import 'package:semesterprojectuprmonlinemarketplace/components/chat_bubble.dart';
 import 'package:semesterprojectuprmonlinemarketplace/components/my_textfield.dart';
 import 'package:semesterprojectuprmonlinemarketplace/services/auth/auth_service.dart';
 import 'package:semesterprojectuprmonlinemarketplace/services/chat/chat_services.dart';
-import 'package:semesterprojectuprmonlinemarketplace/providers/notification_provider.dart';
+import 'package:semesterprojectuprmonlinemarketplace/utils/chat_utils.dart'; // ✅ Utility import
 
 class ChatPage extends StatefulWidget {
   final String receiverEmail;
@@ -31,12 +30,6 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     super.initState();
 
-    // ✅ Mark messages as read when opening chat
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<NotificationProvider>(context, listen: false)
-          .markMessagesFromSenderAsRead(_authService.getCurrentUser()!.uid, widget.receiverEmail);
-    });
-
     myFocusNode.addListener(() {
       if (myFocusNode.hasFocus) {
         Future.delayed(const Duration(milliseconds: 500), () => scrollDown());
@@ -54,24 +47,23 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void scrollDown() {
-    _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent,
-      duration: const Duration(seconds: 1),
-      curve: Curves.fastOutSlowIn,
-    );
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(seconds: 1),
+        curve: Curves.fastOutSlowIn,
+      );
+    }
   }
 
   void sendMessage() async {
     if (_messageController.text.isNotEmpty) {
       if (_editingMessageID == null) {
-        // ✅ Send new message
         await _chatServices.sendMessage(
           widget.receiverID,
           _messageController.text,
-          Provider.of<NotificationProvider>(context, listen: false),
         );
       } else {
-        // ✅ Edit existing message
         await _chatServices.editMessage(widget.receiverID, _editingMessageID!, _messageController.text);
         setState(() {
           _editingMessageID = null;
@@ -88,13 +80,57 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.receiverEmail, style: TextStyle(color: Colors.white)),
         backgroundColor: Theme.of(context).colorScheme.primary,
+        title: Row(
+          children: [
+            Image.asset(
+              'assets/images/logo/white-logo.png',
+              height: 115,
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                widget.receiverEmail,
+                style: const TextStyle(color: Colors.white, overflow: TextOverflow.ellipsis),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications, color: Colors.white),
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (context) => Container(
+                  padding: const EdgeInsets.all(20),
+                  height: 150,
+                  child: const Center(
+                    child: Text(
+                      "No new messages",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
-      body: Column(
+      body: Stack(
         children: [
-          Expanded(child: _buildMessageList()),
-          _buildUserInput(),
+          Center(
+            child: Image.asset(
+              'assets/images/logo/white-logo.png',
+              width: 400,
+            ),
+          ),
+          Column(
+            children: [
+              Expanded(child: _buildMessageList()),
+              _buildUserInput(),
+            ],
+          ),
         ],
       ),
     );
@@ -114,8 +150,7 @@ class _ChatPageState extends State<ChatPage> {
 
         return ListView(
           controller: _scrollController,
-          children:
-              snapshot.data!.docs.map((doc) => _buildMessageItem(doc)).toList(),
+          children: snapshot.data!.docs.map((doc) => _buildMessageItem(doc)).toList(),
         );
       },
     );
@@ -125,18 +160,18 @@ class _ChatPageState extends State<ChatPage> {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     bool isCurrentUser = data['senderID'] == _authService.getCurrentUser()!.uid;
     Timestamp timestamp = data['timestamp'];
+    DateTime dateTime = timestamp.toDate();
 
-    // ✅ Check if message is within 5-minute edit window
-    bool withinEditWindow =
-        DateTime.now().difference(timestamp.toDate()).inMinutes < 5;
+    bool editable = canEditMessage(dateTime); // ✅ Utility use
 
-    // ✅ Mark message as read when receiver opens the chat
     if (!isCurrentUser && !(data['read'] ?? false)) {
       _chatServices.markMessageAsRead(widget.receiverID, doc.id);
     }
 
+    final formattedTime = formatTimestamp(dateTime); // ✅ Utility use
+
     return GestureDetector(
-      onLongPress: isCurrentUser && withinEditWindow
+      onLongPress: isCurrentUser && editable
           ? () {
               setState(() {
                 _editingMessageID = doc.id;
@@ -146,19 +181,18 @@ class _ChatPageState extends State<ChatPage> {
             }
           : null,
       child: Column(
-        crossAxisAlignment:
-            isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        crossAxisAlignment: isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
           ChatBubble(message: data["message"], isCurrentUser: isCurrentUser),
-
-          // ✅ Show "Edited" label for BOTH sender & receiver
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0, top: 2),
+            child: Text(formattedTime, style: const TextStyle(fontSize: 11, color: Colors.grey)),
+          ),
           if (data['edited'] ?? false)
             const Padding(
               padding: EdgeInsets.only(right: 8.0, top: 2),
               child: Text("Edited", style: TextStyle(fontSize: 12, color: Colors.grey)),
             ),
-
-          // ✅ Show "Read" indicator for sender if the message is read
           if (isCurrentUser && (data['read'] ?? false))
             const Padding(
               padding: EdgeInsets.only(right: 8.0, top: 2),

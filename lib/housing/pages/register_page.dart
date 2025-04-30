@@ -11,33 +11,40 @@ class RegisterPage extends StatelessWidget {
 
   RegisterPage({super.key, required this.onTap});
 
-  //Register Method
-  void register(BuildContext context) {
-    //get auth service
+  // Register Method
+  Future<void> register(BuildContext context) async {
     final _auth = AuthService();
-
-    //if password match => create user
 
     if (_pwController.text == _confirmPwController.text) {
       try {
-        _auth.signUpWithEmailPassword(
+        await _auth.signUpWithEmailPassword(
           _emailController.text,
           _pwController.text,
         );
-      } catch (e) {
-        //Catch Errors
+
+        // Optional: go back to login screen
         showDialog(
           context: context,
-          builder: (context) => AlertDialog(title: Text(e.toString())),
+          builder: (context) => const AlertDialog(
+            title: Text("Account created successfully!"),
+          ),
+        );
+
+        // Automatically switch to login
+        onTap?.call();
+      } catch (e) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text("Error: $e"),
+          ),
         );
       }
     } else {
-      // passwrod don't match tell user to fix
       showDialog(
         context: context,
-        builder:
-            (context) =>
-                const AlertDialog(title: Text("Passwords don't Match")),
+        builder: (context) =>
+            const AlertDialog(title: Text("Passwords don't match")),
       );
     }
   }
@@ -46,19 +53,16 @@ class RegisterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-
-      //Basic UI for the Login Screen
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            //logo
             Icon(
               Icons.message,
               size: 60,
               color: Theme.of(context).colorScheme.primary,
             ),
-            const SizedBox(height: 50), // To have space between
+            const SizedBox(height: 50),
             Text(
               "Let's Create an account for you",
               style: TextStyle(
@@ -66,41 +70,32 @@ class RegisterPage extends StatelessWidget {
                 fontSize: 16,
               ),
             ),
-
             const SizedBox(height: 25),
-
-            //Email textfield
             MyTextfield(
               hintText: "Email",
               obscureText: false,
               controller: _emailController,
             ),
             const SizedBox(height: 10),
-
-            // pw textfield
             MyTextfield(
               hintText: "Password",
               obscureText: true,
               controller: _pwController,
             ),
             const SizedBox(height: 10),
-
-            // confirm pw textfield
             MyTextfield(
               hintText: "Confirm Password",
               obscureText: true,
               controller: _confirmPwController,
             ),
             const SizedBox(height: 25),
-
-            //login
-            MyButton(text: "Register", onTap: () => register(context)),
+            MyButton(
+              text: "Register",
+              onTap: () => register(context),
+            ),
             const SizedBox(height: 25),
-
-            //register now
             Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.center, // How the text is align
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   "Already have an account? ",

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NotificationModel {
-  final String id;
+  final String id; // This is only used locally, not stored in Firestore
   final String userID;
   final String message;
   final Timestamp timestamp;
@@ -15,9 +15,9 @@ class NotificationModel {
     required this.isRead,
   });
 
+  // Only save relevant fields to Firestore (not the document ID)
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'userID': userID,
       'message': message,
       'timestamp': timestamp,
@@ -25,6 +25,7 @@ class NotificationModel {
     };
   }
 
+  // Factory constructor to build from Firestore + document ID
   factory NotificationModel.fromMap(Map<String, dynamic> map, String docID) {
     return NotificationModel(
       id: docID,
