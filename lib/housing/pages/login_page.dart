@@ -1,62 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart'; // ✅ Added for GoRouter navigation
 import 'package:semesterprojectuprmonlinemarketplace/services/auth/auth_service.dart';
 import 'package:semesterprojectuprmonlinemarketplace/components/my_button.dart';
 import 'package:semesterprojectuprmonlinemarketplace/components/my_textfield.dart';
 
-//In Order to keep our Code organized
-
 class LoginPage extends StatelessWidget {
-  // email and pw text controllers (See who logs in)
+  // Email and password text controllers
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _pwController = TextEditingController();
 
-  //Tap to go to register
-
+  // Tap to go to register
   final void Function()? onTap;
 
   LoginPage({super.key, required this.onTap});
 
   void login(BuildContext context) async {
-    //Auth Services
     final authService = AuthService();
 
-    //try login
     try {
       print('logged in');
       await authService.signInWithEmailPassword(
         _emailController.text,
         _pwController.text,
       );
-    }
-    //Cacth any errors
-    catch (e) {
+
+      await authService.getCurrentUserID();
+
+      // ✅ Navigate using GoRouter after successful login
+      if (context.mounted) {
+        context.go('/chat');
+      }
+    } catch (e) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(title: Text(e.toString())),
       );
     }
-
-    await authService.getCurrentUserID();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //Creates background and everything , first widget
       backgroundColor: Theme.of(context).colorScheme.surface,
-
-      //Basic UI for the Login Screen
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            //logo
             Icon(
               Icons.message,
               size: 60,
               color: Theme.of(context).colorScheme.primary,
             ),
-            const SizedBox(height: 50), // To have space between
+            const SizedBox(height: 50),
             Text(
               "Welcome Back, you've been missed",
               style: TextStyle(
@@ -64,33 +59,23 @@ class LoginPage extends StatelessWidget {
                 fontSize: 16,
               ),
             ),
-
             const SizedBox(height: 25),
-
-            //Email textfield
             MyTextfield(
               hintText: "Email",
               obscureText: false,
               controller: _emailController,
             ),
             const SizedBox(height: 10),
-
-            // pw textfield
             MyTextfield(
               hintText: "Password",
               obscureText: true,
               controller: _pwController,
             ),
             const SizedBox(height: 25),
-
-            //login
             MyButton(text: "Login", onTap: () => login(context)),
             const SizedBox(height: 25),
-
-            //register now
             Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.center, // How the text is align
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   "Not a member? ",

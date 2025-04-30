@@ -10,35 +10,53 @@ class NotificationList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userID = notifications.isNotEmpty ? notifications.first.userID : null;
+
     return Container(
       height: 400,
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Notifications", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          Expanded(
-            child: ListView.builder(
-              itemCount: notifications.length,
-              itemBuilder: (context, index) {
-                final notification = notifications[index];
-                return ListTile(
-                  title: Text(notification.message),
-                  trailing: IconButton(
-                    icon: Icon(Icons.check),
-                    onPressed: () {
-                      _notificationService.markNotificationAsRead(notification.id);
-                    },
-                  ),
-                );
-              },
+          const Text(
+            "Notifications",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
+
+          if (notifications.isEmpty)
+            const Center(child: Text("No new notifications")),
+
+          if (notifications.isNotEmpty)
+            Expanded(
+              child: ListView.builder(
+                itemCount: notifications.length,
+                itemBuilder: (context, index) {
+                  final notification = notifications[index];
+                  return ListTile(
+                    title: Text(notification.message),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.check),
+                      onPressed: () {
+                        _notificationService.markNotificationAsRead(notification.id);
+                      },
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              _notificationService.markAllAsRead(notifications.first.userID);
-            },
-            child: Text("Mark All as Read"),
-          ),
+
+          const SizedBox(height: 10),
+          if (userID != null)
+            Align(
+              alignment: Alignment.centerRight,
+              child: ElevatedButton(
+                onPressed: () {
+                  // _notificationService.markAllAsRead(userID);
+                },
+                child: const Text("Mark All as Read"),
+              ),
+            ),
         ],
       ),
     );
