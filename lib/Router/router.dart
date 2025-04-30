@@ -26,6 +26,7 @@ import '../pages/setting_page.dart';
 //     true; // Cambiar a true para propositos de testing. Al final se debe cambiar y usar la logica de autenticacion
 
 final GoRouter router = GoRouter(
+  initialLocation: '/login',
   routes: [
     _customPageRoute('/', HomePage()),
     _customPageRoute('/login', LoginPage(onTap:(){})),
