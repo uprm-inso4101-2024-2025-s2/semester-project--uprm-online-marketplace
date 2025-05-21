@@ -22,6 +22,6 @@
   "lectureTopicTaskQuota": 4,
   "countOpenIssues": false,
   "sprints": 2,
-  "verbosity": 3.
+  "verbosity": 3,
   "minTasksPerSprint": 1
 }
